@@ -131,7 +131,7 @@ entry opens with a provenance tag:
 | `default` | The user said "you decide" or "I don't know"; the call is yours, logged so it can be reopened knowingly | At write-back |
 | `assumed` | A load-bearing call made while drafting, never asked | At step 3, under a `(draft)` heading, and by the gap scan |
 | `sourced` | Decided by a finding in `research.md`; the entry names its heading | Whenever a search settles something |
-| `executed` | `/execute-plan` found the built thing overturned an entry; names the reversed entry, what was built and why; written with `confirmed <date>` because the user approved the work | At plan close, by `/execute-plan` only |
+| `executed` | `/execute-plan` found the built thing overturned an entry; names the reversed entry, what was built and why; confirmed only when a recorded user approval explicitly covers that departure | At plan close, by `/execute-plan` only |
 
 Entry shapes, one line each unless the quote runs long:
 
@@ -152,13 +152,12 @@ Rules:
 - **Quote the answer and record what it ruled out**, not only what it chose. The quote is what
   identifies the user's own words later; the ruled-out list is what stops a settled question
   being reopened six months on.
-- **`confirmed <date>` is appended by the readback and by nothing else.** An entry the user
-  never saw in a readback list does not carry it, whatever the conversation said.
-- **A reversal is a new entry, never an edit.** The old entry stays, loses its `confirmed`
-  date if it had one, and the new entry names it. Silent reversals are how a spec starts lying
+- **`confirmed <date>` requires readback, or an explicit user approval of the exact execution departure recorded with the entry.** Record which approval confirmed an execution departure. All other entries require
+  inclusion in a confirmed readback list.
+- **A reversal is a new entry, never an edit.** The old entry stays, keeps its historical confirmation and gains `superseded by <replacement>`, and the new entry names it. Silent reversals are how a spec starts lying
   about itself.
-- **Every entry is read back**, whatever its tag: the readback lists each one not yet carrying
-  `confirmed`, so the header's count is a count of lines, not a judgment. Whether a drafted
+- **Every active entry is read back**, whatever its tag: the readback lists each active one not yet carrying
+  `confirmed`, so the header's count is a count of active entries, not wrapped lines. Whether a drafted
   guess earns an entry at all is the key test in `SKILL.md § The three marks`.
 
 ## Writing the marks
@@ -225,11 +224,10 @@ A second run is not a second first run. These rules are what make it safe.
   freely. `Decisions` quotes each answer and tags who decided, so it is the record of which is
   which.
 - **A rewrite that removes or reverses a decision gets a `Decisions` entry** saying what changed
-  and why, and the reversed entry loses its `confirmed` date. Silent reversals are how a spec
+  and why, and the reversed entry keeps its historical confirmation and gains `superseded by <replacement>`. Silent reversals are how a spec
   starts lying about itself.
 - **Re-score both header lines against the file as it now is**, not against a memory of the
-  last run. A confirmed count is never carried forward from memory: count the `confirmed`
-  suffixes.
+  last run. A confirmed count is never carried forward from memory: count confirmed active entries.
 - **Do not restart the interview.** Resume at the coverage scan with the remaining marks as the
   queue — unless `Status` is `draft` or template sections are missing, in which case finish the
   draft first.

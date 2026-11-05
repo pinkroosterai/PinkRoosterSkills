@@ -1,72 +1,163 @@
+<div align="center">
+
+<img src="assets/logo.png" alt="PinkRooster logo" width="160" />
+
 # PinkRoosterSkills
 
-Four agent skills that take a piece of work from a one-line idea to a finished change, and
-one that builds a sourced research corpus. They follow the [Agent Skills](https://agentskills.io)
-format, so they run in Claude Code, Codex, Antigravity, pi and other harnesses that read
-`SKILL.md`.
+**Four portable agent skills: shape an idea, plan the work, execute the plan, and build a sourced research corpus.**
 
-| Skill | What it does | Writes |
-|---|---|---|
-| `/shape-spec` | Turns a one-line concept into a specification by interviewing you in rounds, and tracks every gap inside the spec itself | `docs/<slug>/spec.md` |
-| `/plan-work` | Turns a request or spec into a researched, phased plan of what-and-where tasks | `docs/<slug>/plan.md`, `research.md` |
-| `/execute-plan` | Works a plan one phase at a time, re-checking its assumptions and keeping the plan file current | code, plus updates to `plan.md` |
-| `/research-topic` | Scouts a topic, agrees scope with you, fans out one researcher per angle, then merges the reports into cross-linked topic files | `docs/research/` |
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Agent Skills](https://img.shields.io/badge/Agent-Skills-ec4899)](https://agentskills.io/specification)
+[![Markdown and Bash](https://img.shields.io/badge/Markdown_and-Bash-4eaa25)](#development)
 
-Call one with `/plan-work …`, or just ask ("plan the rate limiting work") and the agent
-picks the matching skill up from its description. The pipeline is `shape-spec` → `plan-work` → `execute-plan`; each skill also works alone.
+[The idea](#the-idea) · [Install](#install) · [Usage](#usage) · [Skills](#skills) · [Compatibility](#compatibility) · [Development](#development)
+
+</div>
+
+---
+
+## The idea
+
+Keep the decisions and evidence that an agent needs for the next session in ordinary
+Markdown files. Each stage has a distinct job and a durable handoff; you can install and
+use any skill on its own. There is no application runtime or build step.
+
+```text
+idea → shape-spec → spec.md → plan-work → plan.md → execute-plan → verified changes
+                                 ↑                         ↑
+                      research-topic → docs/research/ corpus
+```
+
+These are instructions an agent follows, not an execution engine or a permission boundary.
+Your harness supplies file access, search, questions, shell commands and optional subagents.
+User instructions and project rules take precedence.
 
 ## Install
 
-Any harness, with the [skills CLI](https://github.com/vercel-labs/skills):
+While this repository is private, use an authenticated checkout and install from its local
+path. Installation does not require publishing the repository:
 
 ```bash
-npx skills add pinkroosterai/PinkRoosterSkills            # this project
-npx skills add pinkroosterai/PinkRoosterSkills -g         # all your projects
-npx skills add pinkroosterai/PinkRoosterSkills -a codex -a pi --skill plan-work
+npx skills add /absolute/path/to/PinkRoosterSkills -a claude-code -a codex -a antigravity -a pi
+# Install one skill only:
+npx skills add /absolute/path/to/PinkRoosterSkills -a codex --skill plan-work
+# Add -g for a user-wide installation instead of a project installation.
 ```
 
-Claude Code, as a plugin:
+The installer requires Node.js/npm. The skills themselves are Markdown; shell examples
+use Bash and standard Unix utilities. Research needs web or documentation tools. Delegation
+is optional: without a subagent tool, the main agent performs the work inline.
+
+For Claude Code, install the local checkout as a plugin marketplace:
 
 ```bash
-claude plugin marketplace add pinkroosterai/PinkRoosterSkills
+claude plugin marketplace add /absolute/path/to/PinkRoosterSkills
 claude plugin install pinkrooster-skills@pinkrooster-skills
 ```
 
-Installed as a plugin, the skills are namespaced: `/pinkrooster-skills:plan-work`.
+Plugin commands use the namespace, for example `/pinkrooster-skills:plan-work`.
+See the [skills installer](https://github.com/vercel-labs/skills) for installation options.
 
-## Subagents
+## Usage
 
-`plan-work`, `execute-plan`, `shape-spec` and `research-topic` hand bulky, self-contained
-steps (searching a codebase, one task, one research angle) to subagents on a cheaper
-model. They ship **no agent definitions**: each skill starts the harness's own
-general-purpose subagent and points it at a role file in its `references/roles/`. So
-nothing beyond the skill folder needs installing.
-
-| Harness | Delegation |
+| Harness | Explicit invocation example |
 |---|---|
-| Claude Code | `general-purpose` subagent, `haiku` or `sonnet` per tier |
-| Codex | built-in `explorer` / `worker` subagents |
-| Antigravity | `invoke_subagent` (general-purpose `self` type) |
-| pi | none in core, so the step runs inline (or install a subagent extension) |
+| Claude Code, standalone | `/plan-work add rate limiting to the API` |
+| Claude Code, plugin | `/pinkrooster-skills:plan-work add rate limiting to the API` |
+| Codex CLI / IDE | `$plan-work add rate limiting to the API` |
+| Pi | `/skill:plan-work add rate limiting to the API` |
+| Antigravity | Use its skill selector or ask “Use the plan-work skill to plan API rate limiting” |
+| Other skill-capable hosts | Ask for the skill by name; command syntax depends on the host |
 
-Where there is no subagent tool the skill does the step itself and says so. What has been
-checked in each harness is in [docs/compatibility.md](docs/compatibility.md).
+Natural requests such as “plan the rate limiting work” can also select a skill through its
+description. Selection is model-dependent; explicit invocation is useful when routing is
+ambiguous. A handoff names the next step without automatically running it.
 
-## Frontmatter outside the standard
+## Skills
 
-Each `SKILL.md` carries one Claude Code field the Agent Skills spec does not define:
-`argument-hint`, the hint shown after `/name`. Claude Code honours it; other harnesses
-ignore it. The strict reference validator (`skills-ref validate`) reports it as an
-unexpected field.
+| Skill | Use it for | Artifacts |
+|---|---|---|
+| [shape-spec](skills/shape-spec/SKILL.md) | Turn an unsettled concept into a specification through bounded question rounds and decision readback | `docs/<slug>/spec.md`, `research.md` |
+| [plan-work](skills/plan-work/SKILL.md) | Turn defined work into phases, assumptions, tasks and acceptance checks | `docs/<slug>/plan.md`, `research.md` |
+| [execute-plan](skills/execute-plan/SKILL.md) | Implement an existing plan, verify each phase and record progress | Code, plan status, findings and spec corrections |
+| [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
 
-## Developing
+### Shape a concept
 
-`scripts/check-skills.sh` runs the mechanical checks; run it before every commit. The eval
-cases in `evals/` run with `claude plugin eval . --trust-plugin` and cost real sessions.
-`plan-work` owns the shared files (`plan-format.md`, `researching.md`, `delegation.md`,
-`roles/scout.md`, `roles/worker.md`). Edit them there, then copy them into `execute-plan`
-and `shape-spec`; the check fails if a copy has drifted.
+Ask: “Use shape-spec for a CLI that synchronizes an Obsidian vault to S3.” The skill drafts
+before interviewing, distinguishes blocking gaps from thin sections and deferred questions,
+and confirms active decisions before calling the spec buildable. Superseded decisions stay
+as history and do not re-enter the confirmation queue. Resume by naming the existing slug.
 
-## License
+### Plan defined work
 
-MIT
+Ask: “Use plan-work to implement docs/obsidian-sync/spec.md.” The plan lands beside the spec.
+Each phase records assumptions, unsettled questions, tasks and an observable completion
+condition. A trivial edit does not need a plan. Planning stops at the handoff.
+
+### Execute a plan
+
+Ask: “Use execute-plan for obsidian-sync.” Execution checks assumptions, settles open
+questions and verifies completion before advancing. Missing acceptance criteria are resolved
+before implementation. `--phase N` selects a phase; its prerequisites still must hold.
+Progress remains on disk for resumption after interruption.
+
+### Research a topic
+
+Ask: “Use research-topic to compare device authorization flows and preserve the findings.”
+The skill scouts first, confirms scope and budget, then researches inline or delegates
+independent angles within available slots. Reports live in a unique cache directory outside
+the working tree. Changed claims are checked against source evidence before scratch cleanup.
+For a chat-only answer or read-only review, ask directly rather than invoking this workflow.
+
+## Persistence and delegation
+
+Skills normally create local commits, subject to your instructions and project checks.
+They preserve unrelated working-tree and staged changes. In a non-Git project, when commits
+are prohibited, or when changes cannot safely be isolated, artifacts remain uncommitted
+with an explanation. No skill pushes changes or changes repository visibility.
+
+Subagents receive a bounded job and a role pasted from `references/roles/`; no custom agent
+definitions are installed. The main agent owns decisions, shared documents, verification
+and commits. Models, reasoning effort and concurrency adapt to the tools actually available.
+A worker's report is checked against its changes before being trusted.
+
+## Compatibility
+
+The common [Agent Skills format](https://agentskills.io/specification) makes the instruction
+bundles portable; it does not standardize tool APIs, permissions or command syntax.
+See [the compatibility record](docs/compatibility.md) for dated evidence and limitations.
+Historical checks cover installation, a no-plan path and scout dispatch in Claude Code,
+Codex and Antigravity. Pi and complete cross-harness workflows remain unverified.
+
+`argument-hint` is a deliberate Claude Code frontmatter extension. Strict `skills-ref`
+validation reports it as unsupported; this is documented rather than counted as a pass.
+The local checker validates this repository's restricted frontmatter conventions, not all YAML.
+
+Official references: [Claude Code](https://code.claude.com/docs/en/skills),
+[Codex](https://learn.chatgpt.com/docs/build-skills),
+[Antigravity](https://antigravity.google/docs/skills),
+[Pi](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/skills.md),
+and [OpenCode](https://opencode.ai/docs/skills/).
+
+## Development
+
+```bash
+bash scripts/check-skills.sh
+bash scripts/test-check-skills.sh
+claude plugin validate .
+# Optional strict format validation (argument-hint is a known extension):
+npx -y skills-ref validate skills/plan-work
+# Paid behavioral evaluation; choose an explicit budget:
+claude plugin eval . --trust-plugin --max-cost-usd 5
+```
+
+Skills live in `skills/<name>/SKILL.md`, supporting material in `references/`, and behavioral
+cases in `evals/`. See [AGENTS.md](AGENTS.md) for maintenance rules and
+[evals/README.md](evals/README.md) for test coverage. Edit shared references in `plan-work`
+first, then copy them into the standalone consumers; the checker rejects drift.
+
+Keep discovery descriptions short and explicit about use cases and exclusions. Update the
+[changelog](CHANGELOG.md) and both manifest version records when preparing a release.
+The project is [MIT licensed](LICENSE). The header logo is shared with
+[PinkRooster](https://github.com/pinkroosterai/PinkRooster).

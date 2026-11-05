@@ -32,6 +32,19 @@ for d in skills/*/; do
   d=${d%/}; f="$d/SKILL.md"; name="$(basename "$d")"
   [ -f "$f" ] || { fail "$d has no SKILL.md"; continue; }
 
+  # Restricted frontmatter profile: single-line, unquoted name/description; quoted hint.
+  if ! awk 'NR==1 {if ($0!="---") exit 1; next}
+    /^---$/ {closed=1; exit}
+    !/^(name|description|argument-hint): / {exit 1}
+    {split($0,a,":"); if (seen[a[1]]++) exit 1}
+    END {if (!closed) exit 1}' "$f"; then fail "$name: invalid restricted frontmatter"; fi
+  if frontmatter "$f" | grep -q 'disable-model-invocation'; then
+    fail "$name: every skill must remain model-invocable"
+  fi
+  if ! frontmatter "$f" | grep -qE '^argument-hint: ".*"$'; then
+    fail "$name: argument-hint must be a quoted scalar"
+  fi
+
   # 1. Name.
   n=$(field "$f" name)
   if [ "$n" != "$name" ]; then fail "$name: name '$n' != directory"
@@ -59,13 +72,25 @@ for d in skills/*/; do
 done
 
 # 5. Claude-only names must sit on a line (or right after a line) that names Claude Code.
-CLAUDE_ONLY='AskUserQuestion|subagent_type|ToolSearch|WebSearch|WebFetch|CLAUDE_SKILL_DIR|TodoWrite|TaskCreate'
+CLAUDE_ONLY='AskUserQuestion|subagent_type|ToolSearch|WebSearch|WebFetch|CLAUDE_SKILL_DIR|TodoWrite|TaskCreate|`Bash`|`Write`|Write\('
 bare=$(find skills -name '*.md' -print0 | xargs -0 awk -v re="$CLAUDE_ONLY" '
   FNR==1 { prev="" }
   $0 ~ re && $0 !~ /Claude Code/ && prev !~ /Claude Code|Claude$/ { print FILENAME":"FNR": "$0 }
   { prev=$0 }')
 [ -z "$bare" ] && ok "no Claude-only name without a Claude Code label" \
   || { fail "Claude-only name without a Claude Code label:"; printf '%s\n' "$bare" | sed 's/^/      /'; }
+
+# Repository rules and Markdown links (local file targets, fragments checked manually).
+if find . -path './.git' -prune -o -type f \( -path '*/agents/*.md' -o -path '*/.codex/agents/*.toml' \) -print | grep -q .; then
+  fail "agent definitions are prohibited"
+else ok "no agent definitions"; fi
+while IFS= read -r f; do
+  while IFS= read -r target; do
+    case "$target" in *://*|mailto:*|\#*|'') continue;; esac
+    target=${target%%#*}
+    [ -e "$(dirname "$f")/$target" ] || fail "$f: missing link $target"
+  done < <(awk '/^```/ {fence=!fence; next} !fence {gsub(/`[^`]*`/, ""); print}' "$f" | grep -oE '\]\([^ )]+\)' | sed -E 's/^\]\(//; s/\)$//')
+done < <(find skills docs -name '*.md'; printf '%s\n' README.md)
 
 # 6. Copies of plan-work's shared files.
 for pair in \

@@ -8,7 +8,8 @@
     {
       "name": "pinkrooster-skills",
       "source": "./",
-      "description": "A spec → plan → execute pipeline and a research-corpus builder: shape-spec, plan-work, execute-plan and research-topic."
+      "description": "A spec \u2192 plan \u2192 execute pipeline and a research-corpus builder: shape-spec, plan-work, execute-plan and research-topic.",
+      "version": "0.1.1"
     }
   ]
 }

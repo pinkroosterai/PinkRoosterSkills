@@ -1,6 +1,6 @@
 ---
 name: shape-spec
-description: Turns a one-line concept into a specification document on disk — searches for context, writes a marked-up draft spec at docs/<slug>/spec.md immediately, then interviews in rounds of up to four questions until no gap is left undefined, rewriting the spec after every round, scanning each answer for the gaps it opens, and scoring nine coverage categories so what remains is visible. Tracks three kinds of gap inside the spec itself — blocking questions marked inline where they bite, deferred questions listed with what they would change, and thin sections marked on their headings — and reads every decision back for explicit confirmation before the spec is called buildable. Resumes and mutates an existing spec rather than starting over. Use when the user runs /shape-spec, or asks to brainstorm, flesh out, shape up or spec out an idea into a real document. Not for planning how to build something already specified — that is /plan-work. Not for a research write-up — that is /research-topic.
+description: Use when the user wants to brainstorm, flesh out or specify an idea into a document, or resume an existing spec. Not for implementation planning (plan-work), research reports (research-topic), or a conversational opinion without files.
 argument-hint: "[the idea, in a line — a slug to resume — or '<slug> deferred' to work its register]"
 ---
 
@@ -45,6 +45,24 @@ Nothing else is ever delegated: the searches, the draft, the scoring, every ques
 write-back, the readback and the close are yours. A scout's list locates and does not
 replace reading — open for yourself every file the spec goes on to name.
 
+## Session and persistence rules
+
+User instructions and project rules take precedence. Use the skill's name in natural
+language when its slash syntax is unavailable; Codex uses `$name`, Pi `/skill:name`, and
+Claude Code `/name` (or the installed plugin namespace). A named next skill may not be
+installed: report the next outcome in plain language instead of assuming it is available.
+Question batches must fit the actual tool limits. For asynchronous tools, wait for the
+user's answer before dependent work; tool completion and elapsed time are not answers.
+
+Before edits or delegation, inspect the working tree and index and record existing changes.
+Commit only this run's changes, respecting project checks and the user's commit policy.
+Explicit paths do not isolate unrelated edits within a file: stage only attributable hunks
+and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
+isolated, leave this run uncommitted and explain. In a non-Git project or when commits are
+prohibited, leave the files on disk and report that. On commit failure preserve all artifacts
+and report the failure. A local commit records history; it does not publish or synchronize
+another machine. Never push or change repository visibility as part of these skills.
+
 ## Non-negotiables
 
 - **Nothing is written outside `docs/<slug>/`.** No implementation, no scaffolding, not even
@@ -60,7 +78,7 @@ replace reading — open for yourself every file the spec goes on to name.
   rarely — the interview *is* the work — and the bound on it is the readback: after three
   rounds since the last one, the readback fires regardless of the queue and the user chooses
   whether to continue.
-- **`buildable` is never set without a confirmed readback.** Every `Decisions` entry — the
+- **`buildable` is never set without a confirmed readback.** Every active `Decisions` entry — the
   user's answers, your defaults, what you assumed while drafting, what a search settled — is
   read back in one line and confirmed before the status changes. A spec the user has not read
   back is `shaping`, however clean it scores.
@@ -84,9 +102,9 @@ Work the steps below in order and say which one you are on.
 2. **Search for understanding** — bounded, sourced into `research.md`
 3. **Draft written** — every section, every guess marked or logged — and its path reported
 4. **Coverage scored** — nine categories and the confirmed line, in the header
-5. **Round** — ≤4 questions, spec rewritten the moment the call returns, gaps re-scanned
+5. **Round** — ≤4 questions, spec rewritten when the user’s answer arrives, gaps re-scanned
 6. **Report** — three lines, then the next round; no question about continuing
-7. **Readback** — every logged decision confirmed one by one — GATE, at milestones
+7. **Readback** — every active logged decision confirmed one by one — GATE, at milestones
 8. **Close** — status set, gaps listed, `docs/<slug>/` committed, `/plan-work` named, stop
 
 Steps 4–6 repeat until the queue is empty or the user stops it — step 4 runs again after every
@@ -118,8 +136,7 @@ Stop and say so if the request is a question to answer rather than a thing to sp
 
 **2. Search for understanding.** Read `references/interviewing.md` now — it holds the rules for
 this step as well as the later ones. Check the corpus before the web: `ls docs/research/` and
-read what is relevant — a topic already researched there is ground to build on, not to
-re-search. Then run a handful of searches on what this kind of thing normally involves, what
+read what is relevant — reuse stable findings there; recheck volatile APIs, versions and recommendations against the target version and current sources. Then run a handful of searches on what this kind of thing normally involves, what
 it is usually called, and what people building it get wrong. Findings with sources and dates
 into `docs/<slug>/research.md`, in the set-wide format defined in
 `references/researching.md` — a copy of `plan-work`'s — because `plan-work` and `execute-plan` write to
@@ -169,7 +186,7 @@ record what you found in `research.md` with its sources, the same as step 2's fi
 art that shaped a decision and then evaporated is the research half of this skill failing
 quietly.
 
-Write the spec back the moment the call returns:
+Write the spec back when the user’s answer arrives:
 
 - **Edit the file in place.** Targeted edits, never a regenerated file — that is what keeps the
   user's own sentences intact through round four.
@@ -195,16 +212,15 @@ about continuing are the two milestones in step 7.
 **7. Readback.** Fires when the last `[BLOCKING]` mark clears, after every third round since
 the last readback, and when the queue empties. Four parts, in `references/interviewing.md
 § The readback`: a three-reason pre-mortem and a consistency check, either of which can send
-the run back to step 4; then the list of every unconfirmed `Decisions` entry, in the message;
+the run back to step 4; then the list of every active unconfirmed `Decisions` entry, in the message;
 then one question-tool call (Claude Code: `AskUserQuestion`), or the message fallback — does the readback hold, and what next.
 Confirmed entries get `confirmed <date>`; a correction reverses the entry with a new dated
 entry, re-marks the section, and the loop resumes at step 4.
 
 **8. Close.** Reached by the user stopping, or by a readback that confirmed everything with
 the queue empty. Set `Status` from the file — `buildable` only when no `[BLOCKING]` remains,
-no category is Missing, *and* every `Decisions` entry carries `confirmed`; `shaping` otherwise.
-Commit `docs/<slug>/` — the spec and the research file, explicit paths, conventional message; a
-spec that exists only in a working tree is invisible to the next machine. Then report the path,
+no category is Missing, *and* every active `Decisions` entry carries `confirmed`; `shaping` otherwise.
+Commit `docs/<slug>/` — the spec and the research file, explicit paths, conventional message; this records a local checkpoint. Then report the path,
 both header lines, what is still blocking, deferred, thin or unconfirmed, and name the next
 step:
 
@@ -246,7 +262,7 @@ guess is key when reversing it would change `Outcome`, `Scope` or `How it works`
 competent readers would build different things from it.
 
 `Status` is derived, never asserted: `draft` while the first pass is incomplete, `shaping`
-while any `[BLOCKING]` or Missing category remains or any `Decisions` entry is unconfirmed,
+while any `[BLOCKING]` or Missing category remains or any active `Decisions` entry is unconfirmed,
 `buildable` when none of the three does.
 
 ## When to use something else

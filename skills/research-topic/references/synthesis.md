@@ -86,10 +86,11 @@ The topic file is the merged state of the question, not the union of the reports
 Findings that only restate what the file already says do not get added. A revision that
 grows the file by a third and its information by nothing has made the corpus worse.
 
-**Every URL in the source list has to come from a report.** Not from memory, not from a
+**Every new source URL must have supporting evidence in a report.** Retained earlier
+sources may remain when their freshness and support for retained claims have been checked. Not from memory, not from a
 search-result snippet you saw during the scout without opening it, not from a plausible
 guess at where something is documented. The reports are still on disk while you write, and
-phase 5 greps every newly added URL against them — an entry that fails that check is the
+phase 5 reviews changed claims against the baseline and supporting report findings — an entry that fails that check is the
 exact failure the sourcing law exists to prevent, arriving through the one door the
 researchers cannot guard.
 
@@ -116,8 +117,7 @@ Markdown has no backlinks, so a cross-reference is two edits or it does not exis
 link from A to B means opening B and adding the reciprocal line under its `## Related`.
 
 Each link carries a line saying how the two relate. `- [x.md](x.md)` on its own is a link a
-future reader has to open to evaluate; `- [x.md](x.md) — the transport layer this protocol
-assumes` is one they can skip with confidence.
+future reader has to open to evaluate; `- [x.md](x.md) — the transport layer this protocol assumes` is one they can skip with confidence.
 
 Relative links only, and they must resolve — phase 5 checks that.
 

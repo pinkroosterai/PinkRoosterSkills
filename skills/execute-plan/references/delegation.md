@@ -133,8 +133,10 @@ Say one line to the user first — what is being handed off, to which role — a
 permission prompts from a worker surface in this session. Then start one subagent per job,
 as [the harness table](#starting-a-subagent-in-your-harness) says, on the tier's model.
 
-Several jobs that can run at once go in a **single message**, which is what makes them
-concurrent. Two jobs may run at once only when their boundaries share no file and neither
+Start independent jobs using the actual concurrency mechanism exposed by the session.
+Respect its available slots; queue excess jobs in batches. A single message is not a
+universal concurrency guarantee. Discover supported model and effort parameters before
+using the illustrative harness table; omit unavailable controls. Two jobs may run at once only when their boundaries share no file and neither
 uses something the other defines; check that by reading the briefs side by side before
 sending. Otherwise dispatch them one after the other, in order.
 
@@ -158,7 +160,9 @@ A reply is a report, not proof.
   or plan will go on to name. A path the scout got wrong or left out has to surface before
   anything is written on the strength of it.
 - **A change is checked against the repo.** Read the diff. It touches only the files in the
-  boundary — a file outside it is reverted, that file only, and the reply is unusable. The
+  boundary. Record the starting diff before dispatch. Undo only changes attributable to the
+  worker; preserve pre-existing and concurrent edits. If attribution is uncertain, stop and
+  report the conflict rather than reverting a whole file. An out-of-boundary reply is unusable. The
   check the worker says it ran is run again by you whenever it is the phase's `Done when`.
 - **A research entry is yours once you write it.** You write it into `research.md`; the
   worker never does. An entry with no opened source, or a finding the source line does not

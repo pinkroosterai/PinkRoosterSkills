@@ -1,0 +1,1 @@
+Use the shape-spec skill to assess this decision log without writing files: D1 user chose polling, confirmed 2026-11-01, superseded by D2. D2 user chose webhooks, confirmed 2026-11-02. All nine categories are clear. How many active decisions are confirmed, and must D1 be confirmed again?

@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: Executes a plan written by /plan-work, one phase at a time — verifies the phase's stated assumptions still hold, settles its open questions with light research recorded in docs/<slug>/research.md, updates the plan if either changed anything, then works the phase's tasks and ticks them off, keeping docs/<slug>/plan.md current as it goes. Use when the user runs /execute-plan, or asks to start, continue or resume work on a plan that is already written. Not for writing the plan — that is /plan-work.
+description: Use when the user wants to start, continue or resume implementation of an existing plan. Not for creating a plan (plan-work), resolving an unsettled product concept (shape-spec), or a read-only plan review.
 argument-hint: "[plan slug or path] [--phase N]"
 ---
 
@@ -24,6 +24,24 @@ Pipeline stage: **execute** (shape → plan → execute).
 - **Leaves on exit** — the work itself; the plan file moved to its true state; findings
   appended to `research.md`; one commit per phase.
 - **Next** — nothing. The close step below ends the pipeline.
+
+## Session and persistence rules
+
+User instructions and project rules take precedence. Use the skill's name in natural
+language when its slash syntax is unavailable; Codex uses `$name`, Pi `/skill:name`, and
+Claude Code `/name` (or the installed plugin namespace). A named next skill may not be
+installed: report the next outcome in plain language instead of assuming it is available.
+Question batches must fit the actual tool limits. For asynchronous tools, wait for the
+user's answer before dependent work; tool completion and elapsed time are not answers.
+
+Before edits or delegation, inspect the working tree and index and record existing changes.
+Commit only this run's changes, respecting project checks and the user's commit policy.
+Explicit paths do not isolate unrelated edits within a file: stage only attributable hunks
+and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
+isolated, leave this run uncommitted and explain. In a non-Git project or when commits are
+prohibited, leave the files on disk and report that. On commit failure preserve all artifacts
+and report the failure. A local commit records history; it does not publish or synchronize
+another machine. Never push or change repository visibility as part of these skills.
 
 ## Non-negotiables
 
@@ -60,8 +78,9 @@ Each phase in `plan.md` carries four fields:
 - **Done when** — the observable condition that ends the phase.
 
 A plan missing some of these — hand-written, or written before this format — still runs.
-Treat an absent field as empty and work the tasks; do not refuse, and do not invent a
-`Rests on` the planner never wrote.
+Treat absent `Rests on` and `Settle first` fields as empty; do not invent assumptions.
+If `Done when` is missing or uncheckable, establish and record an observable acceptance
+check before implementation. Ask only when choosing it would change the intended outcome.
 
 ## Delegation
 
@@ -155,11 +174,13 @@ produced against the `Goal` it opened with.
 When `docs/<slug>/spec.md` exists beside the plan, read its claims against what was
 actually built. Where execution overturned a spec decision, append an entry to the spec's
 `Decisions` log under a dated heading, tagged `executed`, naming the entry it reverses,
-what was built instead and why, and carrying `confirmed <date>` — the user approved the
-work that overturned it, so the entry is confirmed by construction and the reversed entry
-loses its `confirmed` date. Then recompute the spec's `Confirmed` header line by counting
-lines, as `shape-spec` does. The spec stays honest without being rewritten, and its own
-sections stay the author's.
+what was built instead and why. Add `confirmed <date>` only when recorded user approval
+explicitly covers this departure; general permission to execute is insufficient. Otherwise
+leave it unconfirmed. Mark the old entry `superseded by <replacement>` and preserve its
+historical confirmation. Count only active entries in `Confirmed`, update affected spec
+sections to match the accepted change, and recompute `Status` (`shaping` while active
+decisions remain unconfirmed). Include these close-out edits in the final phase commit;
+if that commit already happened, make a separate documentation commit.
 
 Leave the plan file where it is — a finished plan with its `Log` is the record of how the
 work actually went.

@@ -77,9 +77,8 @@ Two header lines, recomputed at the end of every round:
 - `**Coverage** — <n>/9 clear · <n> partial · <n> missing`
 - `**Confirmed** — <n>/<m> decisions · <k> assumed, unconfirmed`
 
-For the second: *m* is the number of `Decisions` entries, *n* those carrying
-`confirmed <date>`, *k* the entries tagged `assumed` without one. All three are counts of
-lines in the file, so two sessions get the same numbers from the same file. A spec can score
+For the second: *m* is the number of active `Decisions` entries, *n* those carrying
+`confirmed <date>`, *k* the entries tagged `assumed` without one. Exclude entries marked `superseded by <replacement>` from all three counts; retain them as history. All three count entries, not wrapped lines, in the file, so two sessions get the same numbers from the same file. A spec can score
 9/9 clear and 0/12 confirmed; that is a spec written entirely by the model, and the line is
 what says so.
 
@@ -138,7 +137,7 @@ Each question:
   statement that has to be there. Put prior-art links in the prose above the question and name
   the things in the options.
 
-The tool's shape in Claude Code, and how to use it (other harnesses' question tools differ; keep the same limits): up to four questions per call, two to four options each,
+The tool's shape in Claude Code, and how to use it (other harnesses' question tools differ; use the smaller of these limits and the tool's limits): up to four questions per call, two to four options each,
 a header of at most twelve characters, and an "Other" free-text choice the user always has —
 which is also where "stop" arrives. `multiSelect: true` is for "which of these are in scope"
 questions, where the answer is a set; `preview` is for options that are shapes to compare — a
@@ -150,7 +149,7 @@ recommended one marked, and wait for the reply. Do not proceed on your own answe
 
 ## Writing back
 
-Write back the moment the call returns, editing the file in place. Update the affected
+Write back when the user’s answer arrives; an asynchronous tool returning is not an answer. Edit the file in place. Update the affected
 sections, remove only the marks the answers genuinely resolved, and add one `Decisions` entry
 per answer — tagged `user`, quoting it, naming what it ruled out — in the shape
 `spec-format.md § The template` gives. An interrupted session must leave a valid document, and
@@ -166,7 +165,7 @@ not — is written nowhere until it is surfaced. Name both, the old entry and th
 and put the choice to the user in the next call: keep the earlier decision, take the new one,
 or reconcile under a stated reading. Whichever wins gets a dated entry saying what changed and
 why, and the losing entry is left in place with a note pointing at it. A confirmed entry that
-is reversed loses its `confirmed` date. Silent reversals are how a spec starts lying about
+is reversed keeps its historical confirmation and gains `superseded by <replacement>`. Silent reversals are how a spec starts lying about
 itself.
 
 ## The gap scan
@@ -198,11 +197,11 @@ the spec that prevents it. If there is none, that reason is a mark on the sectio
 to, and the readback waits until the loop has worked it. Three reasons, no more: this is the
 skill's last gap-finder, not a second interview.
 
-**2. Consistency.** Read `Decisions` end to end against the sections. Two entries that cannot
+**2. Consistency.** Read active `Decisions` entries against the sections. Two entries that cannot
 both be true, a section that says something the log ruled out, or one noun under two names is
 a `[BLOCKING]` mark at the sentence that loses — and the readback waits.
 
-**3. The list.** Every `Decisions` entry not yet carrying `confirmed`, numbered, grouped by
+**3. The list.** Every active `Decisions` entry not yet carrying `confirmed`, numbered, grouped by
 the section it lives in, one line each in this shape:
 
 ```markdown

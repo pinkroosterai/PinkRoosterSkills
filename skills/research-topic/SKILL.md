@@ -1,6 +1,6 @@
 ---
 name: research-topic
-description: Researches a topic end to end and writes it into a cross-referenced corpus under docs/research/ — scouts the topic shallowly first to find the real angles and check what is already documented, agrees scope, recency window and depth with the user, then dispatches one subagent per angle that each write their own sourced report file, and finally merges every report into one-topic-per-file documents that link to each other. Use when the user runs /research-topic, or asks to research, investigate, survey or do a deep dive on a subject and write up what was found. Not for planning a piece of work — that is /plan-work. Not for answering a single factual question or looking up a library's API.
+description: Use when the user wants to research a topic and preserve a sourced knowledge corpus on disk. Not for a chat-only answer, a single factual lookup, a read-only review, or implementation planning (plan-work).
 argument-hint: "[topic or question]"
 ---
 
@@ -21,6 +21,24 @@ Feeds the pipeline: the corpus under `docs/research/` is the read-first ground t
 `shape-spec` and `plan-work` check before searching the web. Not a
 pipeline stage itself — it has no slug and leaves no spec or plan behind.
 
+## Session and persistence rules
+
+User instructions and project rules take precedence. Use the skill's name in natural
+language when its slash syntax is unavailable; Codex uses `$name`, Pi `/skill:name`, and
+Claude Code `/name` (or the installed plugin namespace). A named next skill may not be
+installed: report the next outcome in plain language instead of assuming it is available.
+Question batches must fit the actual tool limits. For asynchronous tools, wait for the
+user's answer before dependent work; tool completion and elapsed time are not answers.
+
+Before edits or delegation, inspect the working tree and index and record existing changes.
+Commit only this run's changes, respecting project checks and the user's commit policy.
+Explicit paths do not isolate unrelated edits within a file: stage only attributable hunks
+and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
+isolated, leave this run uncommitted and explain. In a non-Git project or when commits are
+prohibited, leave the files on disk and report that. On commit failure preserve all artifacts
+and report the failure. A local commit records history; it does not publish or synchronize
+another machine. Never push or change repository visibility as part of these skills.
+
 ## Non-negotiables
 
 1. **Nothing lands under `docs/research/` before the user approves the scope.** Phase 2 is
@@ -29,7 +47,7 @@ pipeline stage itself — it has no slug and leaves no spec or plan behind.
 2. **A source nobody opened does not get cited.** This binds you in synthesis exactly as it
    binds the researchers: if a claim's URL was never fetched by anyone, the claim does not
    go in the corpus. Phase 5 checks it.
-3. **Reports never enter git and never survive the run.** They are written outside the
+3. **Reports never enter git and are removed only after a successful run.** They are written outside the
    working tree and deleted in phase 5, after its checks pass. A claim whose provenance
    lives only in a report is unfinished — the topic file is the only surviving record.
 4. **One angle per researcher, stated as an exclusion.** If two briefs could plausibly run
@@ -94,20 +112,25 @@ what is explicitly out of scope.
 
 Then set up the run directory and write the agreed scope into it:
 
+Use a unique owned cache directory (Bash example; use equivalent filesystem operations
+when Bash is unavailable):
+
 ```bash
-SLUG=<topic-slug>; RUN="${XDG_CACHE_HOME:-$HOME/.cache}/research-topic/$(date +%F)-$SLUG"; mkdir -p "$RUN"; echo "$RUN"
+cache_root="${XDG_CACHE_HOME:-$HOME/.cache}/research-topic"
+mkdir -p "$cache_root" || exit 1
+RUN=$(mktemp -d "$cache_root/$(date +%F)-XXXXXXXX") || exit 1
+printf '%s\n' "$RUN" > "$RUN/.research-topic-owner"
+printf '%s\n' "$RUN"
 ```
 
-The run directory lives under the user's cache, **outside the working tree** so nothing can
-stage it, and outside any session-scoped scratchpad so an interrupted run can be resumed
-from a new session: `ls ~/.cache/research-topic/` finds it. Environment variables do not
-survive between `Bash` calls, so keep the printed path and substitute it literally from
-here on. The scope file is `$RUN/00-scope.md`: question, angles with their boundaries,
-depth, window, exclusions. It is what the briefs are generated from, and the thing to
-re-read if the run is interrupted. Every researcher's `Write` to this directory prompts in
-the main session unless a permission rule covers it; a one-time
-`Write(~/.cache/research-topic/**)` allow rule in the user's settings removes those prompts
-for every run, and is worth naming to the user the first time they appear.
+Keep the printed absolute path; shell variables may not persist between calls. Confirm the
+cache root is outside the working tree. Record the repository's absolute path, topic and
+scope in `00-scope.md`. Resume only a user-selected matching run; never select one solely
+by date or topic. Preserve interrupted runs. Before synthesis, snapshot each file to be
+changed (including adjacent files and the index), or record that it did not exist, in a
+`baseline/` subdirectory. This baseline includes pre-existing working-tree edits and needs
+no `HEAD` or index mutation. Observe the session's permission mechanism; do not prescribe
+another harness's permission syntax.
 
 **If the split test said one thread**, there is no dispatch. Research it yourself at the
 inline budget in `scoping.md`, write your notes into `$RUN/01-inline.md` in the researcher's
@@ -128,7 +151,7 @@ The brief template, the report path convention and the failure handling are in
 [`references/dispatch.md`](references/dispatch.md) — read it before writing the first
 brief.
 
-Every brief carries six things, and a brief missing any of them produces a report you
+Every brief carries seven things, and a brief missing any of them produces a report you
 cannot use: the angle name, the topic it belongs to, the objective, the report path, the
 boundary stated as an exclusion, the search budget, and the already-read list from phase 1.
 
@@ -140,8 +163,8 @@ each harness is in `references/dispatch.md`. This skill keeps its own brief and 
 contract. At the `Deep` depth row, ask for higher effort on each researcher (Claude Code:
 `effort: "high"` where the tool accepts it); at every other row leave it unset.
 
-Then launch every one of them in a **single message**, so they run concurrently. Do nothing
-else until every dispatched researcher has finished, however the harness reports that, then
+Launch independent briefs with the session’s supported concurrency mechanism, queueing
+excess work within its available slots. Wait until every dispatched researcher has finished, however the harness reports that, then
 go to the check below. Without a subagent tool (a harness that has none, or a session that
 withholds it), run each brief yourself in turn, at its own budget,
 writing the same report file it names.
@@ -169,57 +192,33 @@ because markdown has no backlinks.
 
 ### Phase 5 — Verify, then bin
 
-Run the checks and show their output. A check whose output you discarded is not evidence.
-Substitute the literal run directory for `$RUN` and the files this run created or revised
-for `$FILES`.
+Verification has two gates. Report each result explicitly; a command error, missing input
+or unchecked item is a failure, never an empty success.
 
-```bash
-RUN=<the run directory>; FILES="docs/research/<each file this run touched>"
+1. **Mechanical checks.** For each changed topic file, compare citation markers in the body
+   with numbered source entries in `## Sources`, in both directions; reject duplicate source
+   numbers. Check relative Markdown links from the directory of the containing file,
+   including anchors when present. Check that no corpus file contains the scratch path.
+   Use commands that accumulate failures and exit nonzero if any check fails; do not use
+   `echo` as the failure branch of a supposedly passing check.
+2. **Evidence review.** Compare every changed file against its run baseline, including new
+   files. For every added or changed claim (even when its URL is unchanged), locate a
+   supporting finding and opened-source record in this run's researcher reports, or an
+   explicitly retained earlier source whose freshness was checked. Scope files and URL
+   occurrence alone are not evidence. Verify the cited passage supports the actual claim;
+   fetch it again if the report is insufficient. Unverified claims go in Open questions.
+   Carry retrieval dates and material qualifications into the surviving corpus.
 
-# 1. Every [n] marker has a source entry, and every entry is cited. Both directions.
-for f in $FILES; do
-  diff <(grep -o '\[[0-9]\+\]' "$f" | tr -d '[]' | sort -un) \
-       <(sed -n '/^## Sources/,$p' "$f" | grep -oE '^[0-9]+\.' | tr -d '.' | sort -un) \
-    && echo "$f: markers and sources correspond" \
-    || echo "$f: MISMATCH — '<' is a marker citing nothing, '>' an entry nothing cites"
-done
+Show the check results and the claim-to-source review summary. On any failure keep the
+run directory and report its path. Commit the attributable corpus changes under the
+Session and persistence rules. If a commit fails, retain the run for recovery. When commits
+are prohibited or Git is absent, verify the final files exist and report them as uncommitted.
 
-# 2. Every relative link resolves.
-grep -ohE '\]\([^):#]+\.md[^)]*\)' docs/research/*.md | sed -E 's/^\]\(//; s/[)#].*$//' \
-  | sort -u | while read -r l; do [ -e "docs/research/$l" ] || echo "broken link: $l"; done
-
-# 3. Every URL this run added traces back to a report. `git add -N` first, or a brand-new
-#    topic file is untracked, diffs as nothing, and the check silently passes on zero URLs.
-#    (Non-git project: drop the git pipeline and check all URLs, expecting earlier runs'
-#    sources to show as misses.)
-git add -N docs/research && git diff HEAD -U0 -- docs/research | grep '^+' \
-  | grep -ohE 'https?://[^ )]+' | sort -u \
-  | while read -r u; do grep -rqF "$u" "$RUN" || echo "UNSOURCED: $u"; done
-
-# 4. Nothing in the corpus points at the directory about to be deleted.
-grep -rnF "$RUN" docs/research/; case $? in
-  0) echo "LEAK — scratch path written into the corpus";;
-  1) echo "no scratch paths";;
-  *) echo "grep errored — check by hand";;
-esac
-```
-
-Only once those pass, delete the run directory — guarded, because this is the one
-destructive step:
-
-```bash
-case "$RUN" in
-  */research-topic/????-??-??-?*) rm -rf "$RUN" && echo "removed $RUN";;
-  *) echo "refusing: $RUN does not look like a run directory";;
-esac
-```
-
-**If a check fails, keep the directory** and tell the user where it is — deleting the
-evidence during a failed run is how you lose the run.
-
-Commit the corpus files this run created or revised — explicit paths, conventional
-message; a corpus that exists only in a working tree is invisible to the next machine.
-(Skip only when the project is not a git repo.)
+Only after verification and persistence succeed may scratch be removed. Canonicalize the
+cache root and run path, reject symlinks, confirm the run is a direct child of that cache
+root, verify `.research-topic-owner` exactly matches the run path, and verify `00-scope.md`
+names this repository and topic. Delete only that directory. If ownership is uncertain,
+leave it in place and report it. Never use a glob or a date-shaped path as deletion authority.
 
 Then report in a few lines: which files were created or revised, how many claims and
 sources each carries, what the researchers could not confirm, and what is still open.

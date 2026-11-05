@@ -34,3 +34,22 @@ Checked 2026-11-05 on Linux, skills installed into a scratch project with
   no-input path and one scout dispatch were exercised.
 - The worker and researcher roles in Codex and Antigravity (only the scout was dispatched).
 - Model-invocation from a natural request (no `/name`) in any harness.
+
+## After the 0.1.1 corrections
+
+The table above records the original 0.1.0 behavior, not a retest of changed workflows.
+The decision lifecycle, research verification and persistence rules need new end-to-end
+runs in each harness. Local checks do not establish behavioral compatibility. Antigravity
+checks refer to the CLI surface; App and IDE behavior was not tested.
+
+Checked 2026-11-05 after the 0.1.1 edits:
+
+- `bash scripts/check-skills.sh`: passes, including shared-file drift and local reference checks.
+- `bash scripts/test-check-skills.sh`: rejects broken references, disabled invocation,
+  agent definitions and shared-reference drift in disposable copies.
+- `bash -n` on both scripts and `git diff --check`: pass.
+- `claude plugin validate .`: passes with the existing root `CLAUDE.md` context warning.
+- `claude plugin eval . --trust-plugin --runs 1 --ablation none --max-cost-usd 3`:
+  7/7 cases pass, $0.77. These are entry-gate and response smoke checks, not full
+  workflows. The research gate case had no web-tool grant, so it does not establish
+  successful scouting. Other harnesses were not retested.

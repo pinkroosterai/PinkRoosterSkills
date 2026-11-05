@@ -99,6 +99,11 @@ URLs, so keep them bare — do not number your sources.
 **Budget used:** <n> searches, <m> fetches
 **Window:** <the recency window from the brief, and whether you honoured it>
 
+## Opened sources
+
+- <exact URL> — opened <date> by <researcher or scout>; <relevant passage summary>.
+  For scout-provided evidence, identify the inherited record explicitly.
+
 ## Findings
 
 ### <the finding stated as a claim, not a topic>

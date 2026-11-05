@@ -18,7 +18,7 @@ Everything the run produces lives in the run directory `$RUN` created at the end
 entry:
 
 ```
-$RUN/                       = ~/.cache/research-topic/<YYYY-MM-DD>-<topic-slug>/
+$RUN/                       = ~/.cache/research-topic/<YYYY-MM-DD>-<unique-run-id>/
   00-scope.md
   01-<angle-slug>.md
   02-<angle-slug>.md
@@ -29,7 +29,7 @@ and no idea what your relative paths mean.
 
 ## The brief
 
-The delegation prompt is where duplicated work is prevented or created. Six parts, every
+The delegation prompt is where duplicated work is prevented or created. Seven parts, every
 time — the researcher sees nothing but this and its own system prompt, so anything left out
 is unavailable to it:
 
@@ -73,17 +73,18 @@ same search. Duplication is only free to fix at this moment.
 
 ## Launching
 
-One subagent per angle, **all started at once** so they run concurrently. Every brief opens
+One subagent per angle, dispatched through the session’s concurrency mechanism within
+its available slots; queue remaining briefs without increasing the agreed budget. Every brief opens
 with the full text of `references/roles/researcher.md`, pasted as it stands, then a `---`
 line, then the brief. Paste it; never just point at it — a subagent told to read a file
 first may skip it, and a researcher without its role skips the report contract.
 
 | Harness | How to start each researcher |
 |---|---|
-| Claude Code | The `Agent` tool, `subagent_type: "general-purpose"`, `model: "sonnet"`, every call in a single message. At `Deep`, add `effort: "high"` if the tool accepts it. |
+| Claude Code | The `Agent` tool, `subagent_type: "general-purpose"`, `model: "sonnet"`, within available slots. At `Deep`, add `effort: "high"` if the tool accepts it. |
 | Codex | Ask for one `worker` subagent per angle in one request, naming the session's default model; at `Deep`, `high` reasoning effort. |
-| Antigravity | `invoke_subagent`, general-purpose type (`self`), mid-size model, one per angle, all started together. |
-| Any other harness with a subagent tool | Its general-purpose subagent on its mid-size model, all started together. |
+| Antigravity | `invoke_subagent`, general-purpose type (`self`), mid-size model, one per angle, within available slots. |
+| Any other harness with a subagent tool | Its general-purpose subagent on its mid-size model, within available slots. |
 
 A Deep run is the one where a researcher's thoroughness is what was paid for; at `Default`
 the harness's default effort stands. Wait for every researcher before reading a report, and
