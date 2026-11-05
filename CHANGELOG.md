@@ -2,6 +2,13 @@
 
 ## 0.2.0 — unreleased
 
+- Public-launch onboarding with native Codex, Antigravity and Pi packages alongside Claude;
+  per-harness installation, verification, update/removal and troubleshooting guidance.
+- Move shape-spec research handoff instructions into a bundled reference to fit Antigravity's
+  24,000-byte body limit; package checks prevent future truncation.
+- Portable install examples for Cursor, Gemini CLI, GitHub Copilot and OpenCode; private
+  checkout fallback, packaging checks and regression fixtures for metadata and paths.
+
 - New `explore-ideas` skill: frames a problem space, scans the landscape, generates ideas per
   user need, rates them and keeps a ranked backlog in `docs/ideas/<area>.md` that the user
   orders and later runs revise.

@@ -9,7 +9,7 @@ Markdown and bash only: no runtime, no build.
 |---|---|
 | `skills/<name>/SKILL.md` | A skill. `name` matches the directory. |
 | `skills/<name>/references/` | Loaded on demand by the skill. `roles/` holds the subagent role files. |
-| `.claude-plugin/` | Claude Code plugin and marketplace manifests. |
+| `.claude-plugin/`, `.codex-plugin/`, `.antigravity-plugin/`, `.agents/plugins/`, `package.json` | Native packages and discovery catalogs sharing `skills/`. |
 | `evals/` | `claude plugin eval` cases, one per directory. |
 | `scripts/check-skills.sh` | Mechanical checks. Run before every commit. |
 | `docs/compatibility.md` | What was verified in which harness, and when. |
@@ -35,7 +35,12 @@ Markdown and bash only: no runtime, no build.
   is how an agent finds the skill when the user asks without typing `/name`, so it must say
   when to use the skill and when not to. A skill that edits code (`execute-plan`) confirms
   before its first edit when it was not invoked by name.
-- Update `CHANGELOG.md` and bump `version` in both `.claude-plugin` manifests on a release.
+- Update `CHANGELOG.md` and bump `version` in all package manifests and catalogs on a release.
+
+Shared package identity, version, description, author, license and repository metadata are
+canonical in `.claude-plugin/plugin.json`. Edit there first, then synchronize the other
+manifests. Pi is a skills-only package: no dependencies, scripts or extensions. Package
+checks require `jq`; this is a contributor tool, not a skill runtime dependency.
 
 ## Commands
 

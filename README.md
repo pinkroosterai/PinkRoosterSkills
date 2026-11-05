@@ -43,29 +43,28 @@ User instructions and project rules take precedence.
 
 ## Install
 
-While this repository is private, use an authenticated checkout and install from its local
-path. Installation does not require publishing the repository:
+Choose your coding harness. Run shell commands in a terminal; start a fresh agent session
+once installation finishes.
 
-```bash
-npx skills add /absolute/path/to/PinkRoosterSkills -a claude-code -a codex -a antigravity -a pi
-# Install one skill only:
-npx skills add /absolute/path/to/PinkRoosterSkills -a codex --skill plan-work
-# Add -g for a user-wide installation instead of a project installation.
-```
+| Harness | Recommended installation |
+|---|---|
+| Claude Code | `claude plugin marketplace add pinkroosterai/PinkRoosterSkills`, then `claude plugin install pinkrooster-skills@pinkrooster-skills` |
+| Codex CLI | `codex plugin marketplace add pinkroosterai/PinkRoosterSkills`, then `codex plugin add pinkrooster-skills@pinkrooster-skills` |
+| Antigravity CLI | `agy plugin install https://github.com/pinkroosterai/PinkRoosterSkills` |
+| Pi | `pi install git:github.com/pinkroosterai/PinkRoosterSkills` |
+| Cursor, Gemini CLI, GitHub Copilot, OpenCode | `npx skills add pinkroosterai/PinkRoosterSkills` — select your harness and skills |
 
-The installer requires Node.js/npm. The skills themselves are Markdown; shell examples
-use Bash and standard Unix utilities. Research needs web or documentation tools. Delegation
-is optional: without a subagent tool, the main agent performs the work inline.
+Native plugins install the complete bundle. The portable skills CLI also supports individual
+skills and multiple harnesses; it needs Node.js 22.20 or later. The skills have no runtime
+or build step. Install using one method per harness to avoid duplicate skills.
 
-For Claude Code, install the local checkout as a plugin marketplace:
+**Verify before starting:** ask your agent, “List the installed PinkRooster skills and read
+the plan-work skill. Do not create files or run its workflow.” Expect all five skills and a
+summary of plan-work. This checks discovery and loading, not a complete workflow.
 
-```bash
-claude plugin marketplace add /absolute/path/to/PinkRoosterSkills
-claude plugin install pinkrooster-skills@pinkrooster-skills
-```
-
-Plugin commands use the namespace, for example `/pinkrooster-skills:plan-work`.
-See the [skills installer](https://github.com/vercel-labs/skills) for installation options.
+Follow the [installation guide](docs/installation.md) for scope, local checkouts, prerequisites,
+updates, removal, troubleshooting and a first-use example. App and IDE surfaces have separate
+verification limits; see the [compatibility record](docs/compatibility.md).
 
 ## Usage
 
@@ -175,9 +174,13 @@ and [OpenCode](https://opencode.ai/docs/skills/).
 
 ## Development
 
+Contributor checks require Bash, standard Unix utilities and `jq`. Native package validation
+also requires the corresponding harness CLI; the skills themselves have no runtime dependencies.
+
 ```bash
 bash scripts/check-skills.sh
 bash scripts/test-check-skills.sh
+bash scripts/check-packages.sh # requires jq
 claude plugin validate .
 # Optional strict format validation (argument-hint is a known extension):
 npx -y skills-ref validate skills/plan-work
@@ -194,6 +197,6 @@ cases in `evals/`. See [AGENTS.md](AGENTS.md) for maintenance rules and
 first, then copy them into the standalone consumers; the checker rejects drift.
 
 Keep discovery descriptions short and explicit about use cases and exclusions. Update the
-[changelog](CHANGELOG.md) and both manifest version records when preparing a release.
+[changelog](CHANGELOG.md) and all package version records when preparing a release.
 The project is [MIT licensed](LICENSE). The header logo is shared with
 [PinkRooster](https://github.com/pinkroosterai/PinkRooster).

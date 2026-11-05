@@ -1,0 +1,20 @@
+{
+  "name": "pinkrooster-skills",
+  "version": "0.2.0",
+  "description": "An explore → shape → plan → execute pipeline and a research-corpus builder: explore-ideas, shape-spec, plan-work, execute-plan and research-topic.",
+  "author": {
+    "name": "pinkroosterai"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/pinkroosterai/PinkRoosterSkills",
+  "repository": "https://github.com/pinkroosterai/PinkRoosterSkills",
+  "skills": "./skills/",
+  "requires_local_executor": true,
+  "interface": {
+    "displayName": "PinkRooster Skills",
+    "shortDescription": "Explore, shape, plan, execute and research",
+    "developerName": "pinkroosterai",
+    "category": "Developer Tools",
+    "logo": "./assets/logo.png"
+  }
+}

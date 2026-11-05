@@ -100,3 +100,48 @@ the no-plugin baseline: `explore-ideas-broad-trigger` (1.00 vs 0.50),
 the baseline also wrote nothing but did not raise the size limit). One run per case is a smoke
 check, not a pass rate. Nothing in 0.2.0 was checked in Codex, Antigravity or Pi, and no full
 explore → shape → plan → execute run across milestones has been done in any harness.
+
+## 0.2.0: native packaging and installation onboarding
+
+Checked 2026-11-05 on Linux with Claude Code 2.1.318, Codex CLI 0.166.0,
+Antigravity CLI 1.5.1, Pi 1.5.0, Node.js 26.13.0 and skills CLI 1.7.6.
+Native packages share the existing `skills/` directories; individual skills retain all
+references. User configuration was isolated in disposable directories. Antigravity ran
+with the real filesystem read-only and a disposable `.gemini` mount.
+
+| Check | Result |
+|---|---|
+| Claude local marketplace add, plugin install/list, refresh/update and uninstall | Pass; version 0.2.0, enabled |
+| Codex local marketplace add, plugin add/list, reapply and remove | Pass; version 0.2.0, enabled |
+| Antigravity local plugin install/list | Pass; all five skill names listed |
+| Pi local package install/list/remove | Pass; skills-only package, no extension required |
+| Pi RPC `get_commands`, offline, without a model request | Pass; all five `skill:<name>` commands discovered from the package |
+| Native bundled content | All 31 Markdown files matched source in Claude, Codex and Pi; Antigravity retained all 31 files |
+| Portable all-skills install to Claude, Codex, Antigravity and Pi | Pass; canonical `.agents/skills/`, Claude symlinks and all bundled references |
+| Portable one-skill `--copy` install to Codex | Pass; only `plan-work` and its references installed |
+| Paths containing spaces | Pass for native local sources and portable project destinations |
+| Package checks and checker regression tests | Pass, including malformed JSON, metadata drift, catalog targets, skill roots and body loading limit |
+| Bash syntax and `git diff --check` | Pass |
+
+`claude plugin validate .` passes with its existing root `CLAUDE.md` context warning.
+`agy plugin validate . --json` finds five skills and only warns that the contributor
+`AGENTS.md` is not loaded as plugin rules. That file is for maintaining this repository,
+not runtime plugin instructions. Strict warning-as-error validation is therefore not a pass.
+
+Antigravity initially reported that shape-spec's 24,885-byte body would be truncated at
+24,000 bytes. Its research handoff section now lives in a bundled reference linked at the
+same workflow point; validation no longer reports truncation. Package checks enforce this
+body limit for every skill. The moved procedure is otherwise unchanged.
+
+Codex prints a temporary-directory helper-binary warning with an isolated configuration
+under `/tmp`; marketplace and package commands still succeed. No helper binaries or
+configuration in the real user installation were changed.
+
+The optional skill-creator validator rejects the existing `argument-hint` and
+`compatibility` frontmatter fields; its narrower field allowlist is not the Agent Skills
+specification. Repository checks pass, and the deliberate `argument-hint` extension remains.
+
+No paid behavioral evaluations or full workflows were run for this packaging change.
+Native UI discovery in Claude/Codex, app/IDE surfaces, Windows and macOS remain unverified.
+Wider harness instructions use the skills installer's documented identifiers and paths;
+they do not establish runtime workflow compatibility in those harnesses.

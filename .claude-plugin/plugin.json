@@ -11,5 +11,7 @@
   ],
   "experimental": {
     "evals": "evals"
-  }
+  },
+  "homepage": "https://github.com/pinkroosterai/PinkRoosterSkills",
+  "repository": "https://github.com/pinkroosterai/PinkRoosterSkills"
 }

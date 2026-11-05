@@ -1,0 +1,17 @@
+{
+  "name": "pinkrooster-skills",
+  "interface": {
+    "displayName": "PinkRooster Skills"
+  },
+  "plugins": [
+    {
+      "name": "pinkrooster-skills",
+      "source": "./",
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

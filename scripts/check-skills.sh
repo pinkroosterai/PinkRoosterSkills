@@ -137,5 +137,7 @@ for f in skills/*/SKILL.md; do
   else fail "persistence rules drifted from plan-work: $f"; fi
 done
 
+if ! bash scripts/check-packages.sh; then fail "package checks"; fi
+
 echo
 if [ "$fails" -eq 0 ]; then echo "all checks passed"; else echo "$fails check(s) failed"; exit 1; fi

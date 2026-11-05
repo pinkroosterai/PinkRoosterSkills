@@ -4,7 +4,10 @@ set -eu
 repo=$(cd "$(dirname "$0")/.." && pwd)
 scratch=$(mktemp -d)
 trap 'rm -rf "$scratch"' EXIT
-cp -R "$repo/evals" "$repo/skills" "$repo/scripts" "$repo/docs" "$repo/README.md" "$repo/LICENSE" "$repo/AGENTS.md" "$repo/CHANGELOG.md" "$scratch/"
+for item in evals skills scripts docs README.md LICENSE AGENTS.md CHANGELOG.md \
+  .claude-plugin .codex-plugin .antigravity-plugin .agents package.json assets; do
+  cp -R "$repo/$item" "$scratch/"
+done
 cd "$scratch"
 bash scripts/check-skills.sh > /dev/null
 expect_failure() {
@@ -50,5 +53,18 @@ restore
 sed -i '/^## Session and persistence rules$/a Drifted line.' skills/research-topic/SKILL.md
 expect_failure 'persistence rules drift'
 cp "$repo/skills/research-topic/SKILL.md" skills/research-topic/SKILL.md
+for fixture in malformed metadata target skills body; do
+  case "$fixture" in
+    body) printf '%25000s\n' 'oversized body' >> skills/plan-work/SKILL.md ;;
+    malformed) printf '{broken' > .codex-plugin/plugin.json ;;
+    metadata) jq '.version = "9.9.9"' .codex-plugin/plugin.json > changed.json; mv changed.json .codex-plugin/plugin.json ;;
+    target) jq '.plugins[0].source = "./missing"' .agents/plugins/marketplace.json > changed.json; mv changed.json .agents/plugins/marketplace.json ;;
+    skills) jq '.skills = "./missing"' .codex-plugin/plugin.json > changed.json; mv changed.json .codex-plugin/plugin.json ;;
+  esac
+  expect_failure "package $fixture"
+  restore
+  cp "$repo/.codex-plugin/plugin.json" .codex-plugin/plugin.json
+  cp "$repo/.agents/plugins/marketplace.json" .agents/plugins/marketplace.json
+done
 bash scripts/check-skills.sh > /dev/null || { echo "FAIL: restored copy no longer passes"; exit 1; }
 echo 'validator regression checks passed'
