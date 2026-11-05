@@ -2,6 +2,18 @@
 
 ## 0.2.0 — unreleased
 
+- Field feedback from a full shape → plan → execute run: stable decision IDs (`D<n>`) cited by
+  supersession, confirmation and the readback; a new `[UNVERIFIED]` mark for inferred
+  identifiers and facts only a tool run can show (turned into `Settle first` entries); success
+  criteria tagged `[agent]` or `[user]` and carried into `Done when`; `plan-work` no longer
+  bounces a fully confirmed spec that only carries THIN marks, and its go-back message names
+  the exact command; `shape-spec` asks once about the deferred register on resume, reads the
+  project's testing rules at Orient, lints before each write-back and offers an
+  accept-all-recommendations question; plans record a commit policy for untracked projects;
+  negative `Rests on` claims become "unchanged since the recorded listing".
+- Slimmer skill bodies: the marks table, milestone drafting and the spec-closing rules moved to
+  references. `scripts/spec-lint.sh` recomputes a spec's Confirmed line and checks Status and IDs.
+
 - Public-launch onboarding with native Codex, Antigravity and Pi packages alongside Claude;
   per-harness installation, verification, update/removal and troubleshooting guidance.
 - Move shape-spec research handoff instructions into a bundled reference to fit Antigravity's

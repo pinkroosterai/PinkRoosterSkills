@@ -65,7 +65,7 @@ Strict precedence:
 2. Otherwise read the section against its **Clear when** test in the table above. A section
    that fails the test gets a `[THIN: <what fails>]` mark on its heading if it has none yet,
    so the file carries the verdict and a second session scores it the same way.
-3. **Partial** — the section carries a `[THIN]` mark.
+3. **Partial** — the section carries a `[THIN]` or `[UNVERIFIED]` mark.
 4. **Clear** — it passes its test and carries no mark.
 
 Score from the file, not from what was said in conversation and never written down — and
@@ -104,6 +104,10 @@ and it is not the skill's call which of those happens — but every third round 
 readback, the readback fires and its "what next" question is where the user decides whether
 to go on. Three rounds is twelve questions; a spec that needs more than that between
 readbacks is being interviewed faster than it is being confirmed.
+
+Where a round holds two or more questions, add "Accept every recommended answer this round?"
+as the first, one of the four slots. A Yes logs each answer `default-accepted`; the readback
+lists them like any other entry.
 
 Never spend a question on:
 
@@ -202,13 +206,14 @@ both be true, a section that says something the log ruled out, one noun under tw
 part of `Scope › In` that no milestone covers (or two do) is a `[BLOCKING]` mark at the
 sentence that loses — and the readback waits.
 
-**3. The list.** Every active `Decisions` entry not yet carrying `confirmed`, numbered, grouped by
-the section it lives in, one line each in this shape:
+**3. The list.** Every active `Decisions` entry not yet carrying `confirmed`, labelled with its
+stable `D<n>` ID (never a fresh 1..n numbering), grouped by the section it lives in, one line
+each in this shape:
 
 ```markdown
-3. **Scope › Out** — "no mobile client in the first version" (yours, 2026-09-08) — rules out
+D3. **Scope › Out** — "no mobile client in the first version" (yours, 2026-09-08) — rules out
    push notifications and offline edits.
-4. **How it works** — pushes on save, debounced to one upload per file per 30 s (assumed) —
+D4. **How it works** — pushes on save, debounced to one upload per file per 30 s (assumed) —
    rules out interval sync and an explicit sync command.
 ```
 
@@ -221,7 +226,7 @@ option cannot.
 in the message, by the fallback in § Building a question worth asking:
 
 - *Does the readback hold?* — "All confirmed" (recommended: the list is their own words read
-  back) / "Corrections follow — I'll name the numbers".
+  back) / "Corrections follow — I'll name the IDs".
 - *What next?* — only when the queue is not empty: continue with the remaining gaps
   (recommended while any Missing or thin remains; say how many rounds that looks like) /
   work the deferred register / stop here.

@@ -28,6 +28,10 @@ this conversation.
 <Two to five sentences: what exists now, what constrains the work, what was ruled out and
 why. Enough for a cold reader to know why the phases are shaped this way.>
 
+**Commit policy** — <per phase | one commit at the end | none, files stay on disk — and what
+to do with files the project does not track yet. Asked once when the project has untracked
+source files; "per phase" when everything is tracked.>
+
 ## Phase 1 — <name>
 
 **Status** — not started
@@ -63,14 +67,21 @@ will be then: a file that must still hold a certain shape, a decision recorded i
 entry — it cannot fail informatively. "`src/config/loader.ts` still reads every
 setting through one `load()` function" is.
 
+A claim that something does not exist is brittle: another process can create it mid-run.
+Write it as "unchanged since the listing recorded in the `Log` at Verify", and have the
+executor record that listing (paths, sizes or checksums) when it checks the phase.
+
 **Settle first** — the phase's open questions. This is where an unknown that could not be
 resolved during planning goes, rather than into a guess. Name the question and the
 `research.md` heading its answer belongs under. Questions that were fully settled during
-planning do not reappear here.
+planning do not reappear here. Every `[UNVERIFIED]` mark in the spec that touches the phase
+becomes an entry here, worded so it traces back to the mark.
 
 **Done when** — a condition checkable without asking the user: a command that exits clean,
 a file that exists with certain content, a behaviour that holds. "Phase complete" and
-"tests look good" are not conditions.
+"tests look good" are not conditions. When the spec tags its success criteria, carry the tag
+over: `[agent]` conditions are run by the executor; a `[user]` condition names the exact
+check the user must run, and the phase is `done` only once the user reports the result.
 
 ## What and where, never how
 
