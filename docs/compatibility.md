@@ -178,3 +178,18 @@ open or closed issues/PRs, releases, Actions runs or artifacts; only the `main` 
 no tags were present. No history rewrite was needed. Existing commit attribution was retained.
 The repository description and 12 discovery topics were added, and visibility was changed
 to public after pushing the installation changes.
+
+## 0.2.0: maintain-agents-md
+
+Checked 2026-11-05 on Linux: `bash scripts/check-skills.sh` and `bash scripts/test-check-skills.sh`
+pass with six skills, and `claude plugin validate .` passes with warnings.
+
+Four new eval cases pass in Claude Code at one run each, no ablation (about $0.75 in total
+including reruns): `maintain-agents-md-natural-trigger`, `-empty-asks-first`,
+`-audit-no-invented-commands` and `-model-update-shows-diff`. The last one first failed because a
+model-started update did not ask for a yes; the skill wording was tightened and it then passed.
+The eval sandbox's working directory is empty, so two cases paste the file under test into the
+prompt. One run per case is a smoke check, not a pass rate. Not checked: the create flow writing
+real files, the `CLAUDE.md` shim in a real project, the 200-line count on a created file, and
+anything in Codex, Antigravity or Pi.
+
