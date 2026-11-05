@@ -1,6 +1,6 @@
 ---
 name: plan-work
-description: Writes a researched, phased implementation plan (docs/{slug}/plan.md, or one plan per milestone) with assumptions, open questions, tasks and checkable done conditions, and refuses plans too large for one go. Use when the user wants a plan, roadmap or breakdown for a defined request or a spec before building. Not for a trivial edit, an unsettled concept (shape-spec), executing an existing plan (execute-plan), or a research corpus (research-topic).
+description: Writes a researched, phased implementation plan (docs/{slug}/plan.md, or one plan per milestone folder) with assumptions, open questions, tasks and checkable done conditions, and refuses plans too large for one go. Use when the user wants a plan, roadmap or breakdown for a defined request or a spec before building. Not for a trivial edit, an unsettled concept (shape-spec), executing an existing plan (execute-plan), or a research corpus (research-topic).
 argument-hint: "[what to plan]"
 license: MIT
 compatibility: Needs a filesystem and git for commits; web search for external unknowns.
@@ -8,15 +8,17 @@ compatibility: Needs a filesystem and git for commits; web search for external u
 
 # Plan Work
 
-Turn a request into `docs/<slug>/plan.md` — or, for a spec split into milestones, the next
-milestone's `plan-m<N>.md` — researched, reviewed, split into phases, kept within the size
+Turn a request into `docs/<slug>/plan.md` — or, for a spec split into milestones, one
+milestone's `docs/<slug>/m<N>/plan.md` — researched, reviewed, split into phases, kept within the size
 limit, with tasks that say *what* to do and *where* to look. Someone else executes it — a later
 session, another agent, the user — so the plan has to survive being read cold.
 
 Invocation: `/plan-work add rate limiting to the public API endpoints`. Everything after
 the name is the request. When the request names a `docs/<slug>/spec.md` path — the form
 `/shape-spec` hands over — the slug is that folder, so the plan lands beside the spec;
-otherwise the slug is derived from the request.
+otherwise the slug is derived from the request. A milestone is named by its sub-slug,
+`<slug>/m<N>` (`/plan-work implement docs/<slug>/spec.md m2`, or the path `docs/<slug>/m2/`);
+without one, step 1 picks the milestone.
 
 ## Place in the set
 
@@ -24,8 +26,10 @@ Pipeline stage: **plan** (explore → shape → plan → execute).
 
 - **Reads on entry** — `docs/<slug>/spec.md` when one exists, then the repo;
   `docs/research/` before searching online.
-- **Leaves on exit** — `docs/<slug>/plan.md` (or `plan-m<N>.md`) and `research.md`, committed.
-- **Next** — `/execute-plan <slug>`; after a milestone is done, this skill again for the next.
+- **Leaves on exit** — `docs/<slug>/plan.md` (or `m<N>/plan.md`, with the path recorded and
+  `Status: planned` on `m<N>/milestone.md`) and `research.md`, committed.
+- **Next** — `/execute-plan <slug>` (or `<slug>/m<N>`); after a milestone is done, this skill
+  again for the next.
 
 ## Session and persistence rules
 
@@ -126,11 +130,15 @@ the spec:
   plan format says. A `[user]` criterion is named in the hand-over.
 - Its active confirmed decisions are settled ground. Preserve superseded entries as history;
   do not treat them as current requirements. Active unconfirmed decisions remain unsettled.
-- **Milestones.** A `## Milestones` section with more than one milestone means this run plans
-  one: the lowest-numbered milestone with no `plan-m<N>.md` whose `Status` is `done`. If the
-  milestone before it has a plan that is not `done`, say so and stop — the next milestone is
-  planned against what the last one actually built (`references/plan-format.md § Milestone
-  plans`). Plan only what that milestone `Covers`; its `Delivers` is the plan's `Goal`.
+- **Milestones.** A `## Milestones` index with more than one milestone means this run plans
+  one: the one named by `<slug>/m<N>`, else the lowest-numbered milestone that is not `done`.
+  If the milestone before it has a plan that is not `done`, say so and stop — the next
+  milestone is planned against what the last one actually built (`references/plan-format.md
+  § Milestone plans`). A milestone that does not exist, or one named on a spec with no split,
+  gets the real list back and a stop. Read `m<N>/milestone.md`, then plan only what it
+  `Covers`; its `Delivers` is the plan's `Goal`. Old `plan-m<N>.md` files count as that
+  milestone's plan (`spec-contract.md § Milestones`). A missing milestone document, or one
+  that disagrees with the index, is reported and stops the run; do not rebuild it by guessing.
 
 A missing spec is the normal case for direct requests, not an error.
 
@@ -142,7 +150,7 @@ If the work is one edit with nothing to research, say so and stop. A plan for a 
 more than the typo.
 
 If `docs/<slug>/` already exists, read it before writing a byte. A folder holding none of
-`spec.md`, `plan.md`, `plan-m<N>.md` or `research.md` belongs to the project, not this pipeline: pick a
+`spec.md`, `plan.md`, `plan-m<N>.md`, `research.md` or an `m<N>/` milestone folder belongs to the project, not this pipeline: pick a
 distinguishing slug and say so. A plan whose `Log` is empty can be rewritten in place; one
 that has been executed against cannot — say what is already there and let the user choose
 between a fresh slug and replacing it.
@@ -181,7 +189,8 @@ nothing yet and put one question round to the user, recommendation named:
 - **Override the limit** — write the whole plan; `Context` records that the user overrode
   the size limit, with the date.
 
-Within the limit, write the plan file — `plan.md`, or `plan-m<N>.md` for a milestone — in the
+Within the limit, write the plan file — `plan.md`, or `m<N>/plan.md` for a milestone, then set
+`m<N>/milestone.md` to `planned` with its `Plan` line and the index line to match — in the
 format from `references/plan-format.md`.
 
 **5. Review the plan**, fix what the review catches. Findings that change nothing are not
@@ -190,7 +199,7 @@ worth writing down; findings that change something survive as edits to the plan 
 **6. Commit and hand over.** Commit `docs/<slug>/` — the plan and the research file,
 explicit paths, conventional message; this records a local checkpoint. Then report the path,
 one line on the shape — for a milestone plan, which milestone of how many — and the command
-that runs it: `/execute-plan <slug>`.
+that runs it: `/execute-plan <slug>` (`/execute-plan <slug>/m<N>` for a milestone).
 
 ## Review checklist
 
@@ -204,7 +213,7 @@ Run this against the finished plan, reading it as if you had not written it:
 - Phase order matches the real dependencies; nothing blocks itself.
 - The plan is within the size limit, or `Context` records the user's override.
 - A milestone plan covers only its milestone, and its phases' `Done when` include the
-  milestone's own `Done when`.
+  milestone's own `Done when`; `milestone.md` links the plan and the plan links it back.
 - The decomposition earns itself — merge any two phases that have no reason to be apart.
 - Nothing is asserted without a source or a file behind it.
 
