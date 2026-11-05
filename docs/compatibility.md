@@ -145,3 +145,36 @@ No paid behavioral evaluations or full workflows were run for this packaging cha
 Native UI discovery in Claude/Codex, app/IDE surfaces, Windows and macOS remain unverified.
 Wider harness instructions use the skills installer's documented identifiers and paths;
 they do not establish runtime workflow compatibility in those harnesses.
+
+### Public-source checks
+
+After publishing on 2026-11-05, anonymous GitHub API access reported `private: false`.
+An HTTPS clone with Git credential helpers disabled succeeded. The repository page,
+raw README, installation guide and logo were accessible without authentication.
+
+| Public remote route | Result |
+|---|---|
+| Claude marketplace add and plugin install | Pass with GitHub shorthand; also pass with an explicit HTTPS URL and SSH disabled |
+| Claude marketplace refresh and plugin update | Pass |
+| Codex marketplace add and plugin install | Pass |
+| Codex marketplace upgrade and plugin reapply | Pass |
+| Antigravity HTTPS install, list and reinstall/update | Pass; all five skills discovered |
+| Antigravity uninstall in disposable configuration | Pass |
+| Pi Git package install and update | Pass |
+| Skills CLI remote installation targeting all eight documented harness identifiers | Pass; all five skills and references installed |
+| Remote bundled content | All 31 Markdown files matched the committed source in every native package and the portable installation |
+
+Remote checks used isolated configuration, disabled Git credential helpers and no GitHub
+API tokens. Claude's shorthand initially chose available SSH authentication; the explicit
+HTTPS retry disabled SSH and passed without it. These checks establish public installation
+and package content, not model-driven invocation or end-to-end workflow compatibility.
+
+### Publication review
+
+Before changing visibility, the five-commit history and tracked file inventory were
+reviewed, and a lightweight credential/private-host pattern scan over all 119 then-reachable
+Git blobs returned no matches. The scan is limited to the patterns checked. GitHub had no
+open or closed issues/PRs, releases, Actions runs or artifacts; only the `main` branch and
+no tags were present. No history rewrite was needed. Existing commit attribution was retained.
+The repository description and 12 discovery topics were added, and visibility was changed
+to public after pushing the installation changes.
