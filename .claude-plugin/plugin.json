@@ -1,6 +1,6 @@
 {
   "name": "pinkrooster-skills",
-  "description": "An explore → shape → plan → execute pipeline and a research-corpus builder: explore-ideas, shape-spec, plan-work, execute-plan and research-topic.",
+  "description": "An explore → shape → plan → execute pipeline and a research-corpus builder: explore-ideas, shape-spec, plan-work, execute-plan, research-topic and maintain-agents-md.",
   "version": "0.2.0",
   "author": {
     "name": "pinkroosterai"

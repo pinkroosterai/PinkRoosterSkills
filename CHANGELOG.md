@@ -9,6 +9,9 @@
 - Portable install examples for Cursor, Gemini CLI, GitHub Copilot and OpenCode; private
   checkout fallback, packaging checks and regression fixtures for metadata and paths.
 
+- New `maintain-agents-md` skill: creates AGENTS.md (with a one-line CLAUDE.md shim) by exploring
+  the project and interviewing the user, keeps it within 200 lines, and proposes updates and
+  pruning; a model-started update shows a diff and waits for a yes.
 - New `explore-ideas` skill: frames a problem space, scans the landscape, generates ideas per
   user need, rates them and keeps a ranked backlog in `docs/ideas/<area>.md` that the user
   orders and later runs revise.
