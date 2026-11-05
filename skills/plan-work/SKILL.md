@@ -40,7 +40,7 @@ Paths: `docs/` in this skill means the project's documentation root — `docs/` 
 project's instructions or layout name another. The research corpus is `<docs root>/research/`
 and the idea backlog `<docs root>/ideas/`, so neither `research` nor `ideas` is ever a slug.
 A `docs/<slug>/` folder belongs to this skill set only when it holds `spec.md`, `plan.md`,
-`plan-m<N>.md` or `research.md`; otherwise choose a distinguishing slug.
+`plan-m<N>.md`, `research.md` or milestone folders `m<N>/`; otherwise choose a distinguishing slug.
 
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.

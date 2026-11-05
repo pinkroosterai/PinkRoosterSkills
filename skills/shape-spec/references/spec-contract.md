@@ -60,25 +60,60 @@ user's environment). `plan-work` copies the tag into the matching `Done when`.
 
 ## Milestones
 
-`## Milestones` splits a spec into slices that each ship something a user can use on its own.
-A spec without the section, or whose section says `Single milestone.`, is one milestone.
+A big spec is split into milestones: slices that each ship something a user can use on its
+own. A spec without the split, or whose `## Milestones` says `Single milestone.`, is one
+milestone and keeps the plain layout (`spec.md`, `plan.md`, `research.md`).
+
+**Layout.** Each milestone is a folder `docs/<slug>/m<N>/` holding `milestone.md` and, once
+planned, `plan.md` and nothing else of the pipeline's. `spec.md` and `research.md` stay at
+`docs/<slug>/`; research is shared by every milestone. A milestone is named by its
+**sub-slug** `<slug>/m<N>`, which all three skills accept. Numbers `M<N>` are stable: a
+reordering renumbers nothing a plan already names.
+
+**The index.** The spec's `## Milestones` keeps one line per milestone, with its derived status, and nothing more:
 
 ```markdown
 ## Milestones
 
-### M1 — <name>
-**Delivers** — <what a user can do once this ships>
-**Covers** — <the parts of Scope › In it delivers>
-**Done when** — <the Success criteria lines it must meet, quoted or named>
-
-### M2 — <name>
-...
+- M1 — <name> — <status> — `m1/milestone.md`: <what a user can do once this ships>
+- M2 — <name> — <status> — `m2/milestone.md`: <...>
 ```
 
+**The milestone document** holds basic info and references into the spec, never copies of
+it:
+
+```markdown
+# Milestone M<N> — <name>
+
+**Spec** — `../spec.md`
+**Status** — not started | planned | in progress | done
+**Delivers** — <what a user can do once this ships>
+**Covers** — <`spec.md § Scope › In`, each part named by the leading words of its bullet>
+**Done when** — <the `Success criteria` lines it must meet, quoted verbatim with their tags>
+**Depends on** — <earlier milestones, or "nothing">
+**Plan** — `plan.md`      <!-- added by plan-work once the plan exists -->
+```
+
+`Covers` points at headings and bullet openings, so a spec edit shows up as a broken
+reference; `Done when` quotes the criterion line so it can be found with a search.
+
+**Status is derived from the plan, never asserted separately.** `not started` — no plan yet;
+`planned` — a plan exists and its plan-wide `Status` is `not started`; `in progress` — the
+plan reads `phase N in progress` or `phase N blocked`; `done` — the plan reads `done`.
+`plan-work` sets `planned`; `execute-plan` moves it with the plan and sets `done` at close,
+in the document and in the milestone's index line.
+
+**Default.** With no milestone named, a skill takes the lowest-numbered milestone that is not
+`done`, and stops if the one before it has a plan that is not `done`. A milestone named on a
+spec with no split, or one that does not exist, gets the real list back and a stop.
+
 M1 is the thinnest slice that works end to end. Later milestones are ordered by dependency,
-then value. The split itself is a `Decisions` entry, confirmed like any other; until it is,
-the spec is `shaping`. Milestone numbers are stable: a reordering renumbers nothing that a
-plan file already names.
+then value. The split is a `Decisions` entry, confirmed like any other; until it is, the
+spec is `shaping`.
+
+**Legacy.** Specs written before this layout hold `### M<N>` blocks in the spec and
+`plan-m<N>.md` beside it. They are read as the milestone's plan and never moved
+automatically; new milestones of the same spec use the folder layout.
 
 ## The Decisions log
 
@@ -110,19 +145,24 @@ Rules every writer follows:
 
 ## What each stage may do
 
-- **`plan-work`** reads only. It plans one milestone at a time, into `plan-m<N>.md`, and only
-  the parts of the spec that milestone covers. A `[BLOCKING]` mark refuses the phases it touches; a deferred
-  row that touches a phase becomes that phase's `Settle first` entry; `Status: shaping`
-  (including unconfirmed active decisions) is named to the user before planning; active
-  confirmed entries are settled ground; superseded entries are history.
-- **`execute-plan`** appends at close — at the close of each milestone plan, for the parts that
-  milestone covered: `executed` entries, `superseded by` on the entries they
-  reverse, edits to the affected sections so they describe what was built, then recomputes
-  both header lines and `Status`. An unconfirmed `executed` entry makes the spec `shaping`
-  again — on purpose: the spec no longer describes agreed ground until the user confirms the
-  departure. The close report says so and names `shape-spec` (resume the slug) to confirm it.
-- **`shape-spec`** owns everything else, including the template, coverage scoring and the
-  readback that confirms entries.
+- **`plan-work`** reads the spec and writes only the plan. It plans one milestone at a time,
+  into `docs/<slug>/m<N>/plan.md`, records the path on the milestone document and sets it
+  `planned`, and takes only the parts of the spec that milestone `Covers`. A `[BLOCKING]`
+  mark refuses the phases it touches; a deferred row that touches a phase becomes that
+  phase's `Settle first` entry; `Status: shaping` (including unconfirmed active decisions) is
+  named to the user before planning; active confirmed entries are settled ground; superseded
+  entries are history.
+- **`execute-plan`** keeps the milestone document's `Status` in step with the plan, and appends
+  to the spec at close — at the close of each milestone plan, for the parts that milestone
+  covered: `executed` entries, `superseded by` on the entries they reverse, edits to the
+  affected sections so they describe what was built, then recomputes both header lines and
+  `Status`. An unconfirmed `executed` entry makes the spec `shaping` again — on purpose: the
+  spec no longer describes agreed ground until the user confirms the departure. The close
+  report says so and names `shape-spec` (resume the slug) to confirm it.
+- **`shape-spec`** writes the milestone folders and documents when it splits a spec, re-cuts
+  one milestone when named (`<slug>/m<N>`: its `Delivers`, `Covers` and `Done when`, recorded
+  as a dated `Decisions` entry, other milestones untouched), and owns everything else,
+  including the template, coverage scoring and the readback that confirms entries.
 
 ## Closing a plan against a spec
 
