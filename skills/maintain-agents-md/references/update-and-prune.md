@@ -24,7 +24,8 @@ durable: what you are doing right now, a one-off decision, anything the repo alr
    false. Skip it if the file already says it.
 3. Recount. If the result exceeds 200 lines, prune before writing.
 4. **A run the user typed by name** writes the edit. **A run you started yourself** shows the
-   proposed diff and leaves the file unchanged until the user says yes. Start at a natural stop
+   proposed diff (`-` and `+` lines, with line counts), ends by asking whether to apply it, and
+   leaves the file unchanged until the user says yes. Start at a natural stop
    (end of a task) and gather all durable facts so far into one proposal, never one prompt per
    fact mid-task.
 5. Report the new line count. Do not commit or push.

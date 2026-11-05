@@ -72,8 +72,10 @@ Say which step you are on.
    files, interview (mandatory for an empty project), draft, write `AGENTS.md` and the shim,
    report the line count.
 3. **Update** — follow `references/update-and-prune.md`: confirm the fact is durable, make the
-   smallest edit, remove what it falsifies, recount. If you started the run yourself, show
-   the diff and wait.
+   smallest edit, remove what it falsifies, recount. If you started the run yourself (the user
+   did not type the skill's name), present the proposal as a diff of `-` and `+` lines with
+   the before and after line counts, then end by asking whether to apply it. Do not write the
+   file, and do not describe the change as made, until the user says yes.
 4. **Audit and prune** — same file: report stale, duplicate, contradictory, discoverable and
    over-budget lines as a numbered list; apply only what the user keeps.
 5. **Report** — the path, the line count against 200, what changed, and what was left out.

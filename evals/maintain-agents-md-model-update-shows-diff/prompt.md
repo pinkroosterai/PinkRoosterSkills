@@ -4,4 +4,13 @@ max_turns: 10
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [natural, maintain-agents-md, should-trigger]
 ---
-Note for the future: in this repo the checker's own tests are run with scripts/test-check-skills.sh, and agents should run it after touching scripts/check-skills.sh. Please keep that in the agent instructions.
+Note for the future: in this project the tests are run with `pnpm test`, not `npm test`, and agents should always do that. Please keep that in the agent instructions. The working directory is empty in this sandbox, so treat the pasted file below as the project's `./AGENTS.md`.
+
+```
+# Acme API
+## Commands
+- Build: pnpm build
+- Test: npm test
+## Boundaries
+- Never commit secrets.
+```
