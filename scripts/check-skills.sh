@@ -14,7 +14,10 @@
 #      Claude Code's. The skills run in several harnesses; a bare Claude tool name reads as
 #      a claim that the tool exists everywhere.
 #   6. Drift between plan-work's shared files and the copies other skills carry so they can
-#      be installed alone.
+#      be installed alone, including the "Session and persistence rules" section every
+#      SKILL.md repeats.
+#   7. Every `references/...` path named in backticks resolves from its skill's root (the
+#      Markdown-link check below only sees [text](target) links).
 set -u
 cd "$(dirname "$0")/.." || exit 1
 
@@ -32,10 +35,11 @@ for d in skills/*/; do
   d=${d%/}; f="$d/SKILL.md"; name="$(basename "$d")"
   [ -f "$f" ] || { fail "$d has no SKILL.md"; continue; }
 
-  # Restricted frontmatter profile: single-line, unquoted name/description; quoted hint.
+  # Restricted frontmatter profile: single-line, unquoted name/description; quoted hint;
+  # optional single-line license and compatibility from the Agent Skills spec.
   if ! awk 'NR==1 {if ($0!="---") exit 1; next}
     /^---$/ {closed=1; exit}
-    !/^(name|description|argument-hint): / {exit 1}
+    !/^(name|description|argument-hint|license|compatibility): / {exit 1}
     {split($0,a,":"); if (seen[a[1]]++) exit 1}
     END {if (!closed) exit 1}' "$f"; then fail "$name: invalid restricted frontmatter"; fi
   if frontmatter "$f" | grep -q 'disable-model-invocation'; then
@@ -56,6 +60,11 @@ for d in skills/*/; do
   dl=$(field "$f" description | tr -d '\n' | wc -c)
   if [ "$dl" -ge 1 ] && [ "$dl" -le 1024 ]; then ok "$name: description $dl chars"
   else fail "$name: description $dl chars (1-1024)"; fi
+  if frontmatter "$f" | grep -q '^compatibility:'; then
+    cl=$(field "$f" compatibility | tr -d '\n' | wc -c)
+    if [ "$cl" -ge 1 ] && [ "$cl" -le 500 ]; then ok "$name: compatibility $cl chars"
+    else fail "$name: compatibility $cl chars (1-500)"; fi
+  fi
 
   # 3. argument-hint must be a quoted scalar.
   if frontmatter "$f" | grep -qE '^argument-hint: *\['; then fail "$name: argument-hint is an unquoted [list]"; fi
@@ -69,6 +78,14 @@ for d in skills/*/; do
       fail "$name: ${r#"$d"/} is $rl lines with no '## Contents'"
     fi
   done < <(find "$d/references" -name '*.md' -not -path '*/roles/*' 2>/dev/null)
+
+  # 7. Backticked reference paths, resolved from the skill root.
+  missing=0
+  while IFS= read -r ref; do
+    case "$ref" in *'<'*|*'*'*) continue;; esac
+    [ -e "$d/$ref" ] || { fail "$name: names missing file $ref"; missing=1; }
+  done < <(find "$d" -name '*.md' -print0 | xargs -0 grep -ohE '`references/[^` ]+`' | tr -d '`' | sort -u)
+  [ "$missing" -eq 0 ] && ok "$name: backticked reference paths resolve"
 done
 
 # 5. Claude-only names must sit on a line (or right after a line) that names Claude Code.
@@ -102,10 +119,22 @@ for pair in \
   "plan-work/references/researching.md shape-spec/references/researching.md" \
   "plan-work/references/delegation.md shape-spec/references/delegation.md" \
   "plan-work/references/roles/scout.md shape-spec/references/roles/scout.md" \
-  "plan-work/references/roles/worker.md shape-spec/references/roles/worker.md"; do
+  "plan-work/references/roles/worker.md shape-spec/references/roles/worker.md" \
+  "plan-work/references/spec-contract.md execute-plan/references/spec-contract.md" \
+  "plan-work/references/spec-contract.md shape-spec/references/spec-contract.md"; do
   set -- $pair
   if cmp -s "skills/$1" "skills/$2"; then ok "copy in sync: $2"
   else fail "copy drifted from plan-work: $2 (cp skills/$1 skills/$2)"; fi
+done
+
+# 6b. The "Session and persistence rules" section is the same in every SKILL.md.
+rules() { awk '/^## Session and persistence rules$/ {f=1; next} /^## / {f=0} f' "$1"; }
+ref_rules=$(rules skills/plan-work/SKILL.md)
+[ -n "$ref_rules" ] || fail "plan-work: no 'Session and persistence rules' section"
+for f in skills/*/SKILL.md; do
+  [ "$f" = skills/plan-work/SKILL.md ] && continue
+  if [ "$(rules "$f")" = "$ref_rules" ]; then ok "persistence rules in sync: $f"
+  else fail "persistence rules drifted from plan-work: $f"; fi
 done
 
 echo

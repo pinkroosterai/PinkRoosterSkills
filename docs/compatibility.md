@@ -3,7 +3,9 @@
 What has been checked in which harness. A row is only as good as its date: harnesses
 change, so re-run the checks below after a harness update or a change to delegation.
 
-Checked 2026-11-05 on Linux, skills installed into a scratch project with
+## First checks (0.1.0 skills)
+
+Checked 2026-11-05 on Linux, before any 0.1.1 edit, skills installed into a scratch project with
 `npx skills add <repo> -a claude-code -a codex -a antigravity -a pi --skill '*' -y`
 (the skills CLI copies into `.agents/skills/` and links `.claude/skills/` to it).
 
@@ -13,7 +15,7 @@ Checked 2026-11-05 on Linux, skills installed into a scratch project with
 | Skill body loads on request (`/execute-plan`, no plan present) | yes: reports no plan, names `/plan-work`, writes nothing | yes (asked to "use the execute-plan skill"): reports no plan | yes: reports no plan, names `/plan-work` | **not checked**, pi not installed |
 | Scout delegation from `delegation.md`, role pasted | yes: `general-purpose` on `haiku`, reply in the scout's shape | yes: `spawn_agent` `explorer` on a small model, `low` effort, reply in the scout's shape | yes: `invoke_subagent` type `self` on `flash_lite`, reply in the scout's shape | n/a: no core subagent tool, runs inline |
 | `claude plugin validate .` | passes (warnings: no icon; root `CLAUDE.md` not plugin context) | — | — | — |
-| `claude plugin eval .` (4 cases, 1 run, no ablation) | 4/4 pass, $0.46 | — | — | — |
+| `claude plugin eval .` (the original 4 cases, 1 run, no ablation) | 4/4 pass, $0.46 | — | — | — |
 | `skills-ref validate` | fails on `argument-hint` only (a Claude Code field, kept on purpose) | | | |
 
 
@@ -27,6 +29,20 @@ Checked 2026-11-05 on Linux, skills installed into a scratch project with
   `--dangerously-skip-permissions` (used here with `--sandbox` in a scratch project), the
   skill's first `ls` is auto-denied and nothing is printed.
 
+## Sandbox limits (not yet tested here)
+
+Agent sandboxes can block what these skills need. Codex's `workspace-write` mode limits
+writes to the workspace and, by several accounts, disables network access by default; some
+secondary sources also report `.git` as read-only, which would make commits fail. The
+official sandboxing page does not state these defaults, so treat them as unverified. Effects:
+
+- `research-topic` needs network access and a scratch directory outside the project. It now
+  tries `~/.cache`, then the temporary directory, then asks; without web access it stops.
+- Commits may fail; every skill then keeps its files on disk and reports the failure.
+- Antigravity's CLI `--sandbox` was only exercised with `--dangerously-skip-permissions`.
+
+Each skill's `compatibility` frontmatter states what it needs.
+
 ## Not checked
 
 - pi, end to end.
@@ -35,7 +51,7 @@ Checked 2026-11-05 on Linux, skills installed into a scratch project with
 - The worker and researcher roles in Codex and Antigravity (only the scout was dispatched).
 - Model-invocation from a natural request (no `/name`) in any harness.
 
-## After the 0.1.1 corrections
+## After the first 0.1.1 corrections
 
 The table above records the original 0.1.0 behavior, not a retest of changed workflows.
 The decision lifecycle, research verification and persistence rules need new end-to-end
@@ -53,3 +69,19 @@ Checked 2026-11-05 after the 0.1.1 edits:
   7/7 cases pass, $0.77. These are entry-gate and response smoke checks, not full
   workflows. The research gate case had no web-tool grant, so it does not establish
   successful scouting. Other harnesses were not retested.
+
+## After the review fixes (still 0.1.1)
+
+Checked 2026-11-05: `bash scripts/check-skills.sh` and `bash scripts/test-check-skills.sh`
+pass (the self-test now covers every check), `claude plugin validate .` passes with
+warnings, and `skills-ref validate` fails only on `argument-hint`. No other harness was
+retested.
+
+`claude plugin eval . --trust-plugin --runs 1 --ablation with-without --max-cost-usd 5`:
+9/9 cases pass with the plugin, mean Δ +0.39 over the no-plugin baseline, $1.58. The skills
+make the difference on `plan-work-natural-trigger` and `shape-spec-superseded-decision`
+(+1.00) and on `plan-work-refuses-typo`, `research-topic-gates-before-writing` and
+`shape-spec-nothing-to-resume` (+0.50). The baseline also passes `execute-plan-no-plan`,
+`execute-plan-missing-acceptance` and both should-not-trigger cases, so those guard against
+regressions but do not show the skills' effect. One run per case is a smoke check, not a
+pass rate.

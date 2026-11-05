@@ -22,12 +22,18 @@ no `tool_used: Skill` grader; the regex and `file_exists` graders are what show 
 These cases exercise Claude Code only. Other harnesses are checked by hand; see
 `docs/compatibility.md`.
 
-## Regression scenarios added in 0.1.1
+## Natural-language cases
 
-Natural-language cases cover missing acceptance criteria, superseded decisions and a
-chat-only research request. Regex graders are smoke checks, not proof of correct behavior;
-inspect transcripts for whether obsolete decisions are excluded, implementation waits for
-acceptance criteria, and read-only requests leave the workspace untouched.
+Tagged `natural`. Cases tagged `should-trigger` carry a `tool_used: Skill` grader, which shows
+*a* skill fired (the grader cannot name which one) and counts as a plugin-fired indicator
+under `--ablation with-without`. Cases tagged `should-not-trigger` — a chat-only research
+request, an opinion on an idea — are graded on answering in chat and writing nothing. Every
+case whose prompt forbids writing has a `file_exists … exists: false` grader. Judgement
+graders are `llm` (the default judge is `haiku`); regex is kept only for an exact string such
+as the `Confirmed` header line.
+
+Run the suite with the default `with-without` ablation at least once per release, so the
+report shows what the skills change rather than absolute scores alone.
 
 Before claiming full compatibility, also exercise a complete spec → plan → execution run,
 a worker editing a file with existing user changes, an unborn Git repository, a commit

@@ -8,6 +8,20 @@
 - Revalidate volatile findings and make commit and recovery behavior consistent.
 - Expand README usage, compatibility boundaries, branding and validation guidance.
 - Add workflow regression scenarios and strengthen repository checks.
+- Add `spec-contract.md`, shared by all three pipeline skills, so `plan-work` and
+  `execute-plan` carry the spec rules they read and write when installed alone.
+- Never delegate destructive steps; run them inline after the user confirms the command.
+- `execute-plan` confirms before editing when not invoked by name, and records the user's
+  approval of a spec departure in the plan `Log`.
+- Resume by listing unfinished plans or specs instead of choosing by modification time.
+- Reserve the `research` slug, leave project-owned `docs/` folders alone, and honour a
+  project's documentation root in every skill.
+- `research-topic`: fall back from `~/.cache` to the temporary directory, ask when neither is
+  writable, stop early without web access, and make the angle cap and retry rules consistent.
+- Descriptions lead with what each skill produces; add `license` and `compatibility`.
+- Checker: backticked reference paths, persistence-rules drift and `compatibility` length;
+  self-tests for every check. Evals: trigger and non-trigger cases, `llm` graders in place of
+  loose regexes, and no-write graders on read-only cases.
 
 ## 0.1.0 — unreleased
 

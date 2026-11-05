@@ -1,5 +1,5 @@
 ---
 type: regex
-pattern: "skill|portab"
+pattern: "1/2 decisions"
 flags: i
 ---

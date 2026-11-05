@@ -48,6 +48,10 @@ Change nothing in this job. No edits, no new files.
 Carry out a change the brief spells out completely: an exact command to run, an exact format
 to match, or a pure rename or move.
 
+**If the change is destructive or irreversible** — it deletes data, runs a migration,
+rewrites history, or reaches beyond the working tree — reply `Not verbatim: destructive` and
+change nothing. The session that sent you runs those itself, after the user confirms.
+
 **If the change needs a choice the brief does not make, stop and say so.** Reply with one
 line — `Not verbatim: <the choice that is missing>` — and change nothing. If you had already
 changed something before you saw it, undo those edits by hand and list the files you touched.

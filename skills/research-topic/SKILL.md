@@ -1,7 +1,9 @@
 ---
 name: research-topic
-description: Use when the user wants to research a topic and preserve a sourced knowledge corpus on disk. Not for a chat-only answer, a single factual lookup, a read-only review, or implementation planning (plan-work).
+description: Builds or revises a sourced research corpus under docs/research/, one cross-linked topic file per subject, after agreeing scope with the user and optionally fanning out researcher subagents. Use when the user wants a topic researched and the findings kept on disk. Not for a chat-only answer, a single factual lookup, a read-only review, or implementation planning (plan-work).
 argument-hint: "[topic or question]"
+license: MIT
+compatibility: Needs web search and page fetch with network access, a writable scratch directory outside the repository, and git for commits.
 ---
 
 # Research Topic
@@ -30,10 +32,16 @@ installed: report the next outcome in plain language instead of assuming it is a
 Question batches must fit the actual tool limits. For asynchronous tools, wait for the
 user's answer before dependent work; tool completion and elapsed time are not answers.
 
+Paths: `docs/` in this skill means the project's documentation root — `docs/` unless the
+project's instructions or layout name another. The research corpus is `<docs root>/research/`,
+so `research` is never a slug. A `docs/<slug>/` folder belongs to this skill set only when it
+holds `spec.md`, `plan.md` or `research.md`; otherwise choose a distinguishing slug.
+
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.
 Explicit paths do not isolate unrelated edits within a file: stage only attributable hunks
-and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
+— without an interactive prompt, for example by writing the hunks to a patch and applying
+it with `git apply --cached` — and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
 isolated, leave this run uncommitted and explain. In a non-Git project or when commits are
 prohibited, leave the files on disk and report that. On commit failure preserve all artifacts
 and report the failure. A local commit records history; it does not publish or synchronize
@@ -55,8 +63,10 @@ another machine. Never push or change repository visibility as part of these ski
    it gets checked before launch, not after.
 5. **Don't fan out a topic that doesn't split.** A sweep is the most expensive thing this
    skill can do. If the scout finds one thread, say so and research it inline.
-6. **Never exceed the agreed agent count.** Hard cap ten, one dispatch round, and at most
-   one follow-up round of three that the user approves.
+6. **Never exceed the agreed angle count.** Hard cap ten angles in one dispatch round, plus
+   at most one follow-up round of up to three angles that the user approves. A retry re-runs
+   an agreed angle rather than adding one: at most one per angle, and it uses none of these
+   allowances.
 7. **Read the whole of an existing topic file before changing a word of it.** The corpus is
    revised, not appended to.
 8. **Merge, don't concatenate.** Three agents finding the same thing is one sentence and
@@ -81,8 +91,10 @@ this pass exists to find the shape of the topic, not to answer it.
 file that looks adjacent. A topic already covered changes the job from *write* to *revise*,
 and an adjacent file usually names the vocabulary and the open questions you were about to
 rediscover. If the directory doesn't exist, this is the project's first run: say so, and
-create nothing yet. If the project keeps its documentation somewhere other than `docs/`,
-follow the project's layout and use `<its docs root>/research/` throughout.
+create nothing yet. (`docs/` means the docs root — see Session and persistence rules.)
+
+If no web search or fetch works in this session — a sandbox without network, or no such
+tools — say so and stop before scoping: this skill cannot source anything without them.
 
 Then the shallow web pass, looking for four things: what the topic actually contains, what
 the field's own vocabulary is (you cannot brief a researcher in the wrong words), what is
@@ -112,19 +124,26 @@ what is explicitly out of scope.
 
 Then set up the run directory and write the agreed scope into it:
 
-Use a unique owned cache directory (Bash example; use equivalent filesystem operations
-when Bash is unavailable):
+Use a unique owned scratch directory outside the working tree. Sandboxed sessions often
+cannot write to the home directory, so try each root in turn and keep the first that works
+(Bash example; use equivalent filesystem operations when Bash is unavailable):
 
 ```bash
-cache_root="${XDG_CACHE_HOME:-$HOME/.cache}/research-topic"
-mkdir -p "$cache_root" || exit 1
-RUN=$(mktemp -d "$cache_root/$(date +%F)-XXXXXXXX") || exit 1
-printf '%s\n' "$RUN" > "$RUN/.research-topic-owner"
-printf '%s\n' "$RUN"
+for base in "${XDG_CACHE_HOME:-$HOME/.cache}" "${TMPDIR:-/tmp}"; do
+  cache_root="$base/research-topic"
+  mkdir -p "$cache_root" 2>/dev/null || continue
+  RUN=$(mktemp -d "$cache_root/$(date +%F)-XXXXXXXX" 2>/dev/null) || continue
+  printf '%s\n' "$RUN" > "$RUN/.research-topic-owner" && break
+  RUN=
+done
+printf '%s\n' "${RUN:-NO-WRITABLE-ROOT}"
 ```
 
-Keep the printed absolute path; shell variables may not persist between calls. Confirm the
-cache root is outside the working tree. Record the repository's absolute path, topic and
+Keep the printed absolute path and the root it came from; shell variables may not persist
+between calls. If no root is writable, or the one that worked lies inside the working tree,
+stop and ask the user where scratch may go — never fall back into the repository on your
+own. A run under the temporary directory may not survive a reboot; say so if it is kept
+after a failure. Record the repository's absolute path, topic and
 scope in `00-scope.md`. Resume only a user-selected matching run; never select one solely
 by date or topic. Preserve interrupted runs. Before synthesis, snapshot each file to be
 changed (including adjacent files and the index), or record that it did not exist, in a
@@ -215,7 +234,7 @@ Session and persistence rules. If a commit fails, retain the run for recovery. W
 are prohibited or Git is absent, verify the final files exist and report them as uncommitted.
 
 Only after verification and persistence succeed may scratch be removed. Canonicalize the
-cache root and run path, reject symlinks, confirm the run is a direct child of that cache
+scratch root and run path, reject symlinks, confirm the run is a direct child of that scratch
 root, verify `.research-topic-owner` exactly matches the run path, and verify `00-scope.md`
 names this repository and topic. Delete only that directory. If ownership is uncertain,
 leave it in place and report it. Never use a glob or a date-shaped path as deletion authority.

@@ -6,7 +6,7 @@ message is the brief. Follow both.
 **Limits that come with the role** — hold them even if your tools would allow more:
 
 - Do not start subagents of your own.
-- Do not edit any existing file. Your only write is your own report file.
+- Write only your own report file, at the path the brief gives. Edit no other file.
 - Stop at around sixty tool calls in total, with the report written well before that (see
   Budget and stopping).
 

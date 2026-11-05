@@ -25,4 +25,30 @@ expect_failure 'agent definition'
 rm -rf agents
 printf '\ndrift\n' >> skills/execute-plan/references/delegation.md
 expect_failure 'shared reference drift'
+cp "$repo/skills/execute-plan/references/delegation.md" skills/execute-plan/references/delegation.md
+restore() { cp "$repo/skills/plan-work/SKILL.md" skills/plan-work/SKILL.md; }
+
+sed -i 's/^name: plan-work$/name: plan-works/' skills/plan-work/SKILL.md
+expect_failure 'name that does not match its directory'
+restore
+long=$(printf 'x%.0s' $(seq 1 1100))
+sed -i "s/^description: .*/description: $long/" skills/plan-work/SKILL.md
+expect_failure 'description over 1,024 characters'
+restore
+sed -i "s/^compatibility: .*/compatibility: $long/" skills/plan-work/SKILL.md
+expect_failure 'compatibility over 500 characters'
+restore
+seq 1 600 | sed 's/^/filler /' >> skills/plan-work/SKILL.md
+expect_failure 'SKILL.md over 500 lines'
+restore
+printf '\nAsk with AskUserQuestion.\n' >> skills/plan-work/SKILL.md
+expect_failure 'Claude-only tool name without a Claude Code label'
+restore
+printf '\nRead `references/missing.md` first.\n' >> skills/plan-work/SKILL.md
+expect_failure 'backticked reference to a missing file'
+restore
+sed -i '/^## Session and persistence rules$/a Drifted line.' skills/research-topic/SKILL.md
+expect_failure 'persistence rules drift'
+cp "$repo/skills/research-topic/SKILL.md" skills/research-topic/SKILL.md
+bash scripts/check-skills.sh > /dev/null || { echo "FAIL: restored copy no longer passes"; exit 1; }
 echo 'validator regression checks passed'

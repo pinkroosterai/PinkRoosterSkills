@@ -1,9 +1,9 @@
 # Delegating a step to a worker
 
 The set-wide rules for handing part of a run to a subagent on a cheaper model. `shape-spec`,
-`plan-work`, `execute-plan` and `research-topic` each say *which* of their steps may be
-delegated; this file says *when* a delegable step actually is, to whom, with what brief, and
-what to do with the reply. Read it before the first dispatch of a run.
+`plan-work` and `execute-plan` each say *which* of their steps may be delegated; this file
+says *when* a delegable step actually is, to whom, with what brief, and what to do with the
+reply. Read it before the first dispatch of a run.
 
 ## Contents
 
@@ -21,7 +21,7 @@ what to do with the reply. Read it before the first dispatch of a run.
 
 | Tier | Runs on | Role file | Gets |
 |---|---|---|---|
-| Mechanical | the harness's fast, cheap model | `references/roles/scout.md` | Locating code, listing where something is used, extracting facts from named files, a verbatim change |
+| Mechanical | the harness's fast, cheap model | `references/roles/scout.md` | Locating code, listing where something is used, extracting facts from named files, a verbatim change that is not destructive |
 | Working | the harness's mid-size model | `references/roles/worker.md` | A coding task that needs the file read and a choice made; research on one bounded question |
 | Deciding | the main session | — | Planning, the interview, synthesis, review, every check, failure diagnosis, every write to `plan.md`, `spec.md` and `research.md`, every commit |
 
@@ -35,16 +35,19 @@ worker" below mean a subagent started that way.
 The Deciding tier is the main session whatever model it runs. Never dispatch a worker to do
 the Deciding tier's work, and never start one on a model larger than the Working tier's.
 
-`research-topic` keeps its own worker, the researcher, with its own role file, brief and
-report contract in that skill's `references/`. It is a Working-tier worker; nothing below
-about briefs and replies applies to it.
+A destructive or irreversible step — a migration, a deletion, a history rewrite, a data
+change, anything that reaches beyond the working tree — is never delegated at any tier. The
+main session shows the user the exact command, waits for a yes, and runs it itself.
+
+`research-topic` does not use this file: it keeps its own worker, the researcher, with its
+own role file, brief and report contract. Its researcher runs on the Working tier's model.
 
 ## Starting a subagent in your harness
 
 | Harness | How to start one | Mechanical tier | Working tier |
 |---|---|---|---|
 | Claude Code | The `Agent` tool, `subagent_type: "general-purpose"` | `model: "haiku"` | `model: "sonnet"`; add `effort: "high"` when the brief describes a hard or long task and the tool accepts `effort` |
-| Codex | Ask for a subagent — the built-in `explorer` for a locate job, `worker` for a change or research — and name the model and reasoning effort in the request | a smaller model if the session offers one, otherwise `low` reasoning effort | the session's default model, `medium` reasoning effort |
+| Codex | Ask for a subagent — the built-in `explorer` for a locate job, `worker` for a change or research — and name the model and reasoning effort in the request | a smaller model if the session offers one, otherwise `low` reasoning effort | a mid-size model if the session offers one; otherwise the session's model at `medium` reasoning effort, and the hand-over names it |
 | Antigravity | `invoke_subagent` with the general-purpose type (`self`) | its lightest model (`flash_lite`) | its mid-size model |
 | Any other harness with a subagent tool | Its general-purpose subagent | its cheapest model | its mid-size model |
 | A harness with no subagent tool (pi without a subagent extension, or a session that withholds the tool) | Nothing to start — see below | — | — |

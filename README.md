@@ -100,14 +100,15 @@ condition. A trivial edit does not need a plan. Planning stops at the handoff.
 Ask: “Use execute-plan for obsidian-sync.” Execution checks assumptions, settles open
 questions and verifies completion before advancing. Missing acceptance criteria are resolved
 before implementation. `--phase N` selects a phase; its prerequisites still must hold.
-Progress remains on disk for resumption after interruption.
+Progress remains on disk for resumption after interruption. Started from a vague request
+rather than by name, it confirms the plan and phase before its first edit.
 
 ### Research a topic
 
 Ask: “Use research-topic to compare device authorization flows and preserve the findings.”
 The skill scouts first, confirms scope and budget, then researches inline or delegates
-independent angles within available slots. Reports live in a unique cache directory outside
-the working tree. Changed claims are checked against source evidence before scratch cleanup.
+independent angles within available slots. Reports live in a unique scratch directory outside
+the working tree (`~/.cache`, else the temporary directory; if neither is writable it asks). Changed claims are checked against source evidence before scratch cleanup.
 For a chat-only answer or read-only review, ask directly rather than invoking this workflow.
 
 ## Persistence and delegation
@@ -119,7 +120,8 @@ with an explanation. No skill pushes changes or changes repository visibility.
 
 Subagents receive a bounded job and a role pasted from `references/roles/`; no custom agent
 definitions are installed. The main agent owns decisions, shared documents, verification
-and commits. Models, reasoning effort and concurrency adapt to the tools actually available.
+and commits. Destructive or irreversible commands are never delegated: the main agent shows
+the exact command and runs it only after you confirm. Models, reasoning effort and concurrency adapt to the tools actually available.
 A worker's report is checked against its changes before being trusted.
 
 ## Compatibility
@@ -128,7 +130,9 @@ The common [Agent Skills format](https://agentskills.io/specification) makes the
 bundles portable; it does not standardize tool APIs, permissions or command syntax.
 See [the compatibility record](docs/compatibility.md) for dated evidence and limitations.
 Historical checks cover installation, a no-plan path and scout dispatch in Claude Code,
-Codex and Antigravity. Pi and complete cross-harness workflows remain unverified.
+Codex and Antigravity. Pi and complete cross-harness workflows remain unverified. Sandboxed
+sessions (for example Codex's default `workspace-write`) may block network access, writes
+outside the project, or commits; each skill's `compatibility` field states what it needs.
 
 `argument-hint` is a deliberate Claude Code frontmatter extension. Strict `skills-ref`
 validation reports it as unsupported; this is documented rather than counted as a pass.
@@ -151,6 +155,9 @@ npx -y skills-ref validate skills/plan-work
 # Paid behavioral evaluation; choose an explicit budget:
 claude plugin eval . --trust-plugin --max-cost-usd 5
 ```
+
+Artifacts land in `docs/` unless your project's instructions or layout name another
+documentation root; `research` is reserved for the corpus and never used as a slug.
 
 Skills live in `skills/<name>/SKILL.md`, supporting material in `references/`, and behavioral
 cases in `evals/`. See [AGENTS.md](AGENTS.md) for maintenance rules and

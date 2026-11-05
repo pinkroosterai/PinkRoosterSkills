@@ -1,7 +1,9 @@
 ---
 name: plan-work
-description: Use when the user wants an implementation plan for a defined request or spec. Not for a trivial edit, an unsettled concept (shape-spec), executing an existing plan (execute-plan), or a research corpus (research-topic).
+description: Writes a researched, phased implementation plan (docs/{slug}/plan.md) with assumptions, open questions, tasks and checkable done conditions. Use when the user wants a plan, roadmap or breakdown for a defined request or a spec before building. Not for a trivial edit, an unsettled concept (shape-spec), executing an existing plan (execute-plan), or a research corpus (research-topic).
 argument-hint: "[what to plan]"
+license: MIT
+compatibility: Needs a filesystem and git for commits; web search for external unknowns.
 ---
 
 # Plan Work
@@ -33,10 +35,16 @@ installed: report the next outcome in plain language instead of assuming it is a
 Question batches must fit the actual tool limits. For asynchronous tools, wait for the
 user's answer before dependent work; tool completion and elapsed time are not answers.
 
+Paths: `docs/` in this skill means the project's documentation root — `docs/` unless the
+project's instructions or layout name another. The research corpus is `<docs root>/research/`,
+so `research` is never a slug. A `docs/<slug>/` folder belongs to this skill set only when it
+holds `spec.md`, `plan.md` or `research.md`; otherwise choose a distinguishing slug.
+
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.
 Explicit paths do not isolate unrelated edits within a file: stage only attributable hunks
-and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
+— without an interactive prompt, for example by writing the hunks to a patch and applying
+it with `git apply --cached` — and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
 isolated, leave this run uncommitted and explain. In a non-Git project or when commits are
 prohibited, leave the files on disk and report that. On commit failure preserve all artifacts
 and report the failure. A local commit records history; it does not publish or synchronize
@@ -94,7 +102,9 @@ done-condition and the plausible readings produce genuinely different plans, tha
 one question round; otherwise take the best reading and state it in the plan.
 
 When `docs/<slug>/spec.md` exists, it is read before the repo — it is the statement of
-what to build, and it arrives carrying state this skill must honor:
+what to build, and it arrives carrying state this skill must honor. The header lines, marks
+and `Decisions` rules are defined in `references/spec-contract.md`; read it before reading
+the spec:
 
 - A section with a `[BLOCKING: …]` mark is **refused by name**: say which phases cannot be
   planned and why. Planning around a blocking mark turns a declared unknown into a silent
@@ -114,9 +124,11 @@ A missing spec is the normal case for direct requests, not an error.
 If the work is one edit with nothing to research, say so and stop. A plan for a typo costs
 more than the typo.
 
-If `docs/<slug>/` already exists, read it before writing a byte. A plan whose `Log` is
-empty can be rewritten in place; one that has been executed against cannot — say what is
-already there and let the user choose between a fresh slug and replacing it.
+If `docs/<slug>/` already exists, read it before writing a byte. A folder holding none of
+`spec.md`, `plan.md` or `research.md` belongs to the project, not this pipeline: pick a
+distinguishing slug and say so. A plan whose `Log` is empty can be rewritten in place; one
+that has been executed against cannot — say what is already there and let the user choose
+between a fresh slug and replacing it.
 
 **2. Research the unknowns.** Before searching online, check the corpus: `ls docs/research/`
 and read what is relevant — reuse stable findings, but recheck version-sensitive or time-sensitive findings for this task. Then external
@@ -180,3 +192,5 @@ on its own, and a change is made here first and copied.
   shape of `research.md`. Read before step 2.
 - `references/delegation.md` — the tiers, the delegation test, the brief and the reply
   checks for every skill in the set that dispatches a worker. Read before the first dispatch.
+- `references/spec-contract.md` — the parts of a spec every stage reads or writes: header
+  lines, `Status`, marks and the `Decisions` rules. Read before reading a spec.

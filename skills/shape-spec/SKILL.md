@@ -1,7 +1,9 @@
 ---
 name: shape-spec
-description: Use when the user wants to brainstorm, flesh out or specify an idea into a document, or resume an existing spec. Not for implementation planning (plan-work), research reports (research-topic), or a conversational opinion without files.
+description: Turns a rough idea into a confirmed specification (docs/{slug}/spec.md) through draft-first, bounded question rounds and a decision readback. Use when the user wants to brainstorm, flesh out, spec, write requirements or a PRD for an idea, or resume an existing spec. Not for implementation planning (plan-work), research write-ups (research-topic), or an opinion in chat.
 argument-hint: "[the idea, in a line — a slug to resume — or '<slug> deferred' to work its register]"
+license: MIT
+compatibility: Needs a filesystem and git for commits; web search is optional but recommended.
 ---
 
 # Shape Spec
@@ -13,7 +15,7 @@ lines.
 
 Invocation: `/shape-spec a CLI that syncs my Obsidian vault to S3`. The argument is the idea,
 or a slug to resume, or `<slug> deferred` to resume with the deferred register in the queue.
-With no argument, resume the most recently modified spec under `docs/`.
+With no argument, resume an unfinished spec (step 1 says how one is chosen).
 
 Domain-agnostic. A game mechanic and a billing service both get specified here; the technical
 categories only bite when the concept is technical.
@@ -54,10 +56,16 @@ installed: report the next outcome in plain language instead of assuming it is a
 Question batches must fit the actual tool limits. For asynchronous tools, wait for the
 user's answer before dependent work; tool completion and elapsed time are not answers.
 
+Paths: `docs/` in this skill means the project's documentation root — `docs/` unless the
+project's instructions or layout name another. The research corpus is `<docs root>/research/`,
+so `research` is never a slug. A `docs/<slug>/` folder belongs to this skill set only when it
+holds `spec.md`, `plan.md` or `research.md`; otherwise choose a distinguishing slug.
+
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.
 Explicit paths do not isolate unrelated edits within a file: stage only attributable hunks
-and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
+— without an interactive prompt, for example by writing the hunks to a patch and applying
+it with `git apply --cached` — and inspect the staged diff. Preserve unrelated staged changes; if they cannot be safely
 isolated, leave this run uncommitted and explain. In a non-Git project or when commits are
 prohibited, leave the files on disk and report that. On commit failure preserve all artifacts
 and report the failure. A local commit records history; it does not publish or synchronize
@@ -120,15 +128,19 @@ list of things never to ask again. If its `Status` is `draft`, or template secti
 missing, finish the draft first (step 3) and then score; a spec whose first pass died halfway
 must not be interviewed around. A draft that stopped at the four-blocking rule is the
 exception: do not draft further, go to step 5 with the blocking marks as the whole queue. Otherwise go to step 4 with the remaining marks as the queue.
-A folder holding `research.md` but no `spec.md` is a step 2 that was interrupted: read the
-research, do not repeat it, and go to step 3. With `deferred` in the argument, the
+A folder holding `research.md` but neither `spec.md` nor `plan.md`, whose `research.md`
+header says it feeds `spec.md`, is a step 2 that was interrupted: read the research, do not
+repeat it, and go to step 3. A folder with a `plan.md` and no spec was planned directly —
+not this skill's to resume; say so, and offer to write a spec beside it or use a new slug. With `deferred` in the argument, the
 `## Deferred questions` rows join the queue as its last tier; without it they stay out, because
 they were deferred on purpose.
 
-*A bare invocation* — pick the most recently modified `docs/*/spec.md` and **say which one you
-picked** before doing anything to it. If there is none, say so and ask for the concept.
+*A bare invocation* — list the `docs/*/spec.md` files whose `Status` is not `buildable`. One →
+**say which one you picked** before doing anything to it. Several → ask which, listing each
+with its `Status`; never choose by modification time, which a clone or checkout resets. None →
+say so and ask for the concept.
 
-*A new concept* — derive a kebab-case slug, restate the concept in one sentence in the user's
+*A new concept* — derive a kebab-case slug (never `research`, which is the corpus), restate the concept in one sentence in the user's
 own words, and say what you took it to mean. That restatement is not manners: the ambiguity
 interviews are worst at catching is the one where both sides believe they agree.
 
@@ -230,8 +242,9 @@ step:
 
 Name it; do not run it. `plan-work` reads the spec's status, blocking marks and deferred
 questions on entry and writes into the same `docs/<slug>/` folder, so the spec's
-`research.md` is shared ground if it lands there. An interrupted run commits too — whatever
-state the spec reached is the state the next session resumes from.
+`research.md` is shared ground if it lands there. A run the user stops early commits too —
+whatever state the spec reached is the state the next session resumes from. A session that
+dies without warning cannot commit, which is why every write-back lands on disk at once.
 
 ## The three marks
 
@@ -281,6 +294,9 @@ as `${CLAUDE_SKILL_DIR}`); paths below are relative to it.
 - `references/spec-format.md` — the file template, the mechanics of the three marks, the
   `Decisions` entry shapes, and the rules for mutating a spec across sessions. Read before
   writing or rewriting the spec.
+- `references/spec-contract.md` — a copy of `plan-work`'s: the header lines, `Status`, marks
+  and `Decisions` rules that `plan-work` and `execute-plan` also rely on. Read with
+  `spec-format.md`.
 - `references/interviewing.md` — the nine coverage categories and how to score them, the
   vague-word sweep, how to build the queue and a question worth one of the four, the gap scan,
   the readback, and the two search rules. Read at step 2, before the first search.

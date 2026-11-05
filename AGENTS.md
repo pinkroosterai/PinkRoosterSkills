@@ -23,10 +23,18 @@ Markdown and bash only: no runtime, no build.
 - **No agent definitions.** Delegation starts the harness's general-purpose subagent with a
   role file from `references/roles/`. Don't add `agents/*.md` or `.codex/agents/*.toml`.
 - **`plan-work` owns the shared files.** `execute-plan` and `shape-spec` carry byte-identical
-  copies so each installs alone. Edit in `plan-work`, then copy; the check fails on drift.
+  copies so each installs alone — including `spec-contract.md`, the spec rules every stage
+  relies on. Edit in `plan-work`, then copy; the check fails on drift. The "Session and
+  persistence rules" section is identical in every `SKILL.md`; edit it in `plan-work` first.
+- **Destructive steps are never delegated.** The main session shows the exact command and
+  runs it only after the user confirms.
+- **Frontmatter** holds `name`, `description`, the quoted `argument-hint` (a Claude Code
+  extension), `license` and `compatibility`. Descriptions say what the skill produces, then
+  when to use it and when not to, with no angle brackets.
 - **Every skill is model-invocable.** Don't set `disable-model-invocation`: the description
   is how an agent finds the skill when the user asks without typing `/name`, so it must say
-  when to use the skill and when not to.
+  when to use the skill and when not to. A skill that edits code (`execute-plan`) confirms
+  before its first edit when it was not invoked by name.
 - Update `CHANGELOG.md` and bump `version` in both `.claude-plugin` manifests on a release.
 
 ## Commands
@@ -34,6 +42,7 @@ Markdown and bash only: no runtime, no build.
 | Task | Command |
 |---|---|
 | Check every skill | `scripts/check-skills.sh` |
+| Test the checker | `scripts/test-check-skills.sh` |
 | Validate against the spec | `npx -y skills-ref validate skills/<name>` (reports `argument-hint`; expected) |
 | Validate the Claude plugin | `claude plugin validate .` |
 | Run the evals (paid) | `claude plugin eval . --trust-plugin` |

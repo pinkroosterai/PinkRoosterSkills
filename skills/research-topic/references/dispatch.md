@@ -18,7 +18,7 @@ Everything the run produces lives in the run directory `$RUN` created at the end
 entry:
 
 ```
-$RUN/                       = ~/.cache/research-topic/<YYYY-MM-DD>-<unique-run-id>/
+$RUN/                       = <scratch root>/research-topic/<YYYY-MM-DD>-<unique-run-id>/
   00-scope.md
   01-<angle-slug>.md
   02-<angle-slug>.md
@@ -123,8 +123,8 @@ Never synthesise around a hole silently. In order of preference:
    escalate the budget to compensate.
 
 A redispatch is a **retry**, not a round: it re-runs an angle the user already agreed, at
-most once per angle. Retries do not count against the ten-agent cap and do not consume the
-follow-up round. Two failed retries on the same angle means stop retrying and report it
+most once per angle. It adds no angle, so it does not count against the ten-angle cap and
+does not consume the follow-up round. When the retry fails too, stop and report the angle
 uncovered — a third attempt has never been the thing that worked.
 
 An uncovered angle goes in the topic file's **Open questions** section, named, so the gap
@@ -136,6 +136,6 @@ At most one, and only with the user's agreement. It is for named gaps the first 
 exposed — a contradiction nobody could settle, an angle that turned out to hide two — not
 for "more depth".
 
-Cap it at three agents. Same brief template, same report directory, numbered on from the
+Cap it at three angles. Same brief template, same report directory, numbered on from the
 last report. If a second round still leaves the question open, that is the answer: write it
 into the topic file as an open question with what was tried, and stop.

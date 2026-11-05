@@ -19,9 +19,10 @@ matching how `plan-work` and `research-topic` already hold their design notes. `
 writes into the same folder if it is later run on the same slug, so the spec's `research.md`
 is shared ground rather than private.
 
-A concept whose slug matches an existing folder resumes that spec. When it is genuinely a
-different thing under a similar name, say so and pick a distinguishing slug rather than
-overwriting.
+A concept whose slug matches an existing folder holding `spec.md` resumes that spec. When it
+is genuinely a different thing under a similar name — or the folder holds the project's own
+documents and no `spec.md`, `plan.md` or `research.md` — say so and pick a distinguishing slug
+rather than writing into it. `research` is never a slug: `docs/research/` is the corpus.
 
 ## The template
 
@@ -122,16 +123,18 @@ opposite of the point.
 
 ## The `Decisions` entries
 
-The log is the record of who decided what, and it is what the readback works from. Every
-entry opens with a provenance tag:
+The log is the record of who decided what, and it is what the readback works from. The
+provenance tags, the confirmation rule, supersession and the header counts are fixed in
+`spec-contract.md` (beside this file), because `plan-work` and `execute-plan` read and write
+them too. When this skill writes each tag:
 
-| Tag | Means | Written when |
-|---|---|---|
-| `user` | The user answered; the quote is their words | At write-back, one per answer |
-| `default` | The user said "you decide" or "I don't know"; the call is yours, logged so it can be reopened knowingly | At write-back |
-| `assumed` | A load-bearing call made while drafting, never asked | At step 3, under a `(draft)` heading, and by the gap scan |
-| `sourced` | Decided by a finding in `research.md`; the entry names its heading | Whenever a search settles something |
-| `executed` | `/execute-plan` found the built thing overturned an entry; names the reversed entry, what was built and why; confirmed only when a recorded user approval explicitly covers that departure | At plan close, by `/execute-plan` only |
+| Tag | Written when |
+|---|---|
+| `user` | At write-back, one per answer |
+| `default` | At write-back, when the answer was "you decide" or "I don't know" |
+| `assumed` | At step 3, under a `(draft)` heading, and by the gap scan |
+| `sourced` | Whenever a search settles something |
+| `executed` | Never by this skill — `execute-plan` writes it at plan close |
 
 Entry shapes, one line each unless the quote runs long:
 
@@ -152,10 +155,10 @@ Rules:
 - **Quote the answer and record what it ruled out**, not only what it chose. The quote is what
   identifies the user's own words later; the ruled-out list is what stops a settled question
   being reopened six months on.
-- **`confirmed <date>` requires readback, or an explicit user approval of the exact execution departure recorded with the entry.** Record which approval confirmed an execution departure. All other entries require
-  inclusion in a confirmed readback list.
-- **A reversal is a new entry, never an edit.** The old entry stays, keeps its historical confirmation and gains `superseded by <replacement>`, and the new entry names it. Silent reversals are how a spec starts lying
-  about itself.
+- **Confirmation and reversal follow `spec-contract.md`.** A reversal is a new entry, never an
+  edit; silent reversals are how a spec starts lying about itself.
+- **An `executed` entry left unconfirmed by `execute-plan`** is an active unconfirmed entry
+  like any other: it goes in the next readback list.
 - **Every active entry is read back**, whatever its tag: the readback lists each active one not yet carrying
   `confirmed`, so the header's count is a count of active entries, not wrapped lines. Whether a drafted
   guess earns an entry at all is the key test in `SKILL.md § The three marks`.
