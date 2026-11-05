@@ -1,6 +1,6 @@
 # Installation
 
-Choose your harness below. All methods load the same five skills and their bundled
+Choose your harness below. All methods load the same six skills and their bundled
 references. You do not need to install another agent, a subagent extension, or a runtime
 for these Markdown instructions. Your harness supplies file access, shell commands,
 questions and optional delegation; research also needs web or documentation tools.
@@ -129,7 +129,7 @@ choose skills, agents and installation method interactively:
 
 ```bash
 npx skills add pinkroosterai/PinkRoosterSkills
-# All five skills for a specific harness:
+# All six skills for a specific harness:
 npx skills add pinkroosterai/PinkRoosterSkills -a cursor --skill '*'
 # Other harness identifiers:
 npx skills add pinkroosterai/PinkRoosterSkills -a gemini-cli --skill '*'
@@ -215,7 +215,7 @@ Start a new session in your project. Ask:
 > List the installed PinkRooster skills and read the plan-work skill. Do not create files
 > or run its workflow.
 
-Expect `explore-ideas`, `shape-spec`, `plan-work`, `execute-plan` and `research-topic`,
+Expect `explore-ideas`, `shape-spec`, `plan-work`, `execute-plan`, `research-topic` and `maintain-agents-md`,
 and a summary showing that plan-work was read. If you installed only one skill, expect
 only that skill. Check that referenced files can be opened from the installed bundle.
 Discovery and loading do not establish that every workflow works in that harness.
