@@ -87,7 +87,10 @@ ambiguous. A handoff names the next step without automatically running it.
 Ask: “Use shape-spec for a CLI that synchronizes an Obsidian vault to S3.” The skill drafts
 before interviewing, distinguishes blocking gaps from thin sections and deferred questions,
 and confirms active decisions before calling the spec buildable. Superseded decisions stay
-as history and do not re-enter the confirmation queue. Resume by naming the existing slug.
+as history and do not re-enter the confirmation queue. A question that needs a real survey —
+a contested field, alternatives to compare — is offered to research-topic mid-run; if you
+accept, shape-spec pauses, the research lands in the corpus, and shaping resumes from it.
+Resume by naming the existing slug.
 
 ### Plan defined work
 

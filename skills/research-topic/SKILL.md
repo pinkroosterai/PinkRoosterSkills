@@ -240,7 +240,9 @@ names this repository and topic. Delete only that directory. If ownership is unc
 leave it in place and report it. Never use a glob or a date-shaped path as deletion authority.
 
 Then report in a few lines: which files were created or revised, how many claims and
-sources each carries, what the researchers could not confirm, and what is still open.
+sources each carries, what the researchers could not confirm, and what is still open. When
+another skill's run paused to hand this question over — `shape-spec` does — end by naming
+that run and the corpus file it should read, so it can resume.
 
 ## When to use something else
 

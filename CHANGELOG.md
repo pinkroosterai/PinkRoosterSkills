@@ -8,6 +8,8 @@
 - Revalidate volatile findings and make commit and recovery behavior consistent.
 - Expand README usage, compatibility boundaries, branding and validation guidance.
 - Add workflow regression scenarios and strengthen repository checks.
+- `shape-spec` offers a question that needs a research survey to `research-topic`, pauses
+  while it runs when accepted, and resumes from the corpus file.
 - Add `spec-contract.md`, shared by all three pipeline skills, so `plan-work` and
   `execute-plan` carry the spec rules they read and write when installed alone.
 - Never delegate destructive steps; run them inline after the user confirms the command.

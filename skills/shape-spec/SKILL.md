@@ -156,6 +156,10 @@ the same file later, under the same shape. Skip the searching when the
 conversation has already established the domain — a search that only confirms what you knew is
 padding, and it delays the draft the user is waiting for.
 
+If those searches show a question too large to settle in a handful — the test is in
+`Handing a question to research-topic` below — do not keep searching. Draft around it with
+the sentences it affects marked, and offer the hand-off in the first round.
+
 **3. Write the draft.** Every section of the template in `references/spec-format.md`, filled in
 with your best reading, with everything you had to guess marked. Draft before asking, not
 after: a guess on the page can be redlined, an omission cannot, and a session that dies here
@@ -196,7 +200,8 @@ Search for inspiration **when the design space is genuinely open** — a questio
 default. Look up how three or four existing things solve it and make them the options, and
 record what you found in `research.md` with its sources, the same as step 2's findings. Prior
 art that shaped a decision and then evaporated is the research half of this skill failing
-quietly.
+quietly. When three or four quick examples cannot settle the question — the alternatives need
+a real comparison — offer the hand-off below as an option on that question instead.
 
 Write the spec back when the user’s answer arrives:
 
@@ -278,12 +283,54 @@ competent readers would build different things from it.
 while any `[BLOCKING]` or Missing category remains or any active `Decisions` entry is unconfirmed,
 `buildable` when none of the three does.
 
+## Handing a question to research-topic
+
+Some questions need a research survey, not a handful of searches. This skill's own searches
+stay bounded; a survey is `research-topic`'s job, and its corpus outlives this spec.
+
+**The test.** Check `docs/research/` first — a corpus file that already answers the question
+is read, not re-researched. Otherwise offer the hand-off only when settling the question
+needs more than a handful of searches *and* at least one holds:
+
+- the field is contested — sources disagree, or the answer changed recently;
+- several real alternatives must be compared, and the choice changes `Scope` or `How it works`;
+- the findings will matter beyond this spec — other specs or plans will need them.
+
+A question that only needs a fact checked is searched inline, as `The two searches` in
+`references/interviewing.md` says.
+
+**The offer** is an option in a normal round, never a separate interruption, and it counts
+toward the round's four questions: on the question it would settle, offer "Research this with
+research-topic first" with its cost — a scoping question, then an inline pass or several
+researcher agents, files under `docs/research/` — beside the options that decide now. From
+step 2 the offer goes in the first round, after the draft has been reported. Recommend it only
+when deciding now would mean guessing at something the user would want sourced.
+
+**When accepted:**
+
+1. The spec is already on disk from the last write-back; leave it uncommitted. Keep the
+   question's mark — it is not resolved yet.
+2. Say you are pausing shape-spec, then run `research-topic` in this session with the
+   question as its topic. Its own rules hold in full, including its scope gate and its own
+   commit of the corpus; its researcher agents are its delegation, chosen by the user at that
+   gate, not this skill's.
+3. Resume at step 4. Re-read the spec, read the corpus file the run created or revised, and
+   append a short finding to `docs/<slug>/research.md` that cites it
+   (`Source: docs/research/<topic>.md, checked <date>`). Re-ask the question with options built
+   from the findings, or log what the research settled as a `sourced` entry naming that
+   heading. The readback still confirms it.
+
+**When declined**, the question is asked as it stands. **When `research-topic` is not
+installed**, say so in plain language, leave the question marked or as a deferred row naming
+the research it needs, and continue; never fake a survey with more inline searches.
+
 ## When to use something else
 
 Name the boundary and hand off rather than absorbing the work:
 
 - **`/plan-work`** — "plan how to build X". This says what; that says how.
-- **`/research-topic`** — the ask is a research write-up, not a specification.
+- **`/research-topic`** — the ask is a research write-up, not a specification. A question
+  inside a spec that needs a survey is handed over mid-run instead — see above.
 - **Nothing** — "is this idea any good?" is a conversation. Answer it in chat.
 
 ## Additional resources

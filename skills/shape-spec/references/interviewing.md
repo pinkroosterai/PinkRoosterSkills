@@ -232,8 +232,9 @@ did not see is not confirmed, and the count in the header says so.
 
 ## The two searches
 
-Bounded, and they have different jobs. Neither is a licence to research the topic — that is
-`/research-topic`. Neither is a cap on checking a specific fact either: looking something up
+Bounded, and they have different jobs. Neither is a licence to research the topic — a question
+that needs a survey is offered to `research-topic`, by the test in `SKILL.md § Handing a
+question to research-topic`. Neither is a cap on checking a specific fact either: looking something up
 to avoid asserting it blind is always allowed, and always cheaper than a `[BLOCKING]` mark.
 
 **For understanding**, once, at step 2. What this kind of thing normally involves, what it is
