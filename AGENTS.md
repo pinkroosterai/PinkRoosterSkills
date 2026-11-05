@@ -5,14 +5,10 @@ Markdown and bash only: no runtime, no build.
 
 ## Layout
 
-| Path | What it is |
-|---|---|
-| `skills/<name>/SKILL.md` | A skill. `name` matches the directory. |
-| `skills/<name>/references/` | Loaded on demand by the skill. `roles/` holds the subagent role files. |
-| `.claude-plugin/`, `.codex-plugin/`, `.antigravity-plugin/`, `.agents/plugins/`, `package.json` | Native packages and discovery catalogs sharing `skills/`. |
-| `evals/` | `claude plugin eval` cases, one per directory. |
-| `scripts/check-skills.sh` | Mechanical checks. Run before every commit. |
-| `docs/compatibility.md` | What was verified in which harness, and when. |
+- `skills/<name>/SKILL.md`: `name` matches the directory. `references/roles/` holds the
+  subagent role files.
+- `.claude-plugin/`, `.codex-plugin/`, `.antigravity-plugin/`, `.agents/plugins/` and
+  `package.json` are native packages and catalogs sharing `skills/`.
 
 ## Rules
 
@@ -46,7 +42,8 @@ checks require `jq`; this is a contributor tool, not a skill runtime dependency.
 
 | Task | Command |
 |---|---|
-| Check every skill | `scripts/check-skills.sh` |
+| Check every skill (run before every commit; also runs `scripts/check-packages.sh`) | `scripts/check-skills.sh` |
+| Package/manifest checks alone | `scripts/check-packages.sh` |
 | Test the checker | `scripts/test-check-skills.sh` |
 | Validate against the spec | `npx -y skills-ref validate skills/<name>` (reports `argument-hint`; expected) |
 | Validate the Claude plugin | `claude plugin validate .` |
