@@ -26,11 +26,11 @@ use any skill on its own. There is no application runtime or build step.
 problem space → explore-ideas → docs/ideas/<area>.md (ranked backlog)
                                         │ one idea
                                         ▼
-concept ──────────────────────→ shape-spec → spec.md (milestones M1…Mn)
+concept ──────────────────────→ shape-spec → spec.md (+ m1/ … mN/)
                                                  │
             ┌────────────────────────────────────┘
             ▼
-       plan-work → plan-m<N>.md → execute-plan → verified milestone ─┐
+       plan-work → m<N>/plan.md → execute-plan → verified milestone ─┐
             ▲                                                         │
             └───────────────────── next milestone ───────────────────┘
 
@@ -110,8 +110,10 @@ and confirms active decisions before calling the spec buildable. Superseded deci
 as history and do not re-enter the confirmation queue. A question that needs a real survey —
 a contested field, alternatives to compare — is offered to research-topic mid-run; if you
 accept, shape-spec pauses, the research lands in the corpus, and shaping resumes from it.
-A big concept gets a `## Milestones` section — M1 is the thinnest slice that works end to
-end — which you confirm like any other decision. A request that is really a problem space is
+A big concept is split into milestones — M1 is the thinnest slice that works end to end —
+which you confirm like any other decision. Each milestone gets its own folder `m1/`, `m2/` …
+beside the spec with a small `milestone.md` that points into the spec, and the spec keeps a
+one-line index with each milestone's status. Name a milestone as `<slug>/m<N>` to re-cut it. A request that is really a problem space is
 offered to explore-ideas first. Resume by naming the existing slug.
 
 ### Plan defined work
@@ -120,8 +122,9 @@ Ask: “Use plan-work to implement docs/obsidian-sync/spec.md.” The plan lands
 Each phase records assumptions, unsettled questions, tasks and an observable completion
 condition. A trivial edit does not need a plan. Planning stops at the handoff.
 A plan holds at most four phases and twenty tasks, each phase small enough for one session.
-A spec with milestones is planned one milestone at a time (`plan-m1.md`, then `plan-m2.md`
-once M1 is done). Over the limit with no milestones, plan-work stops and offers to split the
+A spec with milestones is planned one milestone at a time (`m1/plan.md`, then `m2/plan.md`
+once M1 is done): name one as `<slug>/m2`, or leave it off and the lowest milestone not yet
+done is taken. Plans written under the older `plan-m1.md` layout still run. Over the limit with no milestones, plan-work stops and offers to split the
 spec, plan a first slice, or let you override.
 
 ### Execute a plan
