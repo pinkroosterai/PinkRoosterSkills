@@ -2,6 +2,12 @@
 
 ## 0.2.0 — unreleased
 
+- Milestones are addressable: `shape-spec` writes a folder `m<N>/` with a `milestone.md` per
+  milestone beside the spec (the spec keeps a status-bearing index), and `shape-spec`,
+  `plan-work` and `execute-plan` take the sub-slug `<slug>/m<N>`; with none named, the lowest
+  milestone not `done` is used. A milestone's plan is `m<N>/plan.md`; older `plan-m<N>.md`
+  files still run and are never moved. A milestone-listing script was considered and left as
+  a follow-up.
 - Field feedback from a full shape → plan → execute run: stable decision IDs (`D<n>`) cited by
   supersession, confirmation and the readback; a new `[UNVERIFIED]` mark for inferred
   identifiers and facts only a tool run can show (turned into `Settle first` entries); success

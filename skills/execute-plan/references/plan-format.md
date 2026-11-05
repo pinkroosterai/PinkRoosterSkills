@@ -1,6 +1,6 @@
 # The plan file
 
-`docs/<slug>/plan.md` — or `plan-m<N>.md` for milestone N of a spec — is the contract between
+`docs/<slug>/plan.md` — or `docs/<slug>/m<N>/plan.md` for milestone N of a spec — is the contract between
 whoever plans and whoever executes. It is read cold, months later, by someone who was not in
 this conversation.
 
@@ -20,7 +20,7 @@ this conversation.
 
 **Goal** — <one sentence, ending in the observable condition that means it is done.>
 **Status** — not started      <!-- plan-wide; exact values below -->
-**Milestone** — M<N> of <total>: <name> — `spec.md § Milestones`      <!-- milestone plans only -->
+**Milestone** — M<N> of <total>: <name> — `milestone.md`      <!-- milestone plans only -->
 **Research** — `research.md`
 
 ## Context
@@ -132,13 +132,19 @@ project's instructions may set another.
 
 ## Milestone plans
 
-When the spec has `## Milestones` with more than one milestone, each gets its own plan file,
-`docs/<slug>/plan-m<N>.md`, planned only when the milestone before it is `done`: what the
-earlier one built and recorded in its `Log` is what the next one is planned against. Planning
-every milestone up front plans later work on guesses the first milestone will overturn.
+When the spec has `## Milestones` with more than one milestone, each gets its own plan,
+`docs/<slug>/m<N>/plan.md`, beside its `milestone.md` (layout, sub-slug and status rules:
+`spec-contract.md § Milestones`). A milestone is planned only when the one before it is
+`done`: what the earlier one built and recorded in its `Log` is what the next one is planned
+against. Planning every milestone up front plans later work on guesses the first milestone
+will overturn.
 
 A milestone plan covers only the parts of the spec its milestone `Covers`, and its `Goal` is
 the milestone's `Delivers`. Its phases' `Done when` lines include the milestone's own
-`Done when`. `research.md` stays one file for the whole slug.
+`Done when`. `research.md` stays one file for the whole slug, at `docs/<slug>/`. The plan's
+`Milestone` header line links the milestone document, and the document's `Plan` line links
+the plan.
 
-`plan.md` is the file for a request with no spec, or a spec with a single milestone.
+`plan.md` at `docs/<slug>/` is the file for a request with no spec, or a spec with a single
+milestone. Plans written before this layout, `docs/<slug>/plan-m<N>.md`, are still run as that
+milestone's plan and are never moved automatically.

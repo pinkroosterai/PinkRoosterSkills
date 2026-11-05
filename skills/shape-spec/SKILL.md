@@ -1,7 +1,7 @@
 ---
 name: shape-spec
 description: Turns one concrete concept into a confirmed specification (docs/{slug}/spec.md), split into shippable milestones when it is big, through draft-first question rounds and a decision readback. Use when the user wants to flesh out, spec, write requirements or a PRD for a concept or a backlog idea, or resume a spec. Not for a broad problem space (explore-ideas), implementation planning (plan-work), research write-ups (research-topic), or an opinion in chat.
-argument-hint: "[the concept in a line — idea <id> from <backlog> — a slug to resume — or '<slug> deferred']"
+argument-hint: "[the concept in a line — idea <id> from <backlog> — a slug to resume — '<slug> deferred' — or '<slug>/m<N>' to re-cut a milestone]"
 license: MIT
 compatibility: Needs a filesystem and git for commits; web search is optional but recommended.
 ---
@@ -15,7 +15,8 @@ lines.
 
 Invocation: `/shape-spec a CLI that syncs my Obsidian vault to S3`. The argument is the concept,
 an idea from a backlog (`idea I3 from docs/ideas/token-cost-tracking.md`), a slug to resume, or
-`<slug> deferred` to resume with the deferred register in the queue.
+`<slug> deferred` to resume with the deferred register in the queue, or a milestone's sub-slug
+`<slug>/m<N>` to re-cut that one milestone (step 1).
 With no argument, resume an unfinished spec (step 1 says how one is chosen).
 
 Domain-agnostic. A game mechanic and a billing service both get specified here; the technical
@@ -61,7 +62,7 @@ Paths: `docs/` in this skill means the project's documentation root — `docs/` 
 project's instructions or layout name another. The research corpus is `<docs root>/research/`
 and the idea backlog `<docs root>/ideas/`, so neither `research` nor `ideas` is ever a slug.
 A `docs/<slug>/` folder belongs to this skill set only when it holds `spec.md`, `plan.md`,
-`plan-m<N>.md` or `research.md`; otherwise choose a distinguishing slug.
+`plan-m<N>.md`, `research.md` or milestone folders `m<N>/`; otherwise choose a distinguishing slug.
 
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.
@@ -135,7 +136,10 @@ must not be interviewed around. A draft that stopped at the four-blocking rule i
 exception: do not draft further, go to step 5 with the blocking marks as the whole queue. Otherwise go to step 4 with the remaining marks as the queue.
 A folder holding `research.md` but neither `spec.md` nor `plan.md`, whose `research.md`
 header says it feeds `spec.md`, is a step 2 that was interrupted: read the research, do not
-repeat it, and go to step 3. A folder with a `plan.md` and no spec was planned directly —
+repeat it, and go to step 3. With `<slug>/m<N>`: re-cut only that milestone — its `Delivers`, `Covers` and `Done when` in
+`m<N>/milestone.md`, the index line, a dated `Decisions` entry — and leave the others alone
+(`references/spec-format.md § Mutating an existing spec`). An `N` that does not exist gets the
+real list back and a stop. A folder with a `plan.md` and no spec was planned directly —
 not this skill's to resume; say so, and offer to write a spec beside it or use a new slug. With `deferred` in the argument, the
 `## Deferred questions` rows join the queue as its last tier. Without it they stay out, but
 when the register has rows, ask once at the start whether to work them (the exact argument
@@ -205,8 +209,9 @@ for a spec, and offer to work those four before writing another section — or, 
 show a problem space rather than one concept, to explore ideas first, as above.
 
 **Milestones.** Draft `## Milestones` when the scope holds more than one outcome a user could
-use alone or exceeds the `Appetite`; the rule and the `assumed` log entry are in
-`references/spec-format.md § Choosing milestones`.
+use alone or exceeds the `Appetite`; the rule, the `assumed` log entry and the milestone
+folders and documents written beside `spec.md` are in `references/spec-format.md § Choosing
+milestones`.
 
 Then **report the path and what the draft says** — two or three lines, plus which sections are
 guesses and how many decisions you assumed. This is the redlining the whole draft-first
@@ -279,7 +284,7 @@ the queue empty. Set `Status` from the file (`[THIN]` and `[UNVERIFIED]` marks n
 no category is Missing, *and* every active `Decisions` entry carries `confirmed`; `shaping` otherwise.
 When the spec came from a backlog idea, set that idea's status in `docs/ideas/<area>.md` to
 `specced → docs/<slug>/spec.md (<date>)`, in its entry and its table row, and nothing else.
-Commit `docs/<slug>/` — the spec and the research file — and that backlog file, explicit
+Commit `docs/<slug>/` — the spec, the research file and any milestone folders — and that backlog file, explicit
 paths, conventional message; this records a local checkpoint. Then report the path, both
 header lines, the milestones, what is still blocking, deferred, thin or unconfirmed, and name
 the next step:

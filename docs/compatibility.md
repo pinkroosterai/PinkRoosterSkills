@@ -101,6 +101,14 @@ the baseline also wrote nothing but did not raise the size limit). One run per c
 check, not a pass rate. Nothing in 0.2.0 was checked in Codex, Antigravity or Pi, and no full
 explore → shape → plan → execute run across milestones has been done in any harness.
 
+## Milestone sub-slugs
+
+Milestones are folders `docs/<slug>/m<N>/` named as `<slug>/m<N>` in `shape-spec`,
+`plan-work` and `execute-plan`. A harness that cannot pass the argument as typed (Codex,
+Pi and others have their own skill-invocation syntax) takes it in words: "plan milestone 2 of
+`<slug>`". Nothing about this layout has been run in Codex, Antigravity or Pi; the Claude
+Code evals only read the instructions.
+
 ## 0.2.0: native packaging and installation onboarding
 
 Checked 2026-11-05 on Linux with Claude Code 2.1.318, Codex CLI 0.166.0,

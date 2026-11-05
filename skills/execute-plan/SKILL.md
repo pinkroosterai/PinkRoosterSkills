@@ -1,7 +1,7 @@
 ---
 name: execute-plan
-description: Implements an existing docs/{slug}/plan.md (or a milestone's plan-m{N}.md) phase by phase, verifying assumptions and done conditions, updating the plan as it goes and committing per phase. Use when the user asks to start, continue or resume building from a plan. Not for writing a plan (plan-work), an unsettled concept (shape-spec), or a read-only plan review.
-argument-hint: "[plan slug or path] [--phase N]"
+description: Implements an existing docs/{slug}/plan.md (or a milestone's m{N}/plan.md) phase by phase, verifying assumptions and done conditions, updating the plan as it goes and committing per phase. Use when the user asks to start, continue or resume building from a plan. Not for writing a plan (plan-work), an unsettled concept (shape-spec), or a read-only plan review.
+argument-hint: "[plan slug, <slug>/m<N>, or path] [--phase N]"
 license: MIT
 compatibility: Needs a filesystem, a shell to run checks, and git for commits; edits code.
 ---
@@ -14,8 +14,10 @@ exactly where the work is.
 
 Invocation: `/execute-plan rate-limiting`, or `/execute-plan` with no argument to resume
 an unfinished plan. A plan file is `docs/<slug>/plan.md` or, for a spec split into
-milestones, `docs/<slug>/plan-m<N>.md`. Given a slug whose folder holds several plan files,
-take the one whose plan-wide `Status` is not `done`. With no argument, list the plan files
+milestones, `docs/<slug>/m<N>/plan.md` (older specs: `docs/<slug>/plan-m<N>.md`). A
+milestone is named by its sub-slug, `/execute-plan <slug>/m<N>`. Given a bare slug whose
+folder holds several plan files, take the one whose plan-wide `Status` is not `done`; if
+more than one qualifies, list them with their milestones and ask. With no argument, list the plan files
 whose plan-wide `Status` is not `done`: one → say which and use it; several → ask which, listing each with
 its `Status`; none → say so and stop. Never choose by modification time — a clone or checkout
 resets it. `--phase N` runs one named phase instead of continuing from the first unfinished
@@ -31,7 +33,7 @@ is not permission for that.
 
 Pipeline stage: **execute** (explore → shape → plan → execute).
 
-- **Reads on entry** — the plan file (`plan.md` or `plan-m<N>.md`) and `research.md` in
+- **Reads on entry** — the plan file (`plan.md`, `m<N>/plan.md` or `plan-m<N>.md`) and `research.md` in
   `docs/<slug>/`; `spec.md` beside them when one exists.
 - **Leaves on exit** — the work itself; the plan file moved to its true state; findings
   appended to `research.md`; one commit per phase.
@@ -51,7 +53,7 @@ Paths: `docs/` in this skill means the project's documentation root — `docs/` 
 project's instructions or layout name another. The research corpus is `<docs root>/research/`
 and the idea backlog `<docs root>/ideas/`, so neither `research` nor `ideas` is ever a slug.
 A `docs/<slug>/` folder belongs to this skill set only when it holds `spec.md`, `plan.md`,
-`plan-m<N>.md` or `research.md`; otherwise choose a distinguishing slug.
+`plan-m<N>.md`, `research.md` or milestone folders `m<N>/`; otherwise choose a distinguishing slug.
 
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.
@@ -154,7 +156,9 @@ goes in the message, options laid out, and the run waits.
 run the command, confirm the earlier phase's output exists. For an entry that says something
 is absent, record the listing you checked (paths, sizes or checksums) in the `Log` and later
 assert "unchanged since that listing", not "does not exist". All hold → set the phase to
-`in progress` and continue. Any fails → stop, say precisely what moved, and put the ways
+`in progress` and continue; for a milestone plan, keep the milestone's `Status` in
+`m<N>/milestone.md` and in the spec's index line in step with the plan (`in progress` while a
+phase runs or is blocked, per `references/spec-contract.md § Milestones`). Any fails → stop, say precisely what moved, and put the ways
 forward to the user, recommendation named.
 
 **2. Settle.** Answer the phase's `Settle first` questions — the current version, the API
@@ -210,14 +214,14 @@ that commit already happened, make a separate documentation commit.
 Leave the plan file where it is — a finished plan with its `Log` is the record of how the
 work actually went.
 
-For a milestone plan, check the milestone's own `Done when` from the spec and show its
-output. Then, when the spec has milestones left, name the next step without running it —
+For a milestone plan, check the milestone's own `Done when` from `m<N>/milestone.md` and show
+its output, then set the milestone `done` in its document and in the spec's index line. Then, when the spec has milestones left, name the next step without running it —
 
 ```
 /plan-work implement docs/<slug>/spec.md
 ```
 
-— which plans the next milestone against what this one built. When the spec is `shaping`
+— which plans the next milestone (add `m<N>` to name it) against what this one built. When the spec is `shaping`
 because of an unconfirmed departure, say that `/shape-spec` on the slug comes first.
 
 ## When the plan is wrong
