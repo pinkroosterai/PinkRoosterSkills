@@ -1,0 +1,14 @@
+{
+  "name": "pinkrooster-skills",
+  "description": "PinkRooster's portable agent skills: shape-spec, plan-work, execute-plan and research-topic.",
+  "owner": {
+    "name": "pinkroosterai"
+  },
+  "plugins": [
+    {
+      "name": "pinkrooster-skills",
+      "source": "./",
+      "description": "A spec → plan → execute pipeline and a research-corpus builder: shape-spec, plan-work, execute-plan and research-topic."
+    }
+  ]
+}
