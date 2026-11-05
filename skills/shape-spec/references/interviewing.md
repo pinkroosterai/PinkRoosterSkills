@@ -203,8 +203,9 @@ skill's last gap-finder, not a second interview.
 
 **2. Consistency.** Read active `Decisions` entries against the sections. Two entries that cannot
 both be true, a section that says something the log ruled out, one noun under two names, or a
-part of `Scope › In` that no milestone covers (or two do) is a `[BLOCKING]` mark at the
-sentence that loses — and the readback waits.
+part of `Scope › In` that no milestone covers (or two do), or a milestone document whose
+`Covers` or `Done when` no longer matches the spec or whose index line disagrees with it, is a
+`[BLOCKING]` mark at the sentence that loses — and the readback waits.
 
 **3. The list.** Every active `Decisions` entry not yet carrying `confirmed`, labelled with its
 stable `D<n>` ID (never a fresh 1..n numbering), grouped by the section it lives in, one line

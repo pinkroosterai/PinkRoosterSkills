@@ -82,7 +82,7 @@ check it under the project's testing rules, or only a user run can.>
 
 ## Milestones
 
-Single milestone.      <!-- or M1, M2 … in the format in spec-contract.md -->
+Single milestone.      <!-- or the one-line-per-milestone index in spec-contract.md § Milestones -->
 
 ## Deferred questions
 
@@ -217,6 +217,13 @@ then value. The split is a key call: log it `assumed`, so the readback puts it t
 Otherwise the section says `Single milestone.` A write-back that grows the scope re-runs this
 test.
 
+When the split is drafted, also write, beside `spec.md`, one folder `m<N>/` per milestone with
+a `milestone.md` in the format of `spec-contract.md § Milestones`: `Covers` names bullets of
+`Scope › In` by their leading words, `Done when` quotes `Success criteria` lines verbatim, and
+the spec's `## Milestones` becomes the status-bearing index. Status starts `not started`. These
+files are references into the spec, never a second copy of it, so a section edit that moves a
+referenced bullet or line is followed by a check of the milestone documents.
+
 ## Writing the marks
 
 Which mark to use, the four-blocking cap, and the difference between a mark and an assumed
@@ -292,8 +299,13 @@ A second run is not a second first run. These rules are what make it safe.
   preserved verbatim unless the user changes it. Prose the skill guessed may be rewritten
   freely. `Decisions` quotes each answer and tags who decided, so it is the record of which is
   which.
+- **Re-cutting one milestone** (`<slug>/m<N>`) edits only that milestone's document and index
+  line and logs a dated `Decisions` entry naming the milestone and what changed. A milestone
+  whose `plan.md` has a non-empty `Log` is asked about first: supersede the plan with a new
+  one, or keep it and cut only the milestone's later parts. Finished milestones keep their
+  numbers; scope that grows after M1 is done becomes new milestones.
 - **A rewrite that removes or reverses a decision gets a `Decisions` entry** saying what changed
-  and why, and the reversed entry keeps its historical confirmation and gains `superseded by <replacement>`. Silent reversals are how a spec
+  and why, and the reversed entry keeps its historical confirmation and gains `superseded by D<n>`. Silent reversals are how a spec
   starts lying about itself.
 - **Re-score both header lines against the file as it now is**, not against a memory of the
   last run. A confirmed count is never carried forward from memory: count confirmed active entries.
