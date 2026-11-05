@@ -39,7 +39,7 @@ for file in skills/*/SKILL.md; do
   [ "$body_bytes" -le 24000 ] || fail "$file: body exceeds Antigravity 24000-byte loading limit"
   [ -d "$(dirname "$file")/references" ] || fail "$file: missing bundled references"
 done
-[ "$(find skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l)" -eq 5 ] || fail 'expected five packaged skills'
+[ "$(find skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l)" -eq 6 ] || fail 'expected six packaged skills'
 for asset in "$(jq -er '.logo' .antigravity-plugin/plugin.json)" "$(jq -er '.interface.logo' .codex-plugin/plugin.json)"; do
   [ -f "$asset" ] || fail "missing package asset: $asset"
 done

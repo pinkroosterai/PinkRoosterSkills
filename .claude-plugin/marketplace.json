@@ -1,6 +1,6 @@
 {
   "name": "pinkrooster-skills",
-  "description": "PinkRooster's portable agent skills: explore-ideas, shape-spec, plan-work, execute-plan and research-topic.",
+  "description": "PinkRooster's portable agent skills: explore-ideas, shape-spec, plan-work, execute-plan, research-topic and maintain-agents-md.",
   "owner": {
     "name": "pinkroosterai"
   },
@@ -8,7 +8,7 @@
     {
       "name": "pinkrooster-skills",
       "source": "./",
-      "description": "An explore → shape → plan → execute pipeline and a research-corpus builder: explore-ideas, shape-spec, plan-work, execute-plan and research-topic.",
+      "description": "An explore → shape → plan → execute pipeline and a research-corpus builder: explore-ideas, shape-spec, plan-work, execute-plan, research-topic and maintain-agents-md.",
       "version": "0.2.0"
     }
   ]

@@ -4,7 +4,7 @@
 
 # PinkRoosterSkills
 
-**Five portable agent skills: explore ideas, shape one into a spec, plan the work, execute the plan, and build a sourced research corpus.**
+**Six portable agent skills: explore ideas, shape one into a spec, plan the work, execute the plan, build a sourced research corpus, and keep AGENTS.md lean.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent-Skills-ec4899)](https://agentskills.io/specification)
@@ -59,7 +59,7 @@ skills and multiple harnesses; it needs Node.js 22.20 or later. The skills have 
 or build step. Install using one method per harness to avoid duplicate skills.
 
 **Verify before starting:** ask your agent, “List the installed PinkRooster skills and read
-the plan-work skill. Do not create files or run its workflow.” Expect all five skills and a
+the plan-work skill. Do not create files or run its workflow.” Expect all six skills and a
 summary of plan-work. This checks discovery and loading, not a complete workflow.
 
 Follow the [installation guide](docs/installation.md) for scope, local checkouts, prerequisites,
@@ -90,6 +90,7 @@ ambiguous. A handoff names the next step without automatically running it.
 | [plan-work](skills/plan-work/SKILL.md) | Turn defined work into phases, assumptions, tasks and acceptance checks, one milestone at a time, within a size limit | `docs/<slug>/plan.md` or `plan-m<N>.md`, `research.md` |
 | [execute-plan](skills/execute-plan/SKILL.md) | Implement an existing plan, verify each phase and record progress | Code, plan status, findings and spec corrections |
 | [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
+| [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
 
 ### Explore ideas
 
