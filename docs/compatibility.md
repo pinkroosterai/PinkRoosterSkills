@@ -85,3 +85,18 @@ make the difference on `plan-work-natural-trigger` and `shape-spec-superseded-de
 `execute-plan-missing-acceptance` and both should-not-trigger cases, so those guard against
 regressions but do not show the skills' effect. One run per case is a smoke check, not a
 pass rate.
+
+## 0.2.0: explore-ideas and milestones
+
+Checked 2026-11-05: `bash scripts/check-skills.sh` and `bash scripts/test-check-skills.sh`
+pass with five skills, `claude plugin validate .` passes with warnings, and `skills-ref
+validate skills/explore-ideas` fails only on `argument-hint`.
+
+`claude plugin eval . --trust-plugin --runs 1 --ablation with-without`: 12/12 cases pass with
+the plugin, $2.68 in total. The first run hit the account's usage limit after five cases, so
+the other seven were re-run one case at a time with the same flags. The three new cases beat
+the no-plugin baseline: `explore-ideas-broad-trigger` (1.00 vs 0.50),
+`shape-spec-routes-problem-space` (1.00 vs 0.50) and `plan-work-size-limit` (1.00 vs 0.50 —
+the baseline also wrote nothing but did not raise the size limit). One run per case is a smoke
+check, not a pass rate. Nothing in 0.2.0 was checked in Codex, Antigravity or Pi, and no full
+explore → shape → plan → execute run across milestones has been done in any harness.

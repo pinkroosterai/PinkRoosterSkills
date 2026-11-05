@@ -10,6 +10,7 @@ installed alone. The full template and the interview rules stay in `shape-spec`.
 - [Header lines](#header-lines)
 - [Status](#status)
 - [Marks](#marks)
+- [Milestones](#milestones)
 - [The Decisions log](#the-decisions-log)
 - [What each stage may do](#what-each-stage-may-do)
 
@@ -19,6 +20,7 @@ installed alone. The full template and the interview rules stay in `shape-spec`.
 **Status** — draft | shaping | buildable
 **Coverage** — <n>/9 clear · <n> partial · <n> missing
 **Confirmed** — <n>/<m> decisions · <k> assumed, unconfirmed
+**From** — idea <id> from `docs/ideas/<area>.md`      <!-- only when it came from a backlog -->
 ```
 
 In `Confirmed`, *m* counts active `Decisions` entries, *n* the active entries carrying
@@ -42,6 +44,28 @@ from the file as it is now, never from memory.
 | `[BLOCKING: <question>]` | A decision not made; the sentence is unsafe to build from | Inline, in the sentence it affects |
 | `[THIN: <what is missing>]` | The section is too vague to build from; nothing is blocked | On the section heading's own line |
 | A row in `## Deferred questions` | Postponed on purpose; `would change:` names what turns on it | The register near the end |
+
+## Milestones
+
+`## Milestones` splits a spec into slices that each ship something a user can use on its own.
+A spec without the section, or whose section says `Single milestone.`, is one milestone.
+
+```markdown
+## Milestones
+
+### M1 — <name>
+**Delivers** — <what a user can do once this ships>
+**Covers** — <the parts of Scope › In it delivers>
+**Done when** — <the Success criteria lines it must meet, quoted or named>
+
+### M2 — <name>
+...
+```
+
+M1 is the thinnest slice that works end to end. Later milestones are ordered by dependency,
+then value. The split itself is a `Decisions` entry, confirmed like any other; until it is,
+the spec is `shaping`. Milestone numbers are stable: a reordering renumbers nothing that a
+plan file already names.
 
 ## The Decisions log
 
@@ -67,11 +91,13 @@ Rules every writer follows:
 
 ## What each stage may do
 
-- **`plan-work`** reads only. A `[BLOCKING]` mark refuses the phases it touches; a deferred
+- **`plan-work`** reads only. It plans one milestone at a time, into `plan-m<N>.md`, and only
+  the parts of the spec that milestone covers. A `[BLOCKING]` mark refuses the phases it touches; a deferred
   row that touches a phase becomes that phase's `Settle first` entry; `Status: shaping`
   (including unconfirmed active decisions) is named to the user before planning; active
   confirmed entries are settled ground; superseded entries are history.
-- **`execute-plan`** appends at close: `executed` entries, `superseded by` on the entries they
+- **`execute-plan`** appends at close — at the close of each milestone plan, for the parts that
+  milestone covered: `executed` entries, `superseded by` on the entries they
   reverse, edits to the affected sections so they describe what was built, then recomputes
   both header lines and `Status`. An unconfirmed `executed` entry makes the spec `shaping`
   again — on purpose: the spec no longer describes agreed ground until the user confirms the

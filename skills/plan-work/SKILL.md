@@ -1,6 +1,6 @@
 ---
 name: plan-work
-description: Writes a researched, phased implementation plan (docs/{slug}/plan.md) with assumptions, open questions, tasks and checkable done conditions. Use when the user wants a plan, roadmap or breakdown for a defined request or a spec before building. Not for a trivial edit, an unsettled concept (shape-spec), executing an existing plan (execute-plan), or a research corpus (research-topic).
+description: Writes a researched, phased implementation plan (docs/{slug}/plan.md, or one plan per milestone) with assumptions, open questions, tasks and checkable done conditions, and refuses plans too large for one go. Use when the user wants a plan, roadmap or breakdown for a defined request or a spec before building. Not for a trivial edit, an unsettled concept (shape-spec), executing an existing plan (execute-plan), or a research corpus (research-topic).
 argument-hint: "[what to plan]"
 license: MIT
 compatibility: Needs a filesystem and git for commits; web search for external unknowns.
@@ -8,8 +8,9 @@ compatibility: Needs a filesystem and git for commits; web search for external u
 
 # Plan Work
 
-Turn a request into `docs/<slug>/plan.md`: researched, reviewed, split into phases, with
-tasks that say *what* to do and *where* to look. Someone else executes it — a later
+Turn a request into `docs/<slug>/plan.md` — or, for a spec split into milestones, the next
+milestone's `plan-m<N>.md` — researched, reviewed, split into phases, kept within the size
+limit, with tasks that say *what* to do and *where* to look. Someone else executes it — a later
 session, another agent, the user — so the plan has to survive being read cold.
 
 Invocation: `/plan-work add rate limiting to the public API endpoints`. Everything after
@@ -19,12 +20,12 @@ otherwise the slug is derived from the request.
 
 ## Place in the set
 
-Pipeline stage: **plan** (shape → plan → execute).
+Pipeline stage: **plan** (explore → shape → plan → execute).
 
 - **Reads on entry** — `docs/<slug>/spec.md` when one exists, then the repo;
   `docs/research/` before searching online.
-- **Leaves on exit** — `docs/<slug>/plan.md` and `research.md`, committed.
-- **Next** — `/execute-plan <slug>`.
+- **Leaves on exit** — `docs/<slug>/plan.md` (or `plan-m<N>.md`) and `research.md`, committed.
+- **Next** — `/execute-plan <slug>`; after a milestone is done, this skill again for the next.
 
 ## Session and persistence rules
 
@@ -36,9 +37,10 @@ Question batches must fit the actual tool limits. For asynchronous tools, wait f
 user's answer before dependent work; tool completion and elapsed time are not answers.
 
 Paths: `docs/` in this skill means the project's documentation root — `docs/` unless the
-project's instructions or layout name another. The research corpus is `<docs root>/research/`,
-so `research` is never a slug. A `docs/<slug>/` folder belongs to this skill set only when it
-holds `spec.md`, `plan.md` or `research.md`; otherwise choose a distinguishing slug.
+project's instructions or layout name another. The research corpus is `<docs root>/research/`
+and the idea backlog `<docs root>/ideas/`, so neither `research` nor `ideas` is ever a slug.
+A `docs/<slug>/` folder belongs to this skill set only when it holds `spec.md`, `plan.md`,
+`plan-m<N>.md` or `research.md`; otherwise choose a distinguishing slug.
 
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.
@@ -91,7 +93,7 @@ These are the steps of *this* run. They are not the plan's phases — those are 
 1. **Analyse** — spec first when there is one, then the repo; goal, done-condition, unknowns
 2. **Research the unknowns** — corpus first, online for external, the repo for internal
 3. **Write** `docs/<slug>/research.md`
-4. **Write** `docs/<slug>/plan.md`
+4. **Outline, check the size limit, then write** the plan file
 5. **Review** the plan against the review checklist below, fix what it catches
 6. **Commit** `docs/<slug>/` and hand over
 
@@ -118,6 +120,11 @@ the spec:
   total — and the same choice applies; a decision only the model made is not settled ground.
 - Its active confirmed decisions are settled ground. Preserve superseded entries as history;
   do not treat them as current requirements. Active unconfirmed decisions remain unsettled.
+- **Milestones.** A `## Milestones` section with more than one milestone means this run plans
+  one: the lowest-numbered milestone with no `plan-m<N>.md` whose `Status` is `done`. If the
+  milestone before it has a plan that is not `done`, say so and stop — the next milestone is
+  planned against what the last one actually built (`references/plan-format.md § Milestone
+  plans`). Plan only what that milestone `Covers`; its `Delivers` is the plan's `Goal`.
 
 A missing spec is the normal case for direct requests, not an error.
 
@@ -125,7 +132,7 @@ If the work is one edit with nothing to research, say so and stop. A plan for a 
 more than the typo.
 
 If `docs/<slug>/` already exists, read it before writing a byte. A folder holding none of
-`spec.md`, `plan.md` or `research.md` belongs to the project, not this pipeline: pick a
+`spec.md`, `plan.md`, `plan-m<N>.md` or `research.md` belongs to the project, not this pipeline: pick a
 distinguishing slug and say so. A plan whose `Log` is empty can be rewritten in place; one
 that has been executed against cannot — say what is already there and let the user choose
 between a fresh slug and replacing it.
@@ -147,17 +154,33 @@ file already exists — `shape-spec` wrote it — append this run's findings und
 `## Planning, <date>` heading and never rewrite what is above it; a superseded finding gets
 a dated correction, not an edit.
 
-**4. Write `docs/<slug>/plan.md`** in the format from `references/plan-format.md`. Phases
-only where there is a real dependency or a natural stopping point — one phase is a
+**4. Outline, check the size limit, then write.** Outline the phases and their tasks first.
+Phases only where there is a real dependency or a natural stopping point — one phase is a
 legitimate answer, and padding a small job into five phases makes every later verification
 step meaningless.
 
+Then check the outline against `references/plan-format.md § The size limit`: at most four
+phases and twenty tasks, every phase small enough for one session. Over the limit, write
+nothing yet and put one question round to the user, recommendation named:
+
+- **Split it in the spec** (recommended when there is a spec) — stop, and name `/shape-spec`
+  on the slug to add or re-cut `## Milestones`; the cut is a decision about what ships, and
+  it belongs where the user confirms decisions.
+- **Plan a first slice now** (recommended with no spec) — choose the thinnest slice that a
+  user can use, plan only that, and list the rest in `Context` as later work, not planned.
+- **Override the limit** — write the whole plan; `Context` records that the user overrode
+  the size limit, with the date.
+
+Within the limit, write the plan file — `plan.md`, or `plan-m<N>.md` for a milestone — in the
+format from `references/plan-format.md`.
+
 **5. Review the plan**, fix what the review catches. Findings that change nothing are not
-worth writing down; findings that change something survive as edits to `plan.md`.
+worth writing down; findings that change something survive as edits to the plan file.
 
 **6. Commit and hand over.** Commit `docs/<slug>/` — the plan and the research file,
-explicit paths, conventional message; this records a local checkpoint. Then report the path, one line on the shape, and the
-command that runs it — `/execute-plan <slug>`.
+explicit paths, conventional message; this records a local checkpoint. Then report the path,
+one line on the shape — for a milestone plan, which milestone of how many — and the command
+that runs it: `/execute-plan <slug>`.
 
 ## Review checklist
 
@@ -169,6 +192,9 @@ Run this against the finished plan, reading it as if you had not written it:
 - No task depends on a question still open in `research.md` and not listed under that
   phase's `Settle first`.
 - Phase order matches the real dependencies; nothing blocks itself.
+- The plan is within the size limit, or `Context` records the user's override.
+- A milestone plan covers only its milestone, and its phases' `Done when` include the
+  milestone's own `Done when`.
 - The decomposition earns itself — merge any two phases that have no reason to be apart.
 - Nothing is asserted without a source or a file behind it.
 

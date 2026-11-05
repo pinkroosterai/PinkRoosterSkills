@@ -4,7 +4,7 @@
 
 # PinkRoosterSkills
 
-**Four portable agent skills: shape an idea, plan the work, execute the plan, and build a sourced research corpus.**
+**Five portable agent skills: explore ideas, shape one into a spec, plan the work, execute the plan, and build a sourced research corpus.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent-Skills-ec4899)](https://agentskills.io/specification)
@@ -23,9 +23,18 @@ Markdown files. Each stage has a distinct job and a durable handoff; you can ins
 use any skill on its own. There is no application runtime or build step.
 
 ```text
-idea → shape-spec → spec.md → plan-work → plan.md → execute-plan → verified changes
-                                 ↑                         ↑
-                      research-topic → docs/research/ corpus
+problem space → explore-ideas → docs/ideas/<area>.md (ranked backlog)
+                                        │ one idea
+                                        ▼
+concept ──────────────────────→ shape-spec → spec.md (milestones M1…Mn)
+                                                 │
+            ┌────────────────────────────────────┘
+            ▼
+       plan-work → plan-m<N>.md → execute-plan → verified milestone ─┐
+            ▲                                                         │
+            └───────────────────── next milestone ───────────────────┘
+
+research-topic → docs/research/ corpus, read first by every stage
 ```
 
 These are instructions an agent follows, not an execution engine or a permission boundary.
@@ -77,10 +86,21 @@ ambiguous. A handoff names the next step without automatically running it.
 
 | Skill | Use it for | Artifacts |
 |---|---|---|
-| [shape-spec](skills/shape-spec/SKILL.md) | Turn an unsettled concept into a specification through bounded question rounds and decision readback | `docs/<slug>/spec.md`, `research.md` |
-| [plan-work](skills/plan-work/SKILL.md) | Turn defined work into phases, assumptions, tasks and acceptance checks | `docs/<slug>/plan.md`, `research.md` |
+| [explore-ideas](skills/explore-ideas/SKILL.md) | Turn a broad problem space into a ranked, sourced idea backlog | `docs/ideas/<area>.md`, `docs/ideas/README.md` |
+| [shape-spec](skills/shape-spec/SKILL.md) | Turn one concept into a specification, split into milestones when big, through bounded question rounds and decision readback | `docs/<slug>/spec.md`, `research.md` |
+| [plan-work](skills/plan-work/SKILL.md) | Turn defined work into phases, assumptions, tasks and acceptance checks, one milestone at a time, within a size limit | `docs/<slug>/plan.md` or `plan-m<N>.md`, `research.md` |
 | [execute-plan](skills/execute-plan/SKILL.md) | Implement an existing plan, verify each phase and record progress | Code, plan status, findings and spec corrections |
 | [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
+
+### Explore ideas
+
+Ask: “I want to build a SaaS for teams that track token costs per customer — help me work out
+what to build.” The skill frames the outcome, users and constraints with you, scans what
+already exists with sources, and generates at least two ideas per user need, including not
+building at all. Each idea is rated High/Medium/Low on value, confidence and effort and names
+its riskiest assumption. You set the order; only then is `docs/ideas/<area>.md` written. A
+later run revises the same backlog. Take an idea forward with
+`/shape-spec idea I3 from docs/ideas/<area>.md`.
 
 ### Shape a concept
 
@@ -90,13 +110,19 @@ and confirms active decisions before calling the spec buildable. Superseded deci
 as history and do not re-enter the confirmation queue. A question that needs a real survey —
 a contested field, alternatives to compare — is offered to research-topic mid-run; if you
 accept, shape-spec pauses, the research lands in the corpus, and shaping resumes from it.
-Resume by naming the existing slug.
+A big concept gets a `## Milestones` section — M1 is the thinnest slice that works end to
+end — which you confirm like any other decision. A request that is really a problem space is
+offered to explore-ideas first. Resume by naming the existing slug.
 
 ### Plan defined work
 
 Ask: “Use plan-work to implement docs/obsidian-sync/spec.md.” The plan lands beside the spec.
 Each phase records assumptions, unsettled questions, tasks and an observable completion
 condition. A trivial edit does not need a plan. Planning stops at the handoff.
+A plan holds at most four phases and twenty tasks, each phase small enough for one session.
+A spec with milestones is planned one milestone at a time (`plan-m1.md`, then `plan-m2.md`
+once M1 is done). Over the limit with no milestones, plan-work stops and offers to split the
+spec, plan a first slice, or let you override.
 
 ### Execute a plan
 

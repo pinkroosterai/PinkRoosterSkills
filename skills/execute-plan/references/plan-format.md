@@ -1,7 +1,8 @@
 # The plan file
 
-`docs/<slug>/plan.md` is the contract between whoever plans and whoever executes. It is
-read cold, months later, by someone who was not in this conversation.
+`docs/<slug>/plan.md` — or `plan-m<N>.md` for milestone N of a spec — is the contract between
+whoever plans and whoever executes. It is read cold, months later, by someone who was not in
+this conversation.
 
 ## Contents
 
@@ -9,6 +10,8 @@ read cold, months later, by someone who was not in this conversation.
 - [The four phase fields](#the-four-phase-fields)
 - [What and where, never how](#what-and-where-never-how)
 - [How many phases](#how-many-phases)
+- [The size limit](#the-size-limit)
+- [Milestone plans](#milestone-plans)
 
 ## Template
 
@@ -17,6 +20,7 @@ read cold, months later, by someone who was not in this conversation.
 
 **Goal** — <one sentence, ending in the observable condition that means it is done.>
 **Status** — not started      <!-- plan-wide; exact values below -->
+**Milestone** — M<N> of <total>: <name> — `spec.md § Milestones`      <!-- milestone plans only -->
 **Research** — `research.md`
 
 ## Context
@@ -100,3 +104,30 @@ verify between them turn every verification step into ceremony, which is how exe
 learn to skip them.
 
 One phase, with three tasks and a `Done when`, is a good plan for a small job.
+
+## The size limit
+
+A single plan holds at most **four phases and twenty tasks**, and every phase must fit one
+session: one agent can read what the phase needs, make the change and run its `Done when`
+without the earlier part of the session falling out of view. Signs a phase does not fit: its
+tasks span several unrelated areas of the code, its `Done when` needs several subsystems
+running together for the first time, or you cannot say what its `Done when` output will look
+like.
+
+A plan over the limit is not written as one plan. It is cut into milestones — slices that each
+ship something a user can use — and only the first is planned. The user may override the
+limit; the plan's `Context` then says so, with the date. The limit is a starting value; a
+project's instructions may set another.
+
+## Milestone plans
+
+When the spec has `## Milestones` with more than one milestone, each gets its own plan file,
+`docs/<slug>/plan-m<N>.md`, planned only when the milestone before it is `done`: what the
+earlier one built and recorded in its `Log` is what the next one is planned against. Planning
+every milestone up front plans later work on guesses the first milestone will overturn.
+
+A milestone plan covers only the parts of the spec its milestone `Covers`, and its `Goal` is
+the milestone's `Delivers`. Its phases' `Done when` lines include the milestone's own
+`Done when`. `research.md` stays one file for the whole slug.
+
+`plan.md` is the file for a request with no spec, or a spec with a single milestone.

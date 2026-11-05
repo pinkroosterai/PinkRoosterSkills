@@ -34,6 +34,7 @@ rather than writing into it. `research` is never a slug: `docs/research/` is the
 **Coverage** — <n>/9 clear · <n> partial · <n> missing
 **Confirmed** — <n>/<m> decisions · <k> assumed, unconfirmed
 **Research** — `research.md`
+**From** — idea <id> from `docs/ideas/<area>.md`      <!-- only when it came from a backlog -->
 
 ## Outcome
 
@@ -77,6 +78,10 @@ number or a test. Plus what it must live within — existing systems, budget, ti
 <Observable and checkable. How you would tell it was built right rather than merely built.
 One line per quality named above.>
 
+## Milestones
+
+Single milestone.      <!-- or M1, M2 … in the format in spec-contract.md -->
+
 ## Deferred questions
 
 - **<question>** — would change: <what turns on the answer>. Blocked by it: nothing.
@@ -118,6 +123,10 @@ opposite of the point.
   **every quality in `Qualities and constraints` has one line here** — the fit criterion that
   says how the quality would be checked. A quality with no criterion is either not understood
   or not wanted; the section is thin until each has one.
+- **`Milestones` slices `Scope`, it does not extend it.** Every milestone's `Covers` names parts
+  of `Scope › In`, and every part of `Scope › In` is in exactly one milestone. Each milestone's
+  `Done when` names lines in `Success criteria`. A milestone that delivers nothing a user can
+  use on its own is a phase, and phases are `plan-work`'s.
 - **One canonical term per concept**, fixed in `Domain and terms` and used everywhere else in
   the file. Two words for one noun is how a spec produces two implementations.
 

@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: Implements an existing docs/{slug}/plan.md phase by phase, verifying assumptions and done conditions, updating the plan as it goes and committing per phase. Use when the user asks to start, continue or resume building from a plan. Not for writing a plan (plan-work), an unsettled concept (shape-spec), or a read-only plan review.
+description: Implements an existing docs/{slug}/plan.md (or a milestone's plan-m{N}.md) phase by phase, verifying assumptions and done conditions, updating the plan as it goes and committing per phase. Use when the user asks to start, continue or resume building from a plan. Not for writing a plan (plan-work), an unsettled concept (shape-spec), or a read-only plan review.
 argument-hint: "[plan slug or path] [--phase N]"
 license: MIT
 compatibility: Needs a filesystem, a shell to run checks, and git for commits; edits code.
@@ -13,8 +13,10 @@ go. The plan is the state: someone reading it mid-run, or after an interrupted o
 exactly where the work is.
 
 Invocation: `/execute-plan rate-limiting`, or `/execute-plan` with no argument to resume
-an unfinished plan. With no argument, list the `docs/*/plan.md` files whose plan-wide
-`Status` is not `done`: one → say which and use it; several → ask which, listing each with
+an unfinished plan. A plan file is `docs/<slug>/plan.md` or, for a spec split into
+milestones, `docs/<slug>/plan-m<N>.md`. Given a slug whose folder holds several plan files,
+take the one whose plan-wide `Status` is not `done`. With no argument, list the plan files
+whose plan-wide `Status` is not `done`: one → say which and use it; several → ask which, listing each with
 its `Status`; none → say so and stop. Never choose by modification time — a clone or checkout
 resets it. `--phase N` runs one named phase instead of continuing from the first unfinished
 one.
@@ -27,13 +29,14 @@ is not permission for that.
 
 ## Place in the set
 
-Pipeline stage: **execute** (shape → plan → execute).
+Pipeline stage: **execute** (explore → shape → plan → execute).
 
-- **Reads on entry** — `docs/<slug>/plan.md` and `research.md`; `spec.md` beside them when
-  one exists.
+- **Reads on entry** — the plan file (`plan.md` or `plan-m<N>.md`) and `research.md` in
+  `docs/<slug>/`; `spec.md` beside them when one exists.
 - **Leaves on exit** — the work itself; the plan file moved to its true state; findings
   appended to `research.md`; one commit per phase.
-- **Next** — nothing. The close step below ends the pipeline.
+- **Next** — for a milestone plan with milestones left, `/plan-work` on the spec plans the
+  next one; otherwise nothing. The close step below ends the run.
 
 ## Session and persistence rules
 
@@ -45,9 +48,10 @@ Question batches must fit the actual tool limits. For asynchronous tools, wait f
 user's answer before dependent work; tool completion and elapsed time are not answers.
 
 Paths: `docs/` in this skill means the project's documentation root — `docs/` unless the
-project's instructions or layout name another. The research corpus is `<docs root>/research/`,
-so `research` is never a slug. A `docs/<slug>/` folder belongs to this skill set only when it
-holds `spec.md`, `plan.md` or `research.md`; otherwise choose a distinguishing slug.
+project's instructions or layout name another. The research corpus is `<docs root>/research/`
+and the idea backlog `<docs root>/ideas/`, so neither `research` nor `ideas` is ever a slug.
+A `docs/<slug>/` folder belongs to this skill set only when it holds `spec.md`, `plan.md`,
+`plan-m<N>.md` or `research.md`; otherwise choose a distinguishing slug.
 
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.
@@ -194,8 +198,8 @@ When the last phase closes, set the plan-wide `Status` to `done` and report what
 produced against the `Goal` it opened with.
 
 When `docs/<slug>/spec.md` exists beside the plan, read its claims against what was
-actually built, following `references/spec-contract.md` — the rules every skill uses to
-touch a spec. Where execution overturned a spec decision, append an entry to the spec's
+actually built; for a milestone plan, read only the parts that milestone `Covers`. Follow
+`references/spec-contract.md`, the rules every skill uses to touch a spec. Where execution overturned a spec decision, append an entry to the spec's
 `Decisions` log under a dated heading, tagged `executed`, naming the entry it reverses,
 what was built instead and why. Add `confirmed <date>` only when a `Log` line records the
 user's approval of this exact departure, and name that line in the entry; general
@@ -211,6 +215,16 @@ documentation commit.
 
 Leave the plan file where it is — a finished plan with its `Log` is the record of how the
 work actually went.
+
+For a milestone plan, check the milestone's own `Done when` from the spec and show its
+output. Then, when the spec has milestones left, name the next step without running it —
+
+```
+/plan-work implement docs/<slug>/spec.md
+```
+
+— which plans the next milestone against what this one built. When the spec is `shaping`
+because of an unconfirmed departure, say that `/shape-spec` on the slug comes first.
 
 ## When the plan is wrong
 

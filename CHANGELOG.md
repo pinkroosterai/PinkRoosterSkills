@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.2.0 — unreleased
+
+- New `explore-ideas` skill: frames a problem space, scans the landscape, generates ideas per
+  user need, rates them and keeps a ranked backlog in `docs/ideas/<area>.md` that the user
+  orders and later runs revise.
+- `shape-spec` takes an idea from a backlog, offers `explore-ideas` when a request is a problem
+  space rather than one concept, and marks the idea `specced` at close.
+- Milestones: `shape-spec` splits a big spec into shippable milestones (confirmed at readback);
+  `plan-work` plans one milestone at a time into `plan-m<N>.md` and refuses plans over four
+  phases, twenty tasks or a phase too big for one session, offering to split, slice or
+  override; `execute-plan` runs milestone plans and names the next milestone at close.
+- `ideas` joins `research` as a reserved slug; `spec-contract.md` and `plan-format.md` define
+  the milestone formats.
+- Evals for explore-ideas triggering, problem-space routing and the plan size limit.
+
 ## 0.1.1 — unreleased
 
 - Correct active and superseded decision handling and explicit execution approval.

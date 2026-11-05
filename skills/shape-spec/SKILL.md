@@ -1,7 +1,7 @@
 ---
 name: shape-spec
-description: Turns a rough idea into a confirmed specification (docs/{slug}/spec.md) through draft-first, bounded question rounds and a decision readback. Use when the user wants to brainstorm, flesh out, spec, write requirements or a PRD for an idea, or resume an existing spec. Not for implementation planning (plan-work), research write-ups (research-topic), or an opinion in chat.
-argument-hint: "[the idea, in a line — a slug to resume — or '<slug> deferred' to work its register]"
+description: Turns one concrete concept into a confirmed specification (docs/{slug}/spec.md), split into shippable milestones when it is big, through draft-first question rounds and a decision readback. Use when the user wants to flesh out, spec, write requirements or a PRD for a concept or a backlog idea, or resume a spec. Not for a broad problem space (explore-ideas), implementation planning (plan-work), research write-ups (research-topic), or an opinion in chat.
+argument-hint: "[the concept in a line — idea <id> from <backlog> — a slug to resume — or '<slug> deferred']"
 license: MIT
 compatibility: Needs a filesystem and git for commits; web search is optional but recommended.
 ---
@@ -13,8 +13,9 @@ left silently assumed, rewritten in place each round, read back and confirmed, a
 about its own gaps — so what is safe to build from is visible without reading between the
 lines.
 
-Invocation: `/shape-spec a CLI that syncs my Obsidian vault to S3`. The argument is the idea,
-or a slug to resume, or `<slug> deferred` to resume with the deferred register in the queue.
+Invocation: `/shape-spec a CLI that syncs my Obsidian vault to S3`. The argument is the concept,
+an idea from a backlog (`idea I3 from docs/ideas/token-cost-tracking.md`), a slug to resume, or
+`<slug> deferred` to resume with the deferred register in the queue.
 With no argument, resume an unfinished spec (step 1 says how one is chosen).
 
 Domain-agnostic. A game mechanic and a billing service both get specified here; the technical
@@ -22,10 +23,10 @@ categories only bite when the concept is technical.
 
 ## Place in the set
 
-Pipeline stage: **shape** (shape → plan → execute).
+Pipeline stage: **shape** (explore → shape → plan → execute).
 
-- **Reads on entry** — `docs/<slug>/spec.md` when resuming; `docs/research/` before
-  searching online.
+- **Reads on entry** — `docs/<slug>/spec.md` when resuming; the idea's entry and framing in
+  `docs/ideas/<area>.md` when given one; `docs/research/` before searching online.
 - **Leaves on exit** — `docs/<slug>/spec.md` and `research.md`, committed.
 - **Next** — `/plan-work implement docs/<slug>/spec.md`.
 
@@ -57,9 +58,10 @@ Question batches must fit the actual tool limits. For asynchronous tools, wait f
 user's answer before dependent work; tool completion and elapsed time are not answers.
 
 Paths: `docs/` in this skill means the project's documentation root — `docs/` unless the
-project's instructions or layout name another. The research corpus is `<docs root>/research/`,
-so `research` is never a slug. A `docs/<slug>/` folder belongs to this skill set only when it
-holds `spec.md`, `plan.md` or `research.md`; otherwise choose a distinguishing slug.
+project's instructions or layout name another. The research corpus is `<docs root>/research/`
+and the idea backlog `<docs root>/ideas/`, so neither `research` nor `ideas` is ever a slug.
+A `docs/<slug>/` folder belongs to this skill set only when it holds `spec.md`, `plan.md`,
+`plan-m<N>.md` or `research.md`; otherwise choose a distinguishing slug.
 
 Before edits or delegation, inspect the working tree and index and record existing changes.
 Commit only this run's changes, respecting project checks and the user's commit policy.
@@ -74,7 +76,8 @@ another machine. Never push or change repository visibility as part of these ski
 ## Non-negotiables
 
 - **Nothing is written outside `docs/<slug>/`.** No implementation, no scaffolding, not even
-  the obvious one-liner. A spec whose author already half-built the thing is not a spec.
+  the obvious one-liner. A spec whose author already half-built the thing is not a spec. The
+  one exception: the status of the backlog idea this spec came from, at close.
 - **A guess is marked or logged, never smoothed over.** Where the answer is unknown, write the
   best version and mark it; where you made a call that would change what gets built, log it as
   `assumed`. Plausible prose that hides a guess is the single most expensive thing this skill
@@ -112,7 +115,7 @@ Work the steps below in order and say which one you are on.
 4. **Coverage scored** — nine categories and the confirmed line, in the header
 5. **Round** — ≤4 questions, spec rewritten when the user’s answer arrives, gaps re-scanned
 6. **Report** — three lines, then the next round; no question about continuing
-7. **Readback** — every active logged decision confirmed one by one — GATE, at milestones
+7. **Readback** — every active logged decision confirmed one by one — GATE, at checkpoints
 8. **Close** — status set, gaps listed, `docs/<slug>/` committed, `/plan-work` named, stop
 
 Steps 4–6 repeat until the queue is empty or the user stops it — step 4 runs again after every
@@ -140,9 +143,25 @@ they were deferred on purpose.
 with its `Status`; never choose by modification time, which a clone or checkout resets. None →
 say so and ask for the concept.
 
-*A new concept* — derive a kebab-case slug (never `research`, which is the corpus), restate the concept in one sentence in the user's
-own words, and say what you took it to mean. That restatement is not manners: the ambiguity
-interviews are worst at catching is the one where both sides believe they agree.
+*An idea from a backlog* — read `docs/ideas/<area>.md` in full: the idea's entry, the area's
+`Outcome`, `For` and `Constraints`, and the sources the idea cites. They are the starting
+material, not settled decisions — the idea's text goes into the draft as your reading, and
+anything load-bearing it asserts is logged `assumed` for the readback. Derive the slug from the
+idea and put the `From` line in the spec header. An idea whose status is not `candidate` or
+`parked` is named to the user before going on.
+
+*A new concept* — derive a kebab-case slug (never `research` or `ideas`, which the set reserves),
+restate the concept in one sentence in the user's own words, and say what you took it to mean.
+That restatement is not manners: the ambiguity interviews are worst at catching is the one
+where both sides believe they agree.
+
+**The one-concept test.** Before drafting, ask whether the request names one thing — one
+product or feature whose shape a reasonable person could draft — or a problem space that
+several different products could answer ("a SaaS for tracking token costs for customers").
+For a problem space, say so and offer `explore-ideas` in one question: explore ideas first
+(recommended) or shape it as stated, with the reading you would take. If accepted, run
+`explore-ideas` in this session; when it hands an idea over, continue here with that idea.
+When it is not installed, say so and shape it as stated, with the reading named.
 
 Stop and say so if the request is a question to answer rather than a thing to specify.
 
@@ -173,7 +192,15 @@ tagged `assumed`, naming the section and what the call rules out; it is not a ma
 the sentence reads as a decision and is one, made by you, and the log entry is what step 7
 puts in front of the user. A guess that is not key gets a `[THIN]` mark or a deferred row.
 Count the blocking marks as you draft: past four, stop drafting, say the concept is not ready
-for a spec, and offer to work those four before writing another section.
+for a spec, and offer to work those four before writing another section — or, when the marks
+show a problem space rather than one concept, to explore ideas first, as above.
+
+**Milestones.** Draft `## Milestones` (format in `references/spec-contract.md`) when `Scope ›
+In` holds more than one outcome a user could use on its own, or the scope clearly exceeds the
+`Appetite`. M1 is the thinnest slice that works end to end; later milestones follow dependency,
+then value. The split is a key call: log it `assumed`, so the readback puts it to the user.
+Otherwise the section says `Single milestone.` A write-back that grows the scope re-runs this
+test.
 
 Then **report the path and what the draft says** — two or three lines, plus which sections are
 guesses and how many decisions you assumed. This is the redlining the whole draft-first
@@ -224,7 +251,7 @@ a round that only ever closes gaps has stopped looking.
 header lines, what the round closed and opened, and what the next round will ask about. Then run the next round. Do not ask whether to
 continue — the user ends the interview by saying so, in the modal's free-text field or in
 chat, and that goes straight to step 8 from wherever the run is. The only places the skill asks
-about continuing are the two milestones in step 7.
+about continuing are the checkpoints in step 7.
 
 **7. Readback.** Fires when the last `[BLOCKING]` mark clears, after every third round since
 the last readback, and when the queue empties. Four parts, in `references/interviewing.md
@@ -237,16 +264,19 @@ entry, re-marks the section, and the loop resumes at step 4.
 **8. Close.** Reached by the user stopping, or by a readback that confirmed everything with
 the queue empty. Set `Status` from the file — `buildable` only when no `[BLOCKING]` remains,
 no category is Missing, *and* every active `Decisions` entry carries `confirmed`; `shaping` otherwise.
-Commit `docs/<slug>/` — the spec and the research file, explicit paths, conventional message; this records a local checkpoint. Then report the path,
-both header lines, what is still blocking, deferred, thin or unconfirmed, and name the next
-step:
+When the spec came from a backlog idea, set that idea's status in `docs/ideas/<area>.md` to
+`specced → docs/<slug>/spec.md (<date>)`, in its entry and its table row, and nothing else.
+Commit `docs/<slug>/` — the spec and the research file — and that backlog file, explicit
+paths, conventional message; this records a local checkpoint. Then report the path, both
+header lines, the milestones, what is still blocking, deferred, thin or unconfirmed, and name
+the next step:
 
 ```
 /plan-work implement docs/<slug>/spec.md
 ```
 
-Name it; do not run it. `plan-work` reads the spec's status, blocking marks and deferred
-questions on entry and writes into the same `docs/<slug>/` folder, so the spec's
+Name it; do not run it. `plan-work` plans one milestone at a time, starting with M1. It reads
+the spec's status, blocking marks and deferred questions on entry and writes into the same `docs/<slug>/` folder, so the spec's
 `research.md` is shared ground if it lands there. A run the user stops early commits too —
 whatever state the spec reached is the state the next session resumes from. A session that
 dies without warning cannot commit, which is why every write-back lands on disk at once.
@@ -328,6 +358,8 @@ the research it needs, and continue; never fake a survey with more inline search
 
 Name the boundary and hand off rather than absorbing the work:
 
+- **`/explore-ideas`** — the request is a problem space, not one concept; see the one-concept
+  test in step 1.
 - **`/plan-work`** — "plan how to build X". This says what; that says how.
 - **`/research-topic`** — the ask is a research write-up, not a specification. A question
   inside a spec that needs a survey is handed over mid-run instead — see above.
