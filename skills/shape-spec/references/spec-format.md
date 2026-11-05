@@ -8,6 +8,7 @@ The artifact `shape-spec` produces and rewrites. Read before writing or rewritin
 - [The template](#the-template)
 - [Section rules](#section-rules)
 - [The `Decisions` entries](#the-decisions-entries)
+- [Choosing a mark](#choosing-a-mark)
 - [Writing the marks](#writing-the-marks)
 - [Mutating an existing spec](#mutating-an-existing-spec)
 
@@ -76,7 +77,8 @@ number or a test. Plus what it must live within — existing systems, budget, ti
 ## Success criteria
 
 <Observable and checkable. How you would tell it was built right rather than merely built.
-One line per quality named above.>
+One line per quality named above, each ending `[agent]` or `[user]`: whether the agent can
+check it under the project's testing rules, or only a user run can.>
 
 ## Milestones
 
@@ -90,11 +92,11 @@ Single milestone.      <!-- or M1, M2 … in the format in spec-contract.md -->
 
 ### <YYYY-MM-DD> (draft)
 
-- `assumed` **<section>** — <the call> — ruled out: <what this closes off>.
+- D1 `assumed` **<section>** — <the call> — ruled out: <what this closes off>.
 
 ### <YYYY-MM-DD>
 
-- `user` Q: <question asked> → A: "<the user's answer>" — ruled out: <what this closes off>.
+- D2 `user` Q: <question asked> → A: "<the user's answer>" — ruled out: <what this closes off>.
   confirmed <YYYY-MM-DD>
 ```
 
@@ -143,19 +145,20 @@ them too. When this skill writes each tag:
 | `default` | At write-back, when the answer was "you decide" or "I don't know" |
 | `assumed` | At step 3, under a `(draft)` heading, and by the gap scan |
 | `sourced` | Whenever a search settles something |
+| `default-accepted` | When the user accepts a whole round's recommendations at once |
 | `executed` | Never by this skill — `execute-plan` writes it at plan close |
 
 Entry shapes, one line each unless the quote runs long:
 
 ```markdown
-- `user` Q: how are changes pushed? → A: "on save, but debounce it" — ruled out: interval
+- D3 `user` Q: how are changes pushed? → A: "on save, but debounce it" — ruled out: interval
   sync, an explicit sync command. confirmed 2026-09-08
-- `default` Q: which S3 storage class? → A: "you decide" — took: Standard, cheapest to
+- D4 `default` Q: which S3 storage class? → A: "you decide" — took: Standard, cheapest to
   restore from — ruled out: Glacier tiers.
-- `assumed` **How it works** — one vault per bucket — ruled out: a shared bucket with prefixes.
-- `sourced` **Depends on** — the AWS CLI is not required; the SDK is enough — `research.md §
+- D5 `assumed` **How it works** — one vault per bucket — ruled out: a shared bucket with prefixes.
+- D6 `sourced` **Depends on** — the AWS CLI is not required; the SDK is enough — `research.md §
   Upload path`.
-- `user` Q: (reversal of 2026-09-01 "no mobile client") → A: "actually, read-only mobile is
+- D7 `user` Q: (reversal of D2, "no mobile client") → A: "actually, read-only mobile is
   in" — ruled out: the earlier exclusion; the 2026-09-01 entry stands as history.
 ```
 
@@ -171,6 +174,48 @@ Rules:
 - **Every active entry is read back**, whatever its tag: the readback lists each active one not yet carrying
   `confirmed`, so the header's count is a count of active entries, not wrapped lines. Whether a drafted
   guess earns an entry at all is the key test in `SKILL.md § The three marks`.
+
+## Choosing a mark
+
+Three kinds of gap, because they mean different things about whether you can build. The
+mechanics — syntax, placement, examples — are in `references/spec-format.md`; this is the
+decision aid.
+
+| Mark | Means | Where |
+|---|---|---|
+| `[BLOCKING: <question>]` | A decision not made; the surrounding text is unsafe to build from | Inline, in the sentence it poisons |
+| `[THIN: <what is missing>]` | The section is not wrong, just too vague to build from. An absence, not a question | On the section heading |
+| `[UNVERIFIED: <claim>; check: <how>]` | An identifier or fact stated from inference; checkable by a lookup or tool run. Nothing is blocked | Inline, after the claim |
+| A row in `## Deferred questions` | Postponed on purpose. Nothing is blocked | The register at the bottom |
+
+Blocking or deferred: **could two competent people read this section and build different
+things?** If yes it is blocking. If the answer only changes something later, it is deferred.
+
+Thin or fine: **is there a sentence here that would survive being turned into a task?** All
+intent and no substance is thin.
+
+`[BLOCKING]` is the expensive mark, so a drafted guess defaults to `[THIN]` or a deferred row
+and is promoted to blocking only when it fails the two-competent-people test. **Past four
+blocking marks the concept is not ready for a spec**: say so plainly, and offer to work those
+four before writing any more sections.
+
+An **assumed decision is not a mark**: a key call you made that reads as settled goes in
+`Decisions` tagged `assumed`, and the readback — not a bracket — turns it into the user's. A
+guess is key when reversing it would change `Outcome`, `Scope` or `How it works`, or when two
+competent readers would build different things from it.
+
+`Status` is derived, never asserted: `draft` while the first pass is incomplete, `shaping`
+while any `[BLOCKING]` or Missing category remains or any active `Decisions` entry is unconfirmed,
+`buildable` when none of the three does.
+
+### Choosing milestones
+
+Draft `## Milestones` (format in `references/spec-contract.md`) when `Scope ›
+In` holds more than one outcome a user could use on its own, or the scope clearly exceeds the
+`Appetite`. M1 is the thinnest slice that works end to end; later milestones follow dependency,
+then value. The split is a key call: log it `assumed`, so the readback puts it to the user.
+Otherwise the section says `Single milestone.` A write-back that grows the scope re-runs this
+test.
 
 ## Writing the marks
 
@@ -203,6 +248,18 @@ the mark rather than wrapping it:
 A thin section is not wrong and does not block — it is an absence, so the mark says what is
 absent rather than asking a question. The vague-word sweep writes the same mark with the
 words it found: `[THIN: "fast", "secure" have no number or test]`.
+
+### `[UNVERIFIED: <claim>; check: <how>]`
+
+```markdown
+Android platform tools install from `platforms/android-37` [UNVERIFIED: name inferred from
+the API level; check: list the SDK manager's packages].
+```
+
+Use it for concrete names, paths, URLs, flags and versions you did not check in this run, and
+for answers that need a tool the skill does not run. It scores like `[THIN]` (Partial) and
+never blocks. Remove it only after the claim was checked, with the output or source recorded
+(`research.md`, or the plan's `Log`).
 
 ### `## Deferred questions`
 

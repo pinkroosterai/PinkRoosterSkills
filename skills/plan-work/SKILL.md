@@ -114,10 +114,16 @@ the spec:
 - Every `## Deferred questions` row that touches a phase becomes that phase's
   `Settle first` entry, worded so it traces back to the row. The register is the payload,
   not an appendix.
-- A `Status` of `shaping` is named out loud before planning proceeds — the user chooses
-  between planning what is clear and going back to `/shape-spec`. `shaping` also covers a
-  spec whose key decisions were never read back — its `Confirmed` header line short of its
-  total — and the same choice applies; a decision only the model made is not settled ground.
+- A `Status` of `shaping` caused by a `[BLOCKING]` mark, a Missing category or unconfirmed
+  active decisions (its `Confirmed` line short of its total) is named out loud before planning
+  proceeds: the user chooses between planning what is clear and going back to `/shape-spec`,
+  and the go-back message includes the exact command (`/shape-spec <slug>`, with `deferred`
+  appended when the register has rows). A decision only the model made is not settled ground.
+  When no `[BLOCKING]` mark remains and every active decision is confirmed, do not ask: plan,
+  and turn each `[THIN]` or `[UNVERIFIED]` mark that touches a phase into a `Settle first`
+  entry. A `Status` that says `shaping` in that case is a derivation slip; note it in `Context`.
+- Success criteria tagged `[agent]` or `[user]` carry into the phases' `Done when` as the
+  plan format says. A `[user]` criterion is named in the hand-over.
 - Its active confirmed decisions are settled ground. Preserve superseded entries as history;
   do not treat them as current requirements. Active unconfirmed decisions remain unsettled.
 - **Milestones.** A `## Milestones` section with more than one milestone means this run plans
@@ -127,6 +133,10 @@ the spec:
   plans`). Plan only what that milestone `Covers`; its `Delivers` is the plan's `Goal`.
 
 A missing spec is the normal case for direct requests, not an error.
+
+If the project has source files git does not track (check `git status`), ask once for a commit
+policy — per phase, one commit at the end, or none — and record it in the plan's `Context`
+(`Commit policy`). Skip the question when everything is tracked.
 
 If the work is one edit with nothing to research, say so and stop. A plan for a typo costs
 more than the typo.

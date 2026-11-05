@@ -44,6 +44,7 @@ checks require `jq`; this is a contributor tool, not a skill runtime dependency.
 |---|---|
 | Check every skill (run before every commit; also runs `scripts/check-packages.sh`) | `scripts/check-skills.sh` |
 | Package/manifest checks alone | `scripts/check-packages.sh` |
+| Recompute a spec's Confirmed line, Status and ID checks | `scripts/spec-lint.sh docs/<slug>/spec.md` |
 | Test the checker | `scripts/test-check-skills.sh` |
 | Validate against the spec | `npx -y skills-ref validate skills/<name>` (reports `argument-hint`; expected) |
 | Validate the Claude plugin | `claude plugin validate .` |

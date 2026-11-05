@@ -93,8 +93,9 @@ another machine. Never push or change repository visibility as part of these ski
   user's answers, your defaults, what you assumed while drafting, what a search settled — is
   read back in one line and confirmed before the status changes. A spec the user has not read
   back is `shaping`, however clean it scores.
-- **No invented support.** No number, benchmark, market claim or "most people" that was not
-  established in this run with a source. Checking a fact is always allowed; asserting one you
+- **No invented support.** No number, benchmark, market claim, "most people", or concrete
+  identifier (package name, path, URL, flag) that was not established in this run with a
+  source. An identifier you inferred is written with `[UNVERIFIED: …]`, never as fact. Checking a fact is always allowed; asserting one you
   did not check is not. A figure the spec needs and nobody has given is written as
   `[figure]` — never as a plausible number tagged `assumed`, because a plausible number reads
   as a decision and a placeholder reads as the gap it is.
@@ -127,7 +128,8 @@ the run back to step 4. Steps 2 and 3 run once, when the draft does not yet exis
 **1. Orient.**
 
 *An existing spec* — read `docs/<slug>/spec.md` in full, including `Decisions`, which is the
-list of things never to ask again. If its `Status` is `draft`, or template sections are
+list of things never to ask again. Entries without a `D<n>` ID are numbered in file order
+before anything else is written. If its `Status` is `draft`, or template sections are
 missing, finish the draft first (step 3) and then score; a spec whose first pass died halfway
 must not be interviewed around. A draft that stopped at the four-blocking rule is the
 exception: do not draft further, go to step 5 with the blocking marks as the whole queue. Otherwise go to step 4 with the remaining marks as the queue.
@@ -135,8 +137,9 @@ A folder holding `research.md` but neither `spec.md` nor `plan.md`, whose `resea
 header says it feeds `spec.md`, is a step 2 that was interrupted: read the research, do not
 repeat it, and go to step 3. A folder with a `plan.md` and no spec was planned directly —
 not this skill's to resume; say so, and offer to write a spec beside it or use a new slug. With `deferred` in the argument, the
-`## Deferred questions` rows join the queue as its last tier; without it they stay out, because
-they were deferred on purpose.
+`## Deferred questions` rows join the queue as its last tier. Without it they stay out, but
+when the register has rows, ask once at the start whether to work them (the exact argument
+is `/shape-spec <slug> deferred`).
 
 *A bare invocation* — list the `docs/*/spec.md` files whose `Status` is not `buildable`. One →
 **say which one you picked** before doing anything to it. Several → ask which, listing each
@@ -149,6 +152,10 @@ material, not settled decisions — the idea's text goes into the draft as your 
 anything load-bearing it asserts is logged `assumed` for the readback. Derive the slug from the
 idea and put the `From` line in the spec header. An idea whose status is not `candidate` or
 `parked` is named to the user before going on.
+
+*Project verification limits* — before drafting, read the project's instruction files for
+testing and running rules (what the agent may not run, install or touch). They decide which
+success criteria are `[agent]` and which `[user]`.
 
 *A new concept* — derive a kebab-case slug (never `research` or `ideas`, which the set reserves),
 restate the concept in one sentence in the user's own words, and say what you took it to mean.
@@ -190,17 +197,16 @@ Every guess goes one of three ways, by the tests in `The three marks` below. A g
 section as your best call and logged in `Decisions` under a `### <date> (draft)` heading,
 tagged `assumed`, naming the section and what the call rules out; it is not a mark, because
 the sentence reads as a decision and is one, made by you, and the log entry is what step 7
-puts in front of the user. A guess that is not key gets a `[THIN]` mark or a deferred row.
+puts in front of the user. A guess that is not key gets a `[THIN]` mark or a deferred row. A claim only a tool run or a
+lookup could confirm (an identifier, a version, a flag) gets `[UNVERIFIED: …; check: …]`.
+`How it works` stays at outcome level: commands and paths belong in the plan.
 Count the blocking marks as you draft: past four, stop drafting, say the concept is not ready
 for a spec, and offer to work those four before writing another section — or, when the marks
 show a problem space rather than one concept, to explore ideas first, as above.
 
-**Milestones.** Draft `## Milestones` (format in `references/spec-contract.md`) when `Scope ›
-In` holds more than one outcome a user could use on its own, or the scope clearly exceeds the
-`Appetite`. M1 is the thinnest slice that works end to end; later milestones follow dependency,
-then value. The split is a key call: log it `assumed`, so the readback puts it to the user.
-Otherwise the section says `Single milestone.` A write-back that grows the scope re-runs this
-test.
+**Milestones.** Draft `## Milestones` when the scope holds more than one outcome a user could
+use alone or exceeds the `Appetite`; the rule and the `assumed` log entry are in
+`references/spec-format.md § Choosing milestones`.
 
 Then **report the path and what the draft says** — two or three lines, plus which sections are
 guesses and how many decisions you assumed. This is the redlining the whole draft-first
@@ -230,12 +236,19 @@ art that shaped a decision and then evaporated is the research half of this skil
 quietly. When three or four quick examples cannot settle the question — the alternatives need
 a real comparison — offer the hand-off below as an option on that question instead.
 
-Write the spec back when the user’s answer arrives:
+Open the round with one extra question when it holds two or more others: "Accept every
+recommended answer this round?" (Yes / I'll answer each). On Yes, each answer is logged
+`default-accepted` and read back at the readback like any other. It uses one of the four slots.
+
+Write the spec back when the user’s answer arrives. Before each write-back, lint the new
+text: Outcome, Scope and Edge cases do not contradict the change, no decision line is garbled
+or duplicated, and the header counts are recomputed from the file (`scripts/spec-lint.sh`
+in this repo does it for contributors):
 
 - **Edit the file in place.** Targeted edits, never a regenerated file — that is what keeps the
   user's own sentences intact through round four.
 - Remove only the marks the answers genuinely resolved.
-- One `Decisions` entry per answer, tagged `user`, quoting it, and recording what it ruled out
+- One `Decisions` entry per answer with the next free `D<n>` ID, tagged `user`, quoting it, and recording what it ruled out
   as well as what it chose. An answer that reverses an existing entry is a contradiction:
   surface both before writing anything, per the reference.
 - **A non-answer is not an answer.** "You decide" or "I don't know" means you decide: write the
@@ -262,7 +275,7 @@ Confirmed entries get `confirmed <date>`; a correction reverses the entry with a
 entry, re-marks the section, and the loop resumes at step 4.
 
 **8. Close.** Reached by the user stopping, or by a readback that confirmed everything with
-the queue empty. Set `Status` from the file — `buildable` only when no `[BLOCKING]` remains,
+the queue empty. Set `Status` from the file (`[THIN]` and `[UNVERIFIED]` marks never force `shaping`) — `buildable` only when no `[BLOCKING]` remains,
 no category is Missing, *and* every active `Decisions` entry carries `confirmed`; `shaping` otherwise.
 When the spec came from a backlog idea, set that idea's status in `docs/ideas/<area>.md` to
 `specced → docs/<slug>/spec.md (<date>)`, in its entry and its table row, and nothing else.
@@ -281,37 +294,12 @@ the spec's status, blocking marks and deferred questions on entry and writes int
 whatever state the spec reached is the state the next session resumes from. A session that
 dies without warning cannot commit, which is why every write-back lands on disk at once.
 
-## The three marks
+## The marks
 
-Three kinds of gap, because they mean different things about whether you can build. The
-mechanics — syntax, placement, examples — are in `references/spec-format.md`; this is the
-decision aid.
-
-| Mark | Means | Where |
-|---|---|---|
-| `[BLOCKING: <question>]` | A decision not made; the surrounding text is unsafe to build from | Inline, in the sentence it poisons |
-| `[THIN: <what is missing>]` | The section is not wrong, just too vague to build from. An absence, not a question | On the section heading |
-| A row in `## Deferred questions` | Postponed on purpose. Nothing is blocked | The register at the bottom |
-
-Blocking or deferred: **could two competent people read this section and build different
-things?** If yes it is blocking. If the answer only changes something later, it is deferred.
-
-Thin or fine: **is there a sentence here that would survive being turned into a task?** All
-intent and no substance is thin.
-
-`[BLOCKING]` is the expensive mark, so a drafted guess defaults to `[THIN]` or a deferred row
-and is promoted to blocking only when it fails the two-competent-people test. **Past four
-blocking marks the concept is not ready for a spec**: say so plainly, and offer to work those
-four before writing any more sections.
-
-An **assumed decision is not a mark**: a key call you made that reads as settled goes in
-`Decisions` tagged `assumed`, and the readback — not a bracket — turns it into the user's. A
-guess is key when reversing it would change `Outcome`, `Scope` or `How it works`, or when two
-competent readers would build different things from it.
-
-`Status` is derived, never asserted: `draft` while the first pass is incomplete, `shaping`
-while any `[BLOCKING]` or Missing category remains or any active `Decisions` entry is unconfirmed,
-`buildable` when none of the three does.
+Three kinds of gap (`[BLOCKING]`, `[THIN]`, a deferred row) plus `[UNVERIFIED]` for facts
+nobody checked. Read `references/spec-format.md § Choosing a mark` before the first draft
+and whenever a guess needs a mark. Past four blocking marks the concept is not ready for a
+spec. An assumed decision is not a mark: it goes in `Decisions`, tagged `assumed`.
 
 ## Handing a question to research-topic
 

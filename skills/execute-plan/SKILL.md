@@ -151,7 +151,9 @@ session withholds it, the same question
 goes in the message, options laid out, and the run waits.
 
 **1. Verify.** Check every `Rests on` entry against the repo as it is now — read the files,
-run the command, confirm the earlier phase's output exists. All hold → set the phase to
+run the command, confirm the earlier phase's output exists. For an entry that says something
+is absent, record the listing you checked (paths, sizes or checksums) in the `Log` and later
+assert "unchanged since that listing", not "does not exist". All hold → set the phase to
 `in progress` and continue. Any fails → stop, say precisely what moved, and put the ways
 forward to the user, recommendation named.
 
@@ -184,7 +186,8 @@ is in the way, and put the ways forward to the user. A blocked phase with a writ
 is the loop ending honestly; grinding on past it is how a check gets weakened until it
 passes.
 
-**6. Commit** what the phase touched — the code, the plan, the research notes — following
+**6. Commit** by the plan's `Context › Commit policy`; when `Context` is silent and the project
+has untracked source files, ask once and record the answer there. Commit what the phase touched — the code, the plan, the research notes — following
 the project's convention, one commit per phase unless the project says otherwise. Unrelated
 changes that were already in the working tree stay out of it; commit paths explicitly
 rather than everything at once.
@@ -197,21 +200,12 @@ the verification found, what research changed, what the `Done when` printed.
 When the last phase closes, set the plan-wide `Status` to `done` and report what the plan
 produced against the `Goal` it opened with.
 
-When `docs/<slug>/spec.md` exists beside the plan, read its claims against what was
-actually built; for a milestone plan, read only the parts that milestone `Covers`. Follow
-`references/spec-contract.md`, the rules every skill uses to touch a spec. Where execution overturned a spec decision, append an entry to the spec's
-`Decisions` log under a dated heading, tagged `executed`, naming the entry it reverses,
-what was built instead and why. Add `confirmed <date>` only when a `Log` line records the
-user's approval of this exact departure, and name that line in the entry; general
-permission to execute is insufficient. Otherwise leave it unconfirmed. Mark the old entry
-`superseded by <replacement>` and preserve its historical confirmation. Update the affected
-spec sections to match what was built, then recompute both header lines and `Status`.
-
-An unconfirmed `executed` entry makes the spec `shaping` again, on purpose: the spec no
-longer describes agreed ground. Say so in the close report — which entries, and that
-resuming the slug with `/shape-spec` reads them back for confirmation. Include these
-close-out edits in the final phase commit; if that commit already happened, make a separate
-documentation commit.
+When `docs/<slug>/spec.md` exists beside the plan, read its claims against what was built (for
+a milestone plan, only the parts that milestone `Covers`) and follow `references/spec-contract.md §
+Closing a plan against a spec`: `executed` entries, `superseded by`, edited sections, recomputed
+header lines. Say in the close report which entries are unconfirmed and that resuming the slug
+with `/shape-spec` reads them back. Include the close-out edits in the final phase commit; if
+that commit already happened, make a separate documentation commit.
 
 Leave the plan file where it is — a finished plan with its `Log` is the record of how the
 work actually went.
