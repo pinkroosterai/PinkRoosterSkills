@@ -4,4 +4,4 @@ max_turns: 8
 allowed_tools: [Read, Glob, Grep, Skill]
 tags: [natural, plan-work, milestones]
 ---
-Use the plan-work skill. Without writing files: I'm planning docs/billing/spec.md, which is buildable and has no Milestones section. My outline has 7 phases and 34 tasks, and two phases each touch the API, the worker and the web app. What happens before the plan is written?
+Use the plan-work skill. Without writing files: I'm planning docs/billing/spec.md, which is buildable and has no Milestones section. My outline has 11 phases and 52 tasks, and two phases each touch the API, the worker and the web app. What happens before the plan is written?

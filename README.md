@@ -121,7 +121,7 @@ offered to explore-ideas first. Resume by naming the existing slug.
 Ask: “Use plan-work to implement docs/obsidian-sync/spec.md.” The plan lands beside the spec.
 Each phase records assumptions, unsettled questions, tasks and an observable completion
 condition. A trivial edit does not need a plan. Planning stops at the handoff.
-A plan holds at most four phases and twenty tasks, each phase small enough for one session.
+A plan holds at most eight phases and forty tasks, each phase coherent with its own checkable done condition.
 A spec with milestones is planned one milestone at a time (`m1/plan.md`, then `m2/plan.md`
 once M1 is done): name one as `<slug>/m2`, or leave it off and the lowest milestone not yet
 done is taken. Plans written under the older `plan-m1.md` layout still run. Over the limit with no milestones, plan-work stops and offers to split the

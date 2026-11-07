@@ -118,15 +118,15 @@ One phase, with three tasks and a `Done when`, is a good plan for a small job.
 
 ## The size limit
 
-A single plan holds at most **four phases and twenty tasks**, and every phase must fit one
-session: one agent can read what the phase needs, make the change and run its `Done when`
-without the earlier part of the session falling out of view. Signs a phase does not fit: its
-tasks span several unrelated areas of the code, its `Done when` needs several subsystems
-running together for the first time, or you cannot say what its `Done when` output will look
-like.
+A single plan holds at most **eight phases and forty tasks**. Each phase has a coherent
+area of the code and its own checkable `Done when`; it need not fit one session, because
+`execute-plan` carries a plan across sessions. Signs a phase does not fit: its tasks span
+several unrelated areas of the code, its `Done when` needs several subsystems running
+together for the first time, or you cannot say what its `Done when` output will look like.
 
-A plan over the limit is not written as one plan. It is cut into milestones — slices that each
-ship something a user can use — and only the first is planned. The user may override the
+Work a capable coding agent finishes in a session or two is one plan, not several
+milestones. A plan over the limit is not written as one plan. It is cut into milestones —
+slices that each ship something a user can use — and only the first is planned. The user may override the
 limit; the plan's `Context` then says so, with the date. The limit is a starting value; a
 project's instructions may set another.
 

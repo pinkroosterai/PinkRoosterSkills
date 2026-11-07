@@ -210,9 +210,10 @@ while any `[BLOCKING]` or Missing category remains or any active `Decisions` ent
 
 ### Choosing milestones
 
-Draft `## Milestones` (format in `references/spec-contract.md`) when `Scope ›
-In` holds more than one outcome a user could use on its own, or the scope clearly exceeds the
-`Appetite`. M1 is the thinnest slice that works end to end; later milestones follow dependency,
+Draft `## Milestones` (format in `references/spec-contract.md`) only when the scope is clearly
+larger than one plan can hold (eight phases, forty tasks: several sessions of work) **and** its
+parts ship independently. Several outcomes alone, or a modest `Appetite` overrun, is not
+enough; when unsure, write `Single milestone.` M1 is the thinnest slice that works end to end; later milestones follow dependency,
 then value. The split is a key call: log it `assumed`, so the readback puts it to the user.
 Otherwise the section says `Single milestone.` A write-back that grows the scope re-runs this
 test.

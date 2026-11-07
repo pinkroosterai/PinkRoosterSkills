@@ -2,6 +2,10 @@
 
 ## 0.2.0 — unreleased
 
+- Milestones are wider: `shape-spec` splits only when the scope is clearly beyond one plan
+  and its parts ship independently (default `Single milestone.`), and `plan-work` allows eight
+  phases and forty tasks per plan, with phases no longer required to fit one session.
+
 - Milestones are addressable: `shape-spec` writes a folder `m<N>/` with a `milestone.md` per
   milestone beside the spec (the spec keeps a status-bearing index), and `shape-spec`,
   `plan-work` and `execute-plan` take the sub-slug `<slug>/m<N>`; with none named, the lowest
@@ -37,7 +41,7 @@
   space rather than one concept, and marks the idea `specced` at close.
 - Milestones: `shape-spec` splits a big spec into shippable milestones (confirmed at readback);
   `plan-work` plans one milestone at a time into `plan-m<N>.md` and refuses plans over four
-  phases, twenty tasks or a phase too big for one session, offering to split, slice or
+  phases, twenty tasks or a phase too big for one session (since widened, see below), offering to split, slice or
   override; `execute-plan` runs milestone plans and names the next milestone at close.
 - `ideas` joins `research` as a reserved slug; `spec-contract.md` and `plan-format.md` define
   the milestone formats.
