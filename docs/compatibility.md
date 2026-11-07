@@ -208,3 +208,27 @@ The Bash/awk validators have disposable standalone-copy fixtures, including exec
 from an unrelated working directory, paths with spaces and stdin drafts. These are
 script-level checks, not end-to-end agent workflow or native hook tests. No hooks are
 installed. See the bundled validation guide for the supported Markdown subset.
+
+## 0.4.0: inline and delegated execution
+
+Checked 2026-11-07 on Linux.
+
+The bundle contains seven skills. execute-plan keeps all phase work in the main session.
+execute-plan-with-subagents uses a whole-phase worker, main-session settlement and a separate
+acceptance verifier. It requires general-purpose subagent tools, returned results and access
+to the target artifacts; stock Pi requires a subagent extension for this execution mode.
+
+| Release check | Result |
+|---|---|
+| Skill names, frontmatter, references, body limits and harness labels | Pass for all seven skills |
+| Shared references, persistence sections, validator implementations and wrappers | Pass; copies match plan-work |
+| Native package metadata, catalogs, skill roots and assets | Pass; version 0.4.0 synchronized |
+| Checker regressions and standalone validators | Pass; 61 validator fixtures, including isolated copies of both executors |
+| Execution fixture setup and immutable acceptance contracts | Pass; fourteen fixtures, including controlled mutations and paths with spaces |
+| Claude plugin validation | Pass with the existing root CLAUDE.md context warning |
+| Bash syntax and whitespace | Pass |
+
+The execution fixtures cover capability gates, phase handoffs, independent acceptance,
+persisted progress and repair state. Their Bash checks validate fixture setup and acceptance
+contracts. Host-provided dispatch, permission and continuation APIs determine how the
+delegated instructions run in a session.

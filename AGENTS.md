@@ -3,6 +3,8 @@
 Portable agent skills in the [Agent Skills](https://agentskills.io/specification) format.
 Markdown and bash only: no runtime, no build.
 
+Backwards compatibility: none
+
 ## Layout
 
 - `skills/<name>/SKILL.md`: `name` matches the directory. `references/roles/` holds the
@@ -18,10 +20,12 @@ Markdown and bash only: no runtime, no build.
   enforces the label.
 - **No agent definitions.** Delegation starts the harness's general-purpose subagent with a
   role file from `references/roles/`. Don't add `agents/*.md` or `.codex/agents/*.toml`.
-- **`plan-work` owns the shared files.** `execute-plan` and `shape-spec` carry byte-identical
+- **`plan-work` owns the shared files.** Both execution skills and `shape-spec` carry identical
   copies so each installs alone — including `spec-contract.md`, the spec rules every stage
   relies on. Edit in `plan-work`, then copy; the check fails on drift. The "Session and
   persistence rules" section is identical in every `SKILL.md`; edit it in `plan-work` first.
+- **Phase delegation has its own contract.** `execute-plan-with-subagents` owns its
+  orchestration guide and phase roles; do not apply the shared task-delegation guide to it.
 - **Destructive steps are never delegated.** The main session shows the exact command and
   runs it only after the user confirms.
 - **Frontmatter** holds `name`, `description`, the quoted `argument-hint` (a Claude Code
@@ -29,8 +33,8 @@ Markdown and bash only: no runtime, no build.
   when to use it and when not to, with no angle brackets.
 - **Every skill is model-invocable.** Don't set `disable-model-invocation`: the description
   is how an agent finds the skill when the user asks without typing `/name`, so it must say
-  when to use the skill and when not to. A skill that edits code (`execute-plan`) confirms
-  before its first edit when it was not invoked by name.
+  when to use the skill and when not to. Both execution skills confirm
+  before their first edit when they were not invoked by name.
 - Update `CHANGELOG.md` and bump `version` in all package manifests and catalogs on a release.
 
 Shared package identity, version, description, author, license and repository metadata are
@@ -46,6 +50,7 @@ checks require `jq`; this is a contributor tool, not a skill runtime dependency.
 | Package/manifest checks alone | `scripts/check-packages.sh` |
 | Recompute a spec's Confirmed line, Status and ID checks | `scripts/spec-lint.sh docs/<slug>/spec.md` |
 | Test the checker | `scripts/test-check-skills.sh` |
+| Test execution fixture setup and check contracts | `scripts/test-execution-fixtures.sh` |
 | Validate against the spec | `npx -y skills-ref validate skills/<name>` (reports `argument-hint`; expected) |
 | Validate the Claude plugin | `claude plugin validate .` |
 | Run the evals (paid) | `claude plugin eval . --trust-plugin` |

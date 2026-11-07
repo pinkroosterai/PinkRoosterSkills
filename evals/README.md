@@ -11,7 +11,8 @@ claude plugin eval . --trust-plugin                       # every case, 3 runs, 
 claude plugin eval . --case execute-plan-no-plan --runs 1 --ablation none
 ```
 
-Every run is a real Claude session and counts against usage; `--max-cost-usd` caps it.
+Every run is a real Claude session and counts against usage. `--max-cost-usd` is checked
+before each launch; an already-running case can exceed that ceiling.
 `results/` is gitignored.
 
 The original four cases invoke their skill as `/name` and are graded on what they refuse to do without input — no files written, the
@@ -32,7 +33,7 @@ case whose prompt forbids writing has a `file_exists … exists: false` grader. 
 graders are `llm` (the default judge is `haiku`); regex is kept only for an exact string such
 as the `Confirmed` header line.
 
-Run the suite with the default `with-without` ablation at least once per release, so the
+Use the default `with-without` ablation for comparative evaluation, so the
 report shows what the skills change rather than absolute scores alone.
 
 Before claiming full compatibility, also exercise a complete spec → plan → execution run,
@@ -41,3 +42,32 @@ failure, two same-topic research runs, and changed claims reusing an existing so
 Verify final artifacts, index preservation and scratch retention, not just response wording.
 These scenarios passed one Claude Code smoke run on 2026-11-05; they have not been
 run across the other harnesses. See the compatibility record for the limits of this run.
+
+## Execution mode fixtures
+
+Fourteen cases tagged `execution-modes` exercise inline routing, capability and invocation
+gates, whole-phase delegation, independent acceptance, stale evidence, failure handling,
+persisted repair counters, recovery, user-required checks and legacy phase selection.
+Each case uses a native prompt/grader template plus a case.yaml scaffold context.
+
+The [shared fixture setup](execution-fixtures/common.sh) creates a disposable project with
+immutable acceptance scripts. The incomplete-work and stale-evidence cases request one
+controlled fixture mutation at a specified boundary. Their verifiers receive the original
+requirements without a prescribed conclusion.
+
+Check fixture setup and its acceptance contracts with:
+
+```bash
+bash scripts/test-execution-fixtures.sh
+```
+
+For an observed workflow run, grant the case tools and scaffold execution explicitly:
+
+```bash
+claude plugin eval . --tag execution-modes --runs 1 --ablation none --scaffold --trust-plugin --no-publish --keep-temp --allow-tools Bash Write Edit Agent SendMessage --max-cost-usd 5
+```
+
+Review actual tool calls and artifacts as well as grader scores. The trace-focused model
+judge can omit the middle of a long trace; retain the full JSONL trace for evidence review.
+Recovery and repair-history fixtures supply synthetic prior state and grade the current
+run's handling of it. Their supplied history is not evidence of prior live runs.

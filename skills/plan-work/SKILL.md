@@ -28,8 +28,8 @@ Pipeline stage: **plan** (explore → shape → plan → execute).
   `docs/research/` before searching online.
 - **Leaves on exit** — `docs/<slug>/plan.md` (or `m<N>/plan.md`, with the path recorded and
   `Status: planned` on `m<N>/milestone.md`) and `research.md`, committed.
-- **Next** — `/execute-plan <slug>` (or `<slug>/m<N>`); after a milestone is done, this skill
-  again for the next.
+- **Next** — `/execute-plan <slug>` for inline execution, or execute-plan-with-subagents on
+  the same slug when the user chose phase delegation; after a milestone, plan the next.
 
 ## Session and persistence rules
 
@@ -64,7 +64,7 @@ another machine. Never push or change repository visibility as part of these ski
   established in this run does not go in the plan. "Not checked" is a legitimate entry.
 - **Every task states what and where, never how.** The person executing holds the real file;
   they decide the how. See `references/plan-format.md` for the altitude test.
-- **Hand over and stop.** Execution is `/execute-plan`.
+- **Hand over and stop.** Execution is execute-plan inline or execute-plan-with-subagents.
 
 ## Delegation
 
@@ -199,7 +199,10 @@ worth writing down; findings that change something survive as edits to the plan 
 **6. Commit and hand over.** Commit `docs/<slug>/` — the plan and the research file,
 explicit paths, conventional message; this records a local checkpoint. Then report the path,
 one line on the shape — for a milestone plan, which milestone of how many — and the command
-that runs it: `/execute-plan <slug>` (`/execute-plan <slug>/m<N>` for a milestone).
+that runs it: `/execute-plan <slug>` (`/execute-plan <slug>/m<N>` for a milestone), or
+`/execute-plan-with-subagents <slug>` when the user chose phase delegation. Record an explicit
+execution preference in Context. Do not switch modes based on task size or tool availability;
+the delegated skill stops when subagents are unavailable rather than running inline.
 
 ## Review checklist
 
@@ -221,7 +224,8 @@ Run this against the finished plan, reading it as if you had not written it:
 
 - **`/shape-spec`** — the request is a concept still being decided, not work to phase. A
   spec whose `Status` is `shaping` goes back there too.
-- **`/execute-plan`** — the plan exists and the ask is to do it.
+- **execute-plan / execute-plan-with-subagents** — the plan exists and the ask is to execute
+  it inline / with phase workers, respectively.
 - **`/research-topic`** — the deliverable is knowledge for the corpus, not a plan.
 
 ## Mechanical validation
@@ -235,14 +239,14 @@ Read `references/validation.md` for arguments, stdin drafts, supported Markdown 
 
 This skill's files live in the folder holding this `SKILL.md` (Claude Code also exposes it
 as `${CLAUDE_SKILL_DIR}`); paths below are relative to it. These files are the set-wide definition: `shape-spec`
-and `execute-plan` carry byte-identical copies of the ones they use, so each skill installs
+and both execution skills carry byte-identical copies of the ones they use, so each installs
 on its own, and a change is made here first and copied.
 
 - `references/plan-format.md` — the plan file format, the what-and-where rule with worked
   examples, and the full template. Read before writing `plan.md`.
 - `references/researching.md` — where to look for what, the source-and-date rule, and the
   shape of `research.md`. Read before step 2.
-- `references/delegation.md` — the tiers, the delegation test, the brief and the reply
-  checks for every skill in the set that dispatches a worker. Read before the first dispatch.
+- `references/delegation.md` — task/research delegation for planning and shaping, not phase
+  execution. Read before this skill's first dispatch.
 - `references/spec-contract.md` — the parts of a spec every stage reads or writes: header
   lines, `Status`, marks and the `Decisions` rules. Read before reading a spec.

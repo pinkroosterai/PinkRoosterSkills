@@ -29,6 +29,21 @@ rm -rf agents
 printf '\ndrift\n' >> skills/execute-plan/references/delegation.md
 expect_failure 'shared reference drift'
 cp "$repo/skills/execute-plan/references/delegation.md" skills/execute-plan/references/delegation.md
+printf '\ndrift\n' >> skills/execute-plan-with-subagents/references/plan-format.md
+expect_failure 'phase executor shared reference drift'
+cp "$repo/skills/execute-plan-with-subagents/references/plan-format.md" skills/execute-plan-with-subagents/references/plan-format.md
+mv skills/execute-plan-with-subagents/references/roles/phase-worker.md "$scratch/phase-worker.saved"
+expect_failure 'missing phase worker role'
+mv "$scratch/phase-worker.saved" skills/execute-plan-with-subagents/references/roles/phase-worker.md
+mv skills/execute-plan-with-subagents/scripts/check-plan.sh "$scratch/check-plan.saved"
+expect_failure 'missing phase executor validator wrapper'
+mv "$scratch/check-plan.saved" skills/execute-plan-with-subagents/scripts/check-plan.sh
+printf '\n# drift\n' >> skills/execute-plan-with-subagents/scripts/validate.awk
+expect_failure 'phase executor validator implementation drift'
+cp "$repo/skills/execute-plan-with-subagents/scripts/validate.awk" skills/execute-plan-with-subagents/scripts/validate.awk
+mv skills/execute-plan-with-subagents "$scratch/phase-executor.saved"
+expect_failure 'missing seventh packaged skill'
+mv "$scratch/phase-executor.saved" skills/execute-plan-with-subagents
 restore() { cp "$repo/skills/plan-work/SKILL.md" skills/plan-work/SKILL.md; }
 
 sed -i 's/^name: plan-work$/name: plan-works/' skills/plan-work/SKILL.md

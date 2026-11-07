@@ -67,7 +67,8 @@ Source: <link>, checked <date>.
   spec's marks and deferred register>; <why it cannot be settled yet.>
 ```
 
-`/execute-plan` appends to this file under new headings as phases settle their own
-questions. Leave it appendable: no closing summary, no "final" framing, and do not rewrite
+Both execute-plan and execute-plan-with-subagents append to this file under new headings as
+their main sessions settle phase questions. Leave it appendable: no closing summary, no
+"final" framing, and do not rewrite
 earlier findings when they are superseded — add the correction with its own date, so the
 record still shows what was believed when the plan was written.

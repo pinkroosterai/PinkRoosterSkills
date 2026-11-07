@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.0 — 2026-11-07
+
+- Add `execute-plan-with-subagents`: one implementation worker per phase, preparation
+  findings settled in the main session before edits, and a separate acceptance verifier.
+- Keep `execute-plan` entirely inline for research, implementation, checks and repairs.
+  Both executors use the same plans, milestones and progress records.
+- Define task checkpoints, delegated repairs, stale-evidence handling, recovery from
+  persisted state and explicit stopping when subagent tools are unavailable.
+- Include standalone role/reference bundles and validators, synchronize all seven skills'
+  package metadata, and document execution-mode selection and harness requirements.
+- Add execution-mode cases and fourteen offline fixture checks; extend the shared-copy,
+  package and standalone validator regressions to cover both executors.
+
 ## 0.3.0 — 2026-11-07
 
 - Bundle read-only spec, plan, research-corpus and backlog validators, with standalone

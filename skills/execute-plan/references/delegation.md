@@ -1,9 +1,11 @@
 # Delegating a step to a worker
 
-The set-wide rules for handing part of a run to a subagent on a cheaper model. `shape-spec`,
-`plan-work` and `execute-plan` each say *which* of their steps may be delegated; this file
+The rules for handing part of a planning or shaping run to a cheaper-model subagent.
+`shape-spec` and `plan-work` each say *which* of their steps may be delegated; this file
 says *when* a delegable step actually is, to whom, with what brief, and what to do with the
-reply. Read it before the first dispatch of a run.
+reply. Read it before the first dispatch of a run. execute-plan is entirely inline and does
+not use this guide. execute-plan-with-subagents owns separate phase orchestration and roles;
+its verifier, model defaults and no-inline-fallback rules are not governed by this guide.
 
 ## Contents
 

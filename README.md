@@ -4,7 +4,7 @@
 
 # PinkRoosterSkills
 
-**Six portable agent skills: explore ideas, shape one into a spec, plan the work, execute the plan, build a sourced research corpus, and keep AGENTS.md lean.**
+**Seven portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, and keep AGENTS.md lean.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent-Skills-ec4899)](https://agentskills.io/specification)
@@ -30,7 +30,7 @@ concept ──────────────────────→ sh
                                                  │
             ┌────────────────────────────────────┘
             ▼
-       plan-work → m<N>/plan.md → execute-plan → verified milestone ─┐
+       plan-work → m<N>/plan.md → execution mode → verified milestone ─┐
             ▲                                                         │
             └───────────────────── next milestone ───────────────────┘
 
@@ -38,7 +38,9 @@ research-topic → docs/research/ corpus, read first by every stage
 ```
 
 These are instructions an agent follows, not an execution engine or a permission boundary.
-Your harness supplies file access, search, questions, shell commands and optional subagents.
+Choose execute-plan for inline execution or execute-plan-with-subagents for phase workers.
+Your harness supplies file access, search, questions and shell commands; the delegated
+executor also requires working subagent tools.
 User instructions and project rules take precedence.
 
 ## Install
@@ -59,7 +61,7 @@ skills and multiple harnesses; it needs Node.js 22.20 or later. The skills have 
 or build step. Install using one method per harness to avoid duplicate skills.
 
 **Verify before starting:** ask your agent, “List the installed PinkRooster skills and read
-the plan-work skill. Do not create files or run its workflow.” Expect all six skills and a
+the plan-work skill. Do not create files or run its workflow.” Expect all seven skills and a
 summary of plan-work. This checks discovery and loading, not a complete workflow.
 
 Follow the [installation guide](docs/installation.md) for scope, local checkouts, prerequisites,
@@ -88,7 +90,8 @@ ambiguous. A handoff names the next step without automatically running it.
 | [explore-ideas](skills/explore-ideas/SKILL.md) | Turn a broad problem space into a ranked, sourced idea backlog | `docs/ideas/<area>.md`, `docs/ideas/README.md` |
 | [shape-spec](skills/shape-spec/SKILL.md) | Turn one concept into a specification, split into milestones when big, through bounded question rounds and decision readback | `docs/<slug>/spec.md`, `research.md` |
 | [plan-work](skills/plan-work/SKILL.md) | Turn defined work into phases, assumptions, tasks and acceptance checks, one milestone at a time, within a size limit | `docs/<slug>/plan.md` or `plan-m<N>.md`, `research.md` |
-| [execute-plan](skills/execute-plan/SKILL.md) | Implement an existing plan, verify each phase and record progress | Code, plan status, findings and spec corrections |
+| [execute-plan](skills/execute-plan/SKILL.md) | Implement and verify an existing plan entirely in the main session | Code, plan status, findings and spec corrections |
+| [execute-plan-with-subagents](skills/execute-plan-with-subagents/SKILL.md) | Implement each phase in a worker and check acceptance in a separate verifier | Code, plan status, findings, acceptance evidence and spec corrections |
 | [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
 | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
 
@@ -129,11 +132,30 @@ spec, plan a first slice, or let you override.
 
 ### Execute a plan
 
-Ask: “Use execute-plan for obsidian-sync.” Execution checks assumptions, settles open
+Ask: “Use execute-plan for obsidian-sync.” All research, implementation, checks and repairs
+run in the main session. Execution checks assumptions, settles open
 questions and verifies completion before advancing. Missing acceptance criteria are resolved
 before implementation. `--phase N` selects a phase; its prerequisites still must hold.
 Progress remains on disk for resumption after interruption. Started from a vague request
 rather than by name, it confirms the plan and phase before its first edit.
+
+### Execute with phase workers
+
+Ask: “Use execute-plan-with-subagents for obsidian-sync.” It consumes the same plan files,
+milestone sub-slugs and `--phase N` selection as execute-plan. Each phase starts a fresh
+implementation worker; phases run sequentially.
+
+The worker checks prerequisites and researches `Settle first`. The main session records the
+findings and settles decisions before implementation begins. The worker then implements
+the whole phase and any repairs, reporting task checkpoints as it goes. A separate verifier
+checks the requirements and runs `Done when`; the main session reviews the evidence before
+marking the phase done. The main session retains user questions, shared documents and commits.
+
+This uses one phase worker and one verifier per phase, with additional context and checking
+overhead. Model and reasoning settings inherit the harness defaults unless you choose
+otherwise. Subagent support is required: without it, the skill stops and names execute-plan
+as the inline alternative. It does not switch modes automatically. Stock Pi needs a
+subagent extension for this skill.
 
 ### Research a topic
 
@@ -151,8 +173,9 @@ are prohibited, or when changes cannot safely be isolated, artifacts remain unco
 with an explanation. No skill pushes changes or changes repository visibility.
 
 Subagents receive a bounded job and a role pasted from `references/roles/`; no custom agent
-definitions are installed. The main agent owns decisions, shared documents, verification
-and commits. Destructive or irreversible commands are never delegated: the main agent shows
+definitions are installed. The main agent owns decisions, shared documents, phase acceptance
+and commits. execute-plan runs all checks inline; execute-plan-with-subagents assigns acceptance
+checks to its separate verifier. Destructive or irreversible commands are never delegated: the main agent shows
 the exact command and runs it only after you confirm. Models, reasoning effort and concurrency adapt to the tools actually available.
 A worker's report is checked against its changes before being trusted.
 
@@ -184,6 +207,7 @@ also requires the corresponding harness CLI; the skills themselves have no runti
 ```bash
 bash scripts/check-skills.sh
 bash scripts/test-check-skills.sh # includes standalone validator fixtures
+bash scripts/test-execution-fixtures.sh # execution fixture setup and check contracts
 bash scripts/check-packages.sh # requires jq
 claude plugin validate .
 # Optional strict format validation (argument-hint is a known extension):

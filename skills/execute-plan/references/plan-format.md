@@ -2,7 +2,8 @@
 
 `docs/<slug>/plan.md` — or `docs/<slug>/m<N>/plan.md` for milestone N of a spec — is the contract between
 whoever plans and whoever executes. It is read cold, months later, by someone who was not in
-this conversation.
+this conversation. execute-plan runs inline; execute-plan-with-subagents delegates phases.
+Both consume this same format and keep the same acceptance and persistence contract.
 
 ## Contents
 
@@ -49,7 +50,7 @@ source files; "per phase" when everything is tracked.>
 
 ## Log
 
-<Empty at hand-over. `/execute-plan` appends: date, phase, what changed and why.>
+<Empty at hand-over. The executor appends: date, phase, what changed and why.>
 ```
 
 ## The four phase fields
@@ -58,7 +59,7 @@ source files; "per phase" when everything is tracked.>
 plan is the state, so nothing else needs to track progress.
 
 The plan-wide `Status` in the header uses four exact values: `not started`;
-`phase N in progress`; `phase N blocked`; `done`. `/execute-plan` sets it when it moves a
+`phase N in progress`; `phase N blocked`; `done`. Either executor sets it when it moves a
 phase, so a reader of the header alone knows where the run is.
 
 **Rests on** — what the phase assumes, named so it can be re-checked against the repo as it
@@ -120,7 +121,7 @@ One phase, with three tasks and a `Done when`, is a good plan for a small job.
 
 A single plan holds at most **eight phases and forty tasks**. Each phase has a coherent
 area of the code and its own checkable `Done when`; it need not fit one session, because
-`execute-plan` carries a plan across sessions. Signs a phase does not fit: its tasks span
+either executor carries a plan across sessions. Signs a phase does not fit: its tasks span
 several unrelated areas of the code, its `Done when` needs several subsystems running
 together for the first time, or you cannot say what its `Done when` output will look like.
 

@@ -121,6 +121,9 @@ for pair in \
   "plan-work/references/roles/scout.md shape-spec/references/roles/scout.md" \
   "plan-work/references/roles/worker.md shape-spec/references/roles/worker.md" \
   "plan-work/references/spec-contract.md execute-plan/references/spec-contract.md" \
+  "plan-work/references/plan-format.md execute-plan-with-subagents/references/plan-format.md" \
+  "plan-work/references/researching.md execute-plan-with-subagents/references/researching.md" \
+  "plan-work/references/spec-contract.md execute-plan-with-subagents/references/spec-contract.md" \
   "plan-work/references/spec-contract.md shape-spec/references/spec-contract.md"; do
   set -- $pair
   if cmp -s "skills/$1" "skills/$2"; then ok "copy in sync: $2"
@@ -145,12 +148,12 @@ for f in skills/*/SKILL.md; do
 done
 
 # Bundled validators and instructions must remain usable in standalone installations.
-for skill in shape-spec execute-plan research-topic explore-ideas; do
+for skill in shape-spec execute-plan execute-plan-with-subagents research-topic explore-ideas; do
   for file in scripts/validate.sh scripts/validate.awk references/validation.md; do
     cmp -s "skills/plan-work/$file" "skills/$skill/$file" && ok "validator copy in sync: $skill/$file" || fail "validator copy drift: $skill/$file"
   done
 done
-for pair in 'shape-spec spec-lint' 'execute-plan spec-lint' 'execute-plan check-plan' 'research-topic check-corpus' 'explore-ideas check-backlog'; do
+for pair in 'shape-spec spec-lint' 'execute-plan spec-lint' 'execute-plan check-plan' 'execute-plan-with-subagents spec-lint' 'execute-plan-with-subagents check-plan' 'research-topic check-corpus' 'explore-ideas check-backlog'; do
   set -- $pair
   cmp -s "skills/plan-work/scripts/$2.sh" "skills/$1/scripts/$2.sh" || fail "validator wrapper drift: $1/$2"
 done

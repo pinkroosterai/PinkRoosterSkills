@@ -1,9 +1,10 @@
 # Installation
 
-Choose your harness below. All methods load the same six skills and their bundled
-references. You do not need to install another agent, a subagent extension, or a runtime
-for these Markdown instructions. Your harness supplies file access, shell commands,
-questions and optional delegation; research also needs web or documentation tools.
+Choose your harness below. All methods load the same seven skills and their bundled
+references. Your harness supplies file access, shell commands and questions; research also
+needs web or documentation tools. Use execute-plan for inline execution.
+execute-plan-with-subagents additionally requires working subagent tools and returned results;
+the package does not install an agent runtime or extension for you.
 
 ## Choose a method
 
@@ -100,7 +101,8 @@ agy plugin uninstall pinkrooster-skills
 Antigravity App, IDE extensions and the standalone IDE can expose different capabilities.
 Their UI installation and command syntax have not been verified here. Consult the
 [Antigravity plugin documentation](https://antigravity.google/docs/plugins).
-Unlike EGM's review workflow, PinkRooster can work inline without subagents.
+Use execute-plan for inline work, or execute-plan-with-subagents when this session exposes
+the required general-purpose subagent tools.
 
 ## Pi
 
@@ -112,7 +114,9 @@ pi list
 Installation defaults to user scope. Add `--local` for a project package declaration in
 `.pi/settings.json`; Pi loads that declaration after project trust is granted.
 Start a fresh session or use `/reload`, then invoke `/skill:plan-work`.
-No Pi extension or companion subagent package is required; work runs inline when needed.
+The inline execute-plan skill needs no Pi extension. execute-plan-with-subagents requires
+a working subagent extension and stops when no subagent tool is available; it does not
+fall back to inline execution.
 
 ```bash
 pi update git:github.com/pinkroosterai/PinkRoosterSkills
@@ -129,7 +133,7 @@ choose skills, agents and installation method interactively:
 
 ```bash
 npx skills add pinkroosterai/PinkRoosterSkills
-# All six skills for a specific harness:
+# All seven skills for a specific harness:
 npx skills add pinkroosterai/PinkRoosterSkills -a cursor --skill '*'
 # Other harness identifiers:
 npx skills add pinkroosterai/PinkRoosterSkills -a gemini-cli --skill '*'
@@ -215,7 +219,8 @@ Start a new session in your project. Ask:
 > List the installed PinkRooster skills and read the plan-work skill. Do not create files
 > or run its workflow.
 
-Expect `explore-ideas`, `shape-spec`, `plan-work`, `execute-plan`, `research-topic` and `maintain-agents-md`,
+Expect `explore-ideas`, `shape-spec`, `plan-work`, `execute-plan`,
+`execute-plan-with-subagents`, `research-topic` and `maintain-agents-md`,
 and a summary showing that plan-work was read. If you installed only one skill, expect
 only that skill. Check that referenced files can be opened from the installed bundle.
 Discovery and loading do not establish that every workflow works in that harness.
@@ -243,7 +248,7 @@ For other harnesses, use their skill selector or ask for the skill by name.
 | Unexpected version after update | Refresh the marketplace or checkout before updating the plugin; restart the agent. Local sources may need reinstalling. |
 | Broken links or missing role files | Reinstall the whole skill directory; try the portable installer's `--copy` option if symlinks fail. |
 | Command prefix rejected | Use the host's skill picker or ask for the skill by name; Claude plugin namespaces differ from standalone syntax. |
-| No subagent tool | Work runs inline. No custom agent definitions or extensions are required. |
+| No subagent tool | Use execute-plan for inline work. execute-plan-with-subagents stops until the host provides the required tools; it never switches modes automatically. |
 | Research cannot browse or write scratch files | Enable the needed tools through your host's normal permissions, or resolve the reported limitation before continuing research. |
 | Files saved but commit fails | Check Git setup and sandbox permissions. The skills preserve artifacts and report the failure. |
 
@@ -260,7 +265,8 @@ to Superpowers and do not imply a PinkRooster listing.
 skills across host manifests and separates installation from runtime capability evidence.
 Its skills depend on shared root-level resources, so it requires the complete plugin.
 PinkRooster bundles references inside each skill, preserving individual installation.
-Its fresh-reviewer requirements and agent definitions are not adopted here.
+PinkRooster keeps role instructions inside each skill and uses the host's general-purpose
+subagents rather than installing agent definitions.
 
 Both patterns support small host-specific manifests around shared content. Native routes
 serve the core four harnesses, while the skills CLI gives wider reach and individual-skill

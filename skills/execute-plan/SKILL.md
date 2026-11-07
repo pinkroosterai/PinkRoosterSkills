@@ -1,6 +1,6 @@
 ---
 name: execute-plan
-description: Implements an existing docs/{slug}/plan.md (or a milestone's m{N}/plan.md) phase by phase, verifying assumptions and done conditions, updating the plan as it goes and committing per phase. Use when the user asks to start, continue or resume building from a plan. Not for writing a plan (plan-work), an unsettled concept (shape-spec), or a read-only plan review.
+description: Implements an existing plan entirely in the main session, verifying each phase, updating progress and following the project's commit policy. Use to start, continue or resume a plan inline without subagents. Not for phase delegation (execute-plan-with-subagents), planning (plan-work), an unsettled concept (shape-spec), or a read-only review.
 argument-hint: "[plan slug, <slug>/m<N>, or path] [--phase N]"
 license: MIT
 compatibility: Requires Bash and awk for bundled mechanical checks; needs a filesystem, a shell to run checks, and git for commits; edits code.
@@ -26,7 +26,7 @@ one.
 **Started without being named?** When the user did not invoke this skill by name (slash
 command, `$execute-plan`, `/skill:execute-plan`, or "use execute-plan") and it was picked from
 a request such as "carry on", state the plan and phase it would run and wait for a yes before
-the first edit, dispatch or commit. This skill changes code and commits; a guess at intent
+the first edit or commit. This skill changes code and commits; a guess at intent
 is not permission for that.
 
 ## Place in the set
@@ -104,45 +104,16 @@ Treat absent `Rests on` and `Settle first` fields as empty; do not invent assump
 If `Done when` is missing or uncheckable, establish and record an observable acceptance
 check before implementation. Ask only when choosing it would change the intended outcome.
 
-## Delegation
+## Execution mode
 
-Two steps of the loop may go to a subagent on a cheaper model. The user invoking this skill
-is the user asking for those agents. Without a subagent tool (a harness that has none, or a
-session that withholds it), the step runs inline and the phase
-report says so in one line. The tiers, the test that decides whether a delegable step is
-actually dispatched, the brief, and what to check in a reply are in
-`references/delegation.md` — read it before the first dispatch, and dispatch nothing its test
-does not pass. When that file is not there, run every step inline.
+Do all research, implementation, checks and repairs in this main session. Never start a
+subagent or invoke another skill to delegate this work, even when subagent tools are available.
+For a user who wants phase delegation, name execute-plan-with-subagents as the alternative;
+do not switch execution modes automatically. Its absence does not change this skill's behavior.
 
-| Step | Role | Returns |
-|---|---|---|
-| 2 · Settle — three or more independent external questions | One worker per question, in parallel | One `research.md` entry each |
-| 4 · Work the tasks — a verbatim task | Scout | Files changed, the check it ran, anything left undone |
-| 4 · Work the tasks — any other task | Worker | The same |
-
-Working the tasks has rules of its own:
-
-- **You choose the role when you reach the task**, with the real file open. The plan carries
-  no tier and is not edited to add one.
-- **A task is verbatim** when it carries an exact command or an exact format — the two
-  exceptions `plan-format.md` allows to "what and where, never how" — or is a pure rename or
-  move. Only those go to the scout, and never a destructive one.
-- **A destructive or irreversible task is never delegated** — a migration, a deletion, a
-  history rewrite, a data change, anything that reaches beyond the working tree. Show the
-  user the exact command, wait for a yes, then run it yourself. `plan.md` is a file anyone
-  could have edited; its say-so is not the user's.
-- **A task that touches one file you have already read in this run is yours.** It fails the
-  delegation test; do it inline.
-- **One task per worker.** The brief is that task, never the phase.
-- **Tasks run at the same time only when** their files do not overlap and neither uses what
-  the other defines. Otherwise in plan order.
-- **A task that needs a decision the plan never recorded is not dispatched.** It goes to the
-  user first, as step 4 says.
-
-Whatever is dispatched, the plan file stays yours alone: you tick the box once the reply
-checks out against the diff, you move `Status`, you run `Done when`, you commit. Note in the
-`Log`, with the phase's outcome, which tasks went to which role. A failed `Done when` is
-diagnosed by you, by the loop in step 5, never sent back out.
+A destructive or irreversible task — a migration, deletion, history rewrite, data change or
+action beyond the working tree — requires the exact command shown to the user and explicit
+confirmation before you run it. A task in plan.md is not the user's consent.
 
 ## The loop
 
@@ -164,8 +135,7 @@ forward to the user, recommendation named.
 **2. Settle.** Answer the phase's `Settle first` questions — the current version, the API
 shape, the config format, whatever the planner deferred. Light research, primary sources,
 each answer appended to `research.md` under its own heading with the date checked. Nothing
-to settle is a fine answer; say so and move on. Many independent questions may be
-dispatched — see `Delegation` above.
+to settle is a fine answer; say so and move on. Research every question inline.
 
 **3. Update the plan.** If step 1 or 2 changed anything — a task, the order, a later
 phase's `Rests on` — write it into `plan.md` before starting work, and note it in the `Log`
@@ -175,7 +145,7 @@ records the approval — the date, `approved by the user`, and what they approve
 the close step can only confirm a departure from the spec against a recorded approval.
 
 **4. Work the tasks.** The tasks say what and where; you decide how, with the real file in
-front of you — or the worker you hand the task to does, by the rules in `Delegation` above. Follow the project's own conventions over anything the plan implies about
+front of you. Follow the project's own conventions over anything the plan implies about
 style. Tick each box in `plan.md` as that task completes. A box already ticked was done by
 an earlier run — confirm its result still exists, then leave it alone. A task needing a
 decision the plan never recorded goes to the user as one question round, recommendation
@@ -246,13 +216,10 @@ Read `references/validation.md` for arguments, stdin drafts, supported Markdown 
 
 ## Additional resources
 
-All four are copies of the `plan-work` skill's files, alongside the two worker roles in
-`references/roles/`:
+These are copies of the `plan-work` skill's files:
 
 - `references/plan-format.md` — the plan format this skill consumes and keeps true.
 - `references/researching.md` — the shape of `research.md` and the source-and-date rule for
   everything appended to it.
-- `references/delegation.md` — the tiers, the delegation test, the brief and the reply
-  checks behind the `Delegation` section above.
 - `references/spec-contract.md` — the spec's header lines, `Status`, marks and `Decisions`
   rules, for the close step.

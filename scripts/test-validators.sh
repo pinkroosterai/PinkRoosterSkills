@@ -16,7 +16,7 @@ expect() {
   fi
   checks=$((checks+1)); echo "OK: $label"
 }
-for skill in plan-work shape-spec execute-plan research-topic explore-ideas; do
+for skill in plan-work shape-spec execute-plan execute-plan-with-subagents research-topic explore-ideas; do
   cp -R "$repo/skills/$skill" "$scratch/$skill"
 done
 spec="$scratch/shape-spec/scripts/spec-lint.sh"
@@ -88,6 +88,15 @@ DOC
 printf '# Research\n' > research.md
 expect pass 'strict standalone plan' bash "$plan" plan.md
 cp plan.md "$scratch/plan-base"
+for executor in execute-plan execute-plan-with-subagents; do
+  isolated="$scratch/$executor standalone with spaces"
+  mkdir -p "$isolated"
+  cp -R "$repo/skills/$executor" "$isolated/bundle"
+  expect pass "$executor isolated standalone plan" bash "$isolated/bundle/scripts/check-plan.sh" plan.md
+  expect pass "$executor isolated standalone spec" bash "$isolated/bundle/scripts/spec-lint.sh" "$scratch/spec-base"
+  sed '/Done when/d' plan.md > "$isolated/missing-acceptance.md"
+  expect fail "$executor isolated legacy requires acceptance" bash "$isolated/bundle/scripts/check-plan.sh" "$isolated/missing-acceptance.md" --legacy
+done
 sed '/Rests on/d; /Settle first/d' "$scratch/plan-base" > plan.md
 expect fail 'strict mode requires fields' bash "$plan" plan.md
 expect pass 'legacy mode permits absent optional fields' bash "$plan" plan.md --legacy

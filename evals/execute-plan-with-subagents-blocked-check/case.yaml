@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: execute-plan-with-subagents-blocked-check
+context:
+  scaffold_script: scaffold.sh

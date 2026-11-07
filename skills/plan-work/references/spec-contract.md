@@ -1,8 +1,9 @@
 # The spec contract
 
 The parts of `docs/<slug>/spec.md` that more than one skill reads or writes. `shape-spec`
-writes the spec; `plan-work` reads it on entry; `execute-plan` reads it and appends to it at
-close. Each carries a byte-identical copy of this file, so each can act on a spec when
+writes the spec; `plan-work` reads it on entry; both `execute-plan` (inline) and
+`execute-plan-with-subagents` (delegated) read it and append at close. Each carries a
+byte-identical copy of this file, so each can act on a spec when
 installed alone. The full template and the interview rules stay in `shape-spec`.
 
 ## Contents
@@ -100,7 +101,7 @@ reference; `Done when` quotes the criterion line so it can be found with a searc
 **Status is derived from the plan, never asserted separately.** `not started` — no plan yet;
 `planned` — a plan exists and its plan-wide `Status` is `not started`; `in progress` — the
 plan reads `phase N in progress` or `phase N blocked`; `done` — the plan reads `done`.
-`plan-work` sets `planned`; `execute-plan` moves it with the plan and sets `done` at close,
+`plan-work` sets `planned`; either executor moves it with the plan and sets `done` at close,
 in the document and in the milestone's index line.
 
 **Default.** With no milestone named, a skill takes the lowest-numbered milestone that is not
@@ -131,7 +132,7 @@ Provenance tags:
 | `assumed` | A load-bearing call the model made without asking | `shape-spec` |
 | `sourced` | Settled by a finding in `research.md`; names its heading | `shape-spec` |
 | `default-accepted` | The user took a whole round's recommendations at once; the call is the recommended option | `shape-spec` |
-| `executed` | The built thing departs from an entry; names the entry it reverses, what was built and why | `execute-plan`, at close only |
+| `executed` | The built thing departs from an entry; names the entry it reverses, what was built and why | Either executor, at close only |
 
 Rules every writer follows:
 
@@ -152,7 +153,7 @@ Rules every writer follows:
   phase's `Settle first` entry; `Status: shaping` (including unconfirmed active decisions) is
   named to the user before planning; active confirmed entries are settled ground; superseded
   entries are history.
-- **`execute-plan`** keeps the milestone document's `Status` in step with the plan, and appends
+- **Either executor** keeps the milestone document's `Status` in step with the plan, and appends
   to the spec at close — at the close of each milestone plan, for the parts that milestone
   covered: `executed` entries, `superseded by` on the entries they reverse, edits to the
   affected sections so they describe what was built, then recomputes both header lines and
@@ -166,7 +167,7 @@ Rules every writer follows:
 
 ## Closing a plan against a spec
 
-`execute-plan`, when the last phase of a plan closes and a spec sits beside it:
+Either executor, when the last phase of a plan closes and a spec sits beside it:
 
 - Where execution overturned a decision, append an entry under a dated heading, tagged
   `executed`, naming the ID it reverses, what was built instead and why.
