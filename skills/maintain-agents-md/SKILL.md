@@ -93,6 +93,13 @@ repo already shows. Wait for a natural stop, gather every fact so far, and make 
 - A user-level or organization-level instruction file: out of scope; the user edits those.
 - General documentation, a README or an architecture write-up: write it directly.
 
+## Mechanical checks
+
+Before writing, count the proposed text with `wc -l`; repeat on the saved file.
+Check the shim with an exact comparison against the single line `@AGENTS.md`.
+Count a final unterminated line as a line too; do not certify a budget using only newline counts.
+These checks do not decide whether a rule belongs in the file or authorize its removal.
+
 ## Additional resources
 
 Paths are relative to the folder holding this `SKILL.md`.

@@ -3,7 +3,7 @@ name: research-topic
 description: Builds or revises a sourced research corpus under docs/research/, one cross-linked topic file per subject, after agreeing scope with the user and optionally fanning out researcher subagents. Use when the user wants a topic researched and the findings kept on disk. Not for a chat-only answer, a single factual lookup, a read-only review, or implementation planning (plan-work).
 argument-hint: "[topic or question]"
 license: MIT
-compatibility: Needs web search and page fetch with network access, a writable scratch directory outside the repository, and git for commits.
+compatibility: Requires Bash and awk for bundled mechanical checks; needs web search and page fetch with network access, a writable scratch directory outside the repository, and git for commits.
 ---
 
 # Research Topic
@@ -253,6 +253,13 @@ that run and the corpus file it should read, so it can resume.
   files should be left behind.
 - **Just answering** — one factual question, or a library's API. A documentation
   MCP server (context7 and the like) is faster than a sweep, and this skill's overhead is not free.
+
+## Mechanical validation
+
+Run the corpus checker for each changed topic in Phase 5, passing the corpus root and scratch path. Mechanical validation and claim-to-source evidence review are separate gates; preserve scratch on either failure.
+
+Bundled commands: `scripts/check-corpus.sh`.
+Read `references/validation.md` for arguments, stdin drafts, supported Markdown and limits.
 
 ## Additional resources
 

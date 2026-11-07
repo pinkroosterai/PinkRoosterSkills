@@ -66,6 +66,12 @@ for fixture in malformed metadata target skills body; do
   cp "$repo/.codex-plugin/plugin.json" .codex-plugin/plugin.json
   cp "$repo/.agents/plugins/marketplace.json" .agents/plugins/marketplace.json
 done
+printf '\n# drift\n' >> skills/shape-spec/scripts/validate.awk
+expect_failure 'bundled validator implementation drift'
+cp "$repo/skills/shape-spec/scripts/validate.awk" skills/shape-spec/scripts/validate.awk
+printf '\nRun `scripts/missing-check.sh`.\n' >> skills/plan-work/SKILL.md
+expect_failure 'missing bundled command'
+restore
 # spec-lint: a wrong Confirmed line is rejected, a right one passes.
 lint=$(mktemp -d)
 printf '**Status** — shaping\n**Confirmed** — 1/1 decisions · 0 assumed, unconfirmed\n## Decisions\n- D1 `user` Q: a -> A: "b"\n  confirmed 2026-11-05\n' > "$lint/spec.md"
@@ -74,4 +80,5 @@ sed -i 's#1/1#0/1#' "$lint/spec.md"
 if bash scripts/spec-lint.sh "$lint/spec.md" > /dev/null; then echo "FAIL: spec-lint accepted a wrong Confirmed line"; exit 1; fi
 echo "OK: spec-lint"
 bash scripts/check-skills.sh > /dev/null || { echo "FAIL: restored copy no longer passes"; exit 1; }
+bash scripts/test-validators.sh
 echo 'validator regression checks passed'

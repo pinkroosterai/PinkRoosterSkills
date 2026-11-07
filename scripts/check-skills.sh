@@ -137,6 +137,27 @@ for f in skills/*/SKILL.md; do
   else fail "persistence rules drifted from plan-work: $f"; fi
 done
 
+# Only skill bodies name installed commands; reference tables can show project examples.
+for f in skills/*/SKILL.md; do
+  while IFS= read -r script; do
+    [ -f "$(dirname "$f")/$script" ] || fail "$f: missing bundled script $script"
+  done < <(grep -oE '`scripts/[^` ]+`' "$f" | tr -d '`' | sort -u)
+done
+
+# Bundled validators and instructions must remain usable in standalone installations.
+for skill in shape-spec execute-plan research-topic explore-ideas; do
+  for file in scripts/validate.sh scripts/validate.awk references/validation.md; do
+    cmp -s "skills/plan-work/$file" "skills/$skill/$file" && ok "validator copy in sync: $skill/$file" || fail "validator copy drift: $skill/$file"
+  done
+done
+for pair in 'shape-spec spec-lint' 'execute-plan spec-lint' 'execute-plan check-plan' 'research-topic check-corpus' 'explore-ideas check-backlog'; do
+  set -- $pair
+  cmp -s "skills/plan-work/scripts/$2.sh" "skills/$1/scripts/$2.sh" || fail "validator wrapper drift: $1/$2"
+done
+for file in skills/*/scripts/*.sh; do
+  bash -n "$file" || fail "Bash syntax: $file"
+done
+
 if ! bash scripts/check-packages.sh; then fail "package checks"; fi
 
 echo

@@ -201,3 +201,10 @@ prompt. One run per case is a smoke check, not a pass rate. Not checked: the cre
 real files, the `CLAUDE.md` shim in a real project, the 200-line count on a created file, and
 anything in Codex, Antigravity or Pi.
 
+
+## 0.3.0: bundled mechanical validators
+
+The Bash/awk validators have disposable standalone-copy fixtures, including execution
+from an unrelated working directory, paths with spaces and stdin drafts. These are
+script-level checks, not end-to-end agent workflow or native hook tests. No hooks are
+installed. See the bundled validation guide for the supported Markdown subset.

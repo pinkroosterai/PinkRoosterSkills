@@ -183,7 +183,7 @@ also requires the corresponding harness CLI; the skills themselves have no runti
 
 ```bash
 bash scripts/check-skills.sh
-bash scripts/test-check-skills.sh
+bash scripts/test-check-skills.sh # includes standalone validator fixtures
 bash scripts/check-packages.sh # requires jq
 claude plugin validate .
 # Optional strict format validation (argument-hint is a known extension):
@@ -204,3 +204,7 @@ Keep discovery descriptions short and explicit about use cases and exclusions. U
 [changelog](CHANGELOG.md) and all package version records when preparing a release.
 The project is [MIT licensed](LICENSE). The header logo is shared with
 [PinkRooster](https://github.com/pinkroosterai/PinkRooster).
+
+Bundled mechanical validators and their Markdown limits are documented in
+[the validation guide](skills/plan-work/references/validation.md). They ship with each
+consuming skill and run without the contributor checkout. Hooks remain deferred.

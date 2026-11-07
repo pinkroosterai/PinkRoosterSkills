@@ -3,7 +3,7 @@ name: explore-ideas
 description: Turns a broad product or feature ambition into a ranked, sourced idea backlog (docs/ideas/{area}.md) by framing the problem, scanning the landscape, generating options per user need and ranking them with the user. Use when the user has a problem space or a vague product idea and wants to brainstorm or find what to build. Not for specifying one concrete concept (shape-spec), planning (plan-work), or a research corpus (research-topic).
 argument-hint: "[the problem space or ambition, in a line — or an area to revisit]"
 license: MIT
-compatibility: Needs a filesystem and git for commits; web search for the landscape scan.
+compatibility: Requires Bash and awk for bundled mechanical checks; needs a filesystem and git for commits; web search for the landscape scan.
 ---
 
 # Explore Ideas
@@ -149,6 +149,13 @@ Name it; do not run it.
   idea from a backlog.
 - **`/research-topic`** — the ask is knowledge to keep, not ideas to choose between.
 - **Nothing** — "is this idea any good?" is a conversation; answer it in chat.
+
+## Mechanical validation
+
+After the ranking gate, validate candidate backlog text before writing and saved text before handover. On revision pass the pre-edit baseline to preserve historical IDs. A pass does not establish user ranking.
+
+Bundled commands: `scripts/check-backlog.sh`.
+Read `references/validation.md` for arguments, stdin drafts, supported Markdown and limits.
 
 ## Additional resources
 

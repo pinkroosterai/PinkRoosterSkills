@@ -3,7 +3,7 @@ name: shape-spec
 description: Turns one concrete concept into a confirmed specification (docs/{slug}/spec.md), split into shippable milestones when it is big, through draft-first question rounds and a decision readback. Use when the user wants to flesh out, spec, write requirements or a PRD for a concept or a backlog idea, or resume a spec. Not for a broad problem space (explore-ideas), implementation planning (plan-work), research write-ups (research-topic), or an opinion in chat.
 argument-hint: "[the concept in a line — idea <id> from <backlog> — a slug to resume — '<slug> deferred' — or '<slug>/m<N>' to re-cut a milestone]"
 license: MIT
-compatibility: Needs a filesystem and git for commits; web search is optional but recommended.
+compatibility: Requires Bash and awk for bundled mechanical checks; needs a filesystem and git for commits; web search is optional but recommended.
 ---
 
 # Shape Spec
@@ -247,8 +247,7 @@ recommended answer this round?" (Yes / I'll answer each). On Yes, each answer is
 
 Write the spec back when the user’s answer arrives. Before each write-back, lint the new
 text: Outcome, Scope and Edge cases do not contradict the change, no decision line is garbled
-or duplicated, and the header counts are recomputed from the file (`scripts/spec-lint.sh`
-in this repo does it for contributors):
+or duplicated, and the header counts are recomputed from the file (the bundled `scripts/spec-lint.sh` checks the mechanical counts):
 
 - **Edit the file in place.** Targeted edits, never a regenerated file — that is what keeps the
   user's own sentences intact through round four.
@@ -322,6 +321,13 @@ Name the boundary and hand off rather than absorbing the work:
 - **`/research-topic`** — the ask is a research write-up, not a specification. A question
   inside a spec that needs a survey is handed over mid-run instead — see above.
 - **Nothing** — "is this idea any good?" is a conversation. Answer it in chat.
+
+## Mechanical validation
+
+Validate proposed spec text before every write-back and the saved spec afterward. A pass never replaces the readback or authorizes confirmation.
+
+Bundled commands: `scripts/spec-lint.sh`.
+Read `references/validation.md` for arguments, stdin drafts, supported Markdown and limits.
 
 ## Additional resources
 

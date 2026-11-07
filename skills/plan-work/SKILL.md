@@ -3,7 +3,7 @@ name: plan-work
 description: Writes a researched, phased implementation plan (docs/{slug}/plan.md, or one plan per milestone folder) with assumptions, open questions, tasks and checkable done conditions, and refuses plans too large for one go. Use when the user wants a plan, roadmap or breakdown for a defined request or a spec before building. Not for a trivial edit, an unsettled concept (shape-spec), executing an existing plan (execute-plan), or a research corpus (research-topic).
 argument-hint: "[what to plan]"
 license: MIT
-compatibility: Needs a filesystem and git for commits; web search for external unknowns.
+compatibility: Requires Bash and awk for bundled mechanical checks; needs a filesystem and git for commits; web search for external unknowns.
 ---
 
 # Plan Work
@@ -223,6 +223,13 @@ Run this against the finished plan, reading it as if you had not written it:
   spec whose `Status` is `shaping` goes back there too.
 - **`/execute-plan`** — the plan exists and the ask is to do it.
 - **`/research-topic`** — the deliverable is knowledge for the corpus, not a plan.
+
+## Mechanical validation
+
+Run the bundled spec checker on entry when a spec exists. Validate the plan-shaped outline before writing and the saved plan before handover.
+
+Bundled commands: `scripts/spec-lint.sh`, `scripts/check-plan.sh`.
+Read `references/validation.md` for arguments, stdin drafts, supported Markdown and limits.
 
 ## Additional resources
 

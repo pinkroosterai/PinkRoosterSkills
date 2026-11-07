@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0 — 2026-11-07
+
+- Bundle read-only spec, plan, research-corpus and backlog validators, with standalone
+  copies, workflow invocation points and fixture-based regression checks. Validate
+  supersession targets/cycles, document counts, statuses, references and historical IDs.
+- Keep hooks optional and deferred; preserve semantic review, user gates and legacy plans.
+
 ## 0.2.0 — 2026-11-07
 
 - Milestones are wider: `shape-spec` splits only when the scope is clearly beyond one plan

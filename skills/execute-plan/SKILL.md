@@ -3,7 +3,7 @@ name: execute-plan
 description: Implements an existing docs/{slug}/plan.md (or a milestone's m{N}/plan.md) phase by phase, verifying assumptions and done conditions, updating the plan as it goes and committing per phase. Use when the user asks to start, continue or resume building from a plan. Not for writing a plan (plan-work), an unsettled concept (shape-spec), or a read-only plan review.
 argument-hint: "[plan slug, <slug>/m<N>, or path] [--phase N]"
 license: MIT
-compatibility: Needs a filesystem, a shell to run checks, and git for commits; edits code.
+compatibility: Requires Bash and awk for bundled mechanical checks; needs a filesystem, a shell to run checks, and git for commits; edits code.
 ---
 
 # Execute Plan
@@ -236,6 +236,13 @@ their way and record the concern in the `Log` rather than raising it again next 
   adjusting. Mid-run redesign goes back there with the `Log` as its input.
 - **`/shape-spec`** — execution shows the *what* was never settled; that is a spec gap,
   not a plan gap.
+
+## Mechanical validation
+
+Validate plans with `--legacy` on entry and before each phase closes; establish missing acceptance criteria before implementation. Run the spec checker on entry when a spec exists and after close-out edits. A pass never proves Done when succeeded.
+
+Bundled commands: `scripts/spec-lint.sh`, `scripts/check-plan.sh`.
+Read `references/validation.md` for arguments, stdin drafts, supported Markdown and limits.
 
 ## Additional resources
 
