@@ -177,8 +177,8 @@ Phases only where there is a real dependency or a natural stopping point — one
 legitimate answer, and padding a small job into five phases makes every later verification
 step meaningless.
 
-Then check the outline against `references/plan-format.md § The size limit`: at most four
-phases and twenty tasks, every phase small enough for one session. Over the limit, write
+Then check the outline against `references/plan-format.md § The size limit`: at most eight
+phases and forty tasks, each phase coherent with its own checkable `Done when`. Over the limit, write
 nothing yet and put one question round to the user, recommendation named:
 
 - **Split it in the spec** (recommended when there is a spec) — stop, and name `/shape-spec`

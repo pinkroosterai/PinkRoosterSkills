@@ -61,7 +61,7 @@ user's environment). `plan-work` copies the tag into the matching `Done when`.
 ## Milestones
 
 A big spec is split into milestones: slices that each ship something a user can use on its
-own. A spec without the split, or whose `## Milestones` says `Single milestone.`, is one
+own, each sized to a full plan (up to eight phases), not to a single session. A spec without the split, or whose `## Milestones` says `Single milestone.`, is one
 milestone and keeps the plain layout (`spec.md`, `plan.md`, `research.md`).
 
 **Layout.** Each milestone is a folder `docs/<slug>/m<N>/` holding `milestone.md` and, once

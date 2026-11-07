@@ -208,8 +208,8 @@ Count the blocking marks as you draft: past four, stop drafting, say the concept
 for a spec, and offer to work those four before writing another section — or, when the marks
 show a problem space rather than one concept, to explore ideas first, as above.
 
-**Milestones.** Draft `## Milestones` when the scope holds more than one outcome a user could
-use alone or exceeds the `Appetite`; the rule, the `assumed` log entry and the milestone
+**Milestones.** Draft `## Milestones` only when the scope is clearly larger than one plan (several
+sessions of work) and its parts ship independently; the rule, the `assumed` log entry and the milestone
 folders and documents written beside `spec.md` are in `references/spec-format.md § Choosing
 milestones`.
 
