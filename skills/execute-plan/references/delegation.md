@@ -5,7 +5,7 @@ The rules for handing part of a planning or shaping run to a cheaper-model subag
 says *when* a delegable step actually is, to whom, with what brief, and what to do with the
 reply. Read it before the first dispatch of a run. execute-plan is entirely inline and does
 not use this guide. execute-plan-with-subagents owns separate phase orchestration and roles;
-its verifier, model defaults and no-inline-fallback rules are not governed by this guide.
+its main-session checks, model defaults and no-inline-fallback rules are not governed by this guide.
 
 ## Contents
 

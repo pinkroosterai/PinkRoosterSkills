@@ -91,7 +91,7 @@ ambiguous. A handoff names the next step without automatically running it.
 | [shape-spec](skills/shape-spec/SKILL.md) | Turn one concept into a specification, split into milestones when big, through bounded question rounds and decision readback | `docs/<slug>/spec.md`, `research.md` |
 | [plan-work](skills/plan-work/SKILL.md) | Turn defined work into phases, assumptions, tasks and acceptance checks, one milestone at a time, within a size limit | `docs/<slug>/plan.md` or `plan-m<N>.md`, `research.md` |
 | [execute-plan](skills/execute-plan/SKILL.md) | Implement and verify an existing plan entirely in the main session | Code, plan status, findings and spec corrections |
-| [execute-plan-with-subagents](skills/execute-plan-with-subagents/SKILL.md) | Implement each phase in a worker and check acceptance in a separate verifier | Code, plan status, findings, acceptance evidence and spec corrections |
+| [execute-plan-with-subagents](skills/execute-plan-with-subagents/SKILL.md) | Delegate phase implementation while the main session prepares, reviews and verifies | Code, plan status, findings, acceptance evidence and spec corrections |
 | [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
 | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
 
@@ -145,14 +145,18 @@ Ask: “Use execute-plan-with-subagents for obsidian-sync.” It consumes the sa
 milestone sub-slugs and `--phase N` selection as execute-plan. Each phase starts a fresh
 implementation worker; phases run sequentially.
 
-The worker checks prerequisites and researches `Settle first`. The main session records the
-findings and settles decisions before implementation begins. The worker then implements
-the whole phase and any repairs, reporting task checkpoints as it goes. A separate verifier
-checks the requirements and runs `Done when`; the main session reviews the evidence before
-marking the phase done. The main session retains user questions, shared documents and commits.
+The main session checks prerequisites, researches `Settle first` and records decisions
+before dispatching the implementer. It supplies the settled phase, relevant context and
+file boundaries. The worker implements the whole phase and any repairs, reporting task
+checkpoints and focused development checks as it goes.
 
-This uses one phase worker and one verifier per phase, with additional context and checking
-overhead. Model and reasoning settings inherit the harness defaults unless you choose
+The main session reviews the actual changes against the requirements and runs `Done when`
+itself. It diagnoses failures, sends specific repair requests back to the implementer and
+rechecks the repaired state before closing the phase. Preparation and verification are
+never delegated. User questions, shared documents and commits also stay in the main session.
+
+This uses one implementation worker per phase, with the main session controlling its work.
+Model and reasoning settings inherit the harness defaults unless you choose
 otherwise. Subagent support is required: without it, the skill stops and names execute-plan
 as the inline alternative. It does not switch modes automatically. Stock Pi needs a
 subagent extension for this skill.
@@ -174,8 +178,9 @@ with an explanation. No skill pushes changes or changes repository visibility.
 
 Subagents receive a bounded job and a role pasted from `references/roles/`; no custom agent
 definitions are installed. The main agent owns decisions, shared documents, phase acceptance
-and commits. execute-plan runs all checks inline; execute-plan-with-subagents assigns acceptance
-checks to its separate verifier. Destructive or irreversible commands are never delegated: the main agent shows
+and commits. execute-plan runs all work inline; execute-plan-with-subagents delegates
+implementation and repairs while retaining preparation, review and acceptance in the main
+session. Destructive or irreversible commands are never delegated: the main agent shows
 the exact command and runs it only after you confirm. Models, reasoning effort and concurrency adapt to the tools actually available.
 A worker's report is checked against its changes before being trusted.
 

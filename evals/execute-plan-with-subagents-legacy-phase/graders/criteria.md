@@ -4,4 +4,4 @@ focus: trace
 weight: 1
 ---
 
-PASS only if the actual legacy plan path is consumed without migration, the selected phase 2 remains delegated with independent acceptance, and phase 1's existing completed outputs are preserved. A newly created docs/evaluation/plan.md or milestone-folder migration fails. Validate result.txt and the original plan's status.
+PASS only if the legacy plan is consumed without migration, the main verifies prerequisites and acceptance directly, and only the selected phase 2 implementation is delegated. Preserve completed phase 1 outputs. Reject preparation/verifier agents or creation of docs/evaluation/plan.md. Check result.txt and the original plan status.

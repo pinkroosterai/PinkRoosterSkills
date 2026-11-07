@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 — 2026-11-07
+
+- Keep prerequisite checks, Settle first research, requirements review and Done when
+  acceptance in the main session for `execute-plan-with-subagents`.
+- Delegate only whole-phase implementation and repairs. Retain focused worker development
+  checks, task checkpoints and persisted recovery state.
+- Remove the preparation mode and separate verifier role; supply a settled implementation
+  brief and let the main session diagnose failures and verify repairs.
+- Update execution-mode documentation and evaluation cases for the revised ownership.
+
 ## 0.4.0 — 2026-11-07
 
 - Add `execute-plan-with-subagents`: one implementation worker per phase, preparation

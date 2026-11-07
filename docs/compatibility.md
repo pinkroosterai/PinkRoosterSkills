@@ -232,3 +232,18 @@ The execution fixtures cover capability gates, phase handoffs, independent accep
 persisted progress and repair state. Their Bash checks validate fixture setup and acceptance
 contracts. Host-provided dispatch, permission and continuation APIs determine how the
 delegated instructions run in a session.
+
+## 0.5.0: main-session phase control
+
+Checked 2026-11-07 on Linux.
+
+execute-plan-with-subagents assigns prerequisite checks, Settle first research, requirements
+review and acceptance execution to the main session. Only implementation and repairs go to
+the phase worker; it may run focused development checks. The separate verifier role and
+worker preparation mode have been removed.
+
+Release checks cover all seven skills' metadata, shared references and standalone validators,
+the 61 validator fixtures, and fourteen execution fixture setup/check contracts. The cases
+now require main-session preparation and acceptance, zero worker dispatches for unresolved
+preparation or failed prerequisites, and delegated implementation repairs. Native plugin
+validation passes with its existing root CLAUDE.md context warning.

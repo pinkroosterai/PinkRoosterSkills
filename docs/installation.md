@@ -5,6 +5,8 @@ references. Your harness supplies file access, shell commands and questions; res
 needs web or documentation tools. Use execute-plan for inline execution.
 execute-plan-with-subagents additionally requires working subagent tools and returned results;
 the package does not install an agent runtime or extension for you.
+Preparation, research, review and acceptance run in the main session; only phase
+implementation and repairs are delegated. Implementers can run focused development checks.
 
 ## Choose a method
 

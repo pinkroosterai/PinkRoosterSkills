@@ -1,6 +1,6 @@
 ---
 name: execute-plan-with-subagents
-description: Implements an existing plan with a phase worker and an independent acceptance verifier per phase, keeping decisions and plan state in the main session. Use to start, continue or resume a plan when phase-level subagent execution is wanted and available. Not for inline execution (execute-plan), planning (plan-work), an unsettled concept (shape-spec), or a read-only review.
+description: Implements an existing plan with one implementation worker per phase and main-session preparation, review and acceptance. Use to start, continue or resume a plan when phase-level subagent execution is wanted and available. Not for inline execution (execute-plan), planning (plan-work), an unsettled concept (shape-spec), or a read-only review.
 argument-hint: "[plan slug, <slug>/m<N>, or path] [--phase N]"
 license: MIT
 compatibility: Requires a harness with general-purpose subagents and returned results, a shared filesystem, a shell, Bash and awk for bundled checks, and git for authorized commits. Edits code. No inline fallback; stock Pi needs a subagent extension.
@@ -8,11 +8,11 @@ compatibility: Requires a harness with general-purpose subagents and returned re
 
 # Execute Plan With Subagents
 
-Execute an existing plan one phase at a time. A phase worker gathers facts, implements the
-whole phase and repairs it; a separate verifier runs acceptance. The main session settles
-decisions, keeps the plan true and accepts completion. Delegation preserves room in the
-main session for coordination; it adds worker and verifier context and makes no speed or
-cost promise.
+Execute an existing plan one phase at a time. The main session checks prerequisites,
+researches open questions and settles decisions before dispatching a phase worker. The worker
+implements the whole phase and repairs it; the main session reviews the changes and runs
+acceptance. Keeping preparation and verification in the main session gives it the context
+needed to control the implementer. No speed or cost improvement is promised.
 
 Invocation: `/execute-plan-with-subagents rate-limiting`, a plan path, or a milestone sub-slug
 such as `<slug>/m2`. `--phase N` runs one named phase, with its prerequisites still checked.
@@ -71,7 +71,8 @@ another machine. Never push or change repository visibility as part of these ski
   and files the main session has already read. Start a fresh worker for the next phase.
 - Run phases sequentially. No nested delegation or concurrent implementation writers.
 - The main session alone writes authoritative plan, research, spec and milestone documents,
-  handles user questions, accepts completion and performs authorized git actions.
+  handles user questions, prepares phases, runs acceptance and performs authorized git actions.
+  Never delegate prerequisite checks, Settle first research, review or Done when.
 - A worker's success report is a claim. Only acceptance evidence for the actual resulting
   artifacts can close a phase; a missing, failed, stale or user-pending check cannot pass.
 - Never weaken acceptance or re-plan to get a pass. Route scope changes to the user and
@@ -80,9 +81,8 @@ another machine. Never push or change repository visibility as part of these ski
   command, obtains explicit user confirmation, then runs it. A task in a plan is not consent.
 
 Read `references/orchestration.md` before the first dispatch. It defines the briefs,
-preparation handoff, progress checkpoints, state evidence, repair and recovery. Paste the
-full applicable role from `references/roles/phase-worker.md` or
-`references/roles/phase-verifier.md` into each worker brief.
+settled implementation briefs, progress checkpoints, evidence, repair and recovery. Paste
+the full role from `references/roles/phase-worker.md` into each implementation brief.
 
 ## Entry checks
 
@@ -98,8 +98,8 @@ including stock Pi; an extension can change the capabilities. Do not install one
 implement inline. A missing role/reference or a worker without the needed file/tool access
 also stops the affected work; explain the requirement instead of bypassing it.
 
-One available worker slot is enough: finish or release each role's turn before the next
-role runs. Native continuation and live progress messaging are optional. If continuation
+One available worker slot is enough: only the phase implementer is delegated. Native
+continuation and live progress messaging are optional. If continuation
 is unavailable, replace a worker from the persisted phase handoff; it is still briefed for
 the whole phase, not dispatched an unrelated task.
 
@@ -116,20 +116,20 @@ User questions use the harness's question tool (Claude Code: AskUserQuestion), w
 recommendation and alternatives; without one, put the numbered choices in the message
 and wait. An asynchronous question returning is not a user answer.
 
-**1. Record and prepare.** Record the working-tree/index baseline and relevant file inventory,
-including pre-existing changes and untracked phase artifacts, in the Log. Send the whole
-phase and relevant contracts to a fresh phase worker in **prepare** mode. It checks every
-Rests on entry and gathers primary-source answers for Settle first without implementation
-edits. Absence claims refer to the listing recorded now and are later checked as unchanged
-since that listing. A failed prerequisite stops the phase and goes to the user with evidence.
+**1. Record and prepare in the main session.** Record the working-tree/index baseline and
+relevant file inventory, including pre-existing changes and untracked phase artifacts, in
+the Log. Personally check every Rests on entry and research Settle first from opened primary
+sources. Do not dispatch a preparation agent. Absence claims refer to the listing recorded
+now and are later checked as unchanged since that listing. A failed prerequisite stops the
+phase before any worker is dispatched and goes to the user with evidence.
 
-**2. Settle in the main session.** Check the preparation findings, append source-and-date
-research entries, and correct affected tasks, ordering or later assumptions in the plan
-before implementation. An outcome-changing choice goes to the user first; log the exact
-approval and resulting contract. An unresolved or unsupported answer is not settled.
-When there is nothing to settle, record that and proceed without invented research.
-Set phase Status to in progress and plan-wide Status to phase N in progress; keep milestone
-status in step with the plan. Supply the settled contract to the phase worker to proceed.
+**2. Settle and dispatch.** Append source-and-date research entries and correct affected
+tasks, ordering or later assumptions in the plan before implementation. An outcome-changing
+choice goes to the user first; log the exact approval and resulting contract. An unresolved
+or unsupported answer is not settled. When there is nothing to settle, record that without
+invented research. Set phase Status to in progress and plan-wide Status to phase N in progress;
+keep milestone status in step with the plan. Only then start a fresh phase worker with the
+whole phase, settled contract, relevant context and explicit implementation boundaries.
 
 **3. Work the whole phase.** The worker implements tasks in order and runs development
 checks. It reports each completed task with evidence and waits for the main session's
@@ -139,30 +139,30 @@ Already checked tasks are rechecked for their existing results on resumption, no
 A consequential missing decision, boundary issue or permission requirement returns to the
 main session before the affected change. Implementation fixes stay with the phase worker.
 
-**4. Verify independently.** Once implementation stops, give a separate verifier the original
-phase contract, settled decisions, phase baseline and current artifacts. It did not implement
-the phase and receives no prescribed verdict. It inspects requirements and the phase diff,
-runs every applicable Done when check and returns commands/procedures, exit results, relevant
-output, findings and the artifact state those results cover. It does not edit source or
-acceptance criteria; ordinary generated validation outputs are allowed. User-required checks
-go through the main session and wait for the user's actual result.
+**4. Review and verify in the main session.** Once implementation stops, inspect the actual
+phase diff and artifacts against the original tasks, settled decisions and acceptance
+criteria. Run every applicable Done when check yourself, recording commands/procedures,
+exit results, relevant output and the artifact state they cover. Do not start a verification
+or review subagent. The worker may run focused development checks while coding, but its
+report does not replace your review or acceptance run. Ordinary generated validation outputs
+are allowed; do not edit implementation to repair it yourself. User-required checks wait
+for the user's actual result.
 
-**5. Accept or repair.** Check the verifier's evidence against the contract and resulting
-state. Missing work despite a passing command still fails acceptance. A changed relevant
-artifact invalidates earlier evidence. On failure, persist the output and return the specific
-finding to the phase worker for the smallest repair; then verify the repaired state again.
-Use the same verifier context within the phase when available, or a replacement with the
-original contract and preserved findings. Resolve disagreement against the contract; do not
-dismiss a failed requirement to continue. An unchanged recurring failure, or three repair
-rounds without progress, blocks the phase. Record attempts and the obstacle, set phase Status
+**5. Accept or repair.** Missing work despite a passing command still fails acceptance.
+A changed relevant artifact invalidates earlier evidence. Diagnose failures in the main
+session, persist their output and send specific findings to the phase worker for the
+smallest repair. Continue that worker where possible, or replace it from persisted state.
+Review and recheck the repaired state yourself before accepting it. Resolve conflicting
+reports against the original contract and artifacts; never dismiss a failed requirement
+just to continue. An unchanged recurring failure, or three repair rounds without progress, blocks the phase. Record attempts and the obstacle, set phase Status
 to blocked and plan-wide Status to phase N blocked, put ways forward to the user and stop.
 Persist the repair count across worker replacements.
 
 All acceptance holds → validate the current plan, set phase Status to done, record the
 observed outcome and relevant output in the Log, and move plan-wide Status accordingly.
 The main session shows a concise phase report: prerequisite result, what settlement changed
-and what acceptance printed. Do not rerun every check a third time in the main session
-without a reason; the separate verifier's direct evidence is the acceptance run.
+and what acceptance printed. Run acceptance once in the main session for each resulting
+state; repeat affected checks when repairs, stale evidence or specific doubts require it.
 
 **6. Commit if authorized.** Apply Context's Commit policy and project rules. When Context
 is silent and there are untracked source files, ask once and record the policy. Commit only
@@ -172,7 +172,7 @@ leave files on disk and say so. Continue to the next phase only after acceptance
 
 ## Closing the plan
 
-Include the milestone's own Done when, when applicable, in the final verifier's acceptance
+Run the milestone's own Done when in the main session, when applicable,
 before closing the last phase. A missing or failed milestone check keeps the phase unfinished.
 Then set the plan-wide Status to done, and the milestone document and spec index to done,
 and report the result against the plan's Goal.
@@ -195,8 +195,7 @@ Mechanical passes never prove Done when or user consent.
 ## Additional resources
 
 - `references/orchestration.md` — read before dispatch; ownership, briefs, progress and recovery.
-- `references/roles/phase-worker.md` — full role for preparation, implementation and repair.
-- `references/roles/phase-verifier.md` — full role for independent acceptance.
+- `references/roles/phase-worker.md` — full role for implementation and repair.
 - `references/plan-format.md` — shared plan fields and states; no delegated-plan schema.
 - `references/researching.md` — shared research format and source/date rule.
 - `references/spec-contract.md` — shared milestone, decisions and close-out contract.

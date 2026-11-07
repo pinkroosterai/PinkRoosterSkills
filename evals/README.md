@@ -46,14 +46,15 @@ run across the other harnesses. See the compatibility record for the limits of t
 ## Execution mode fixtures
 
 Fourteen cases tagged `execution-modes` exercise inline routing, capability and invocation
-gates, whole-phase delegation, independent acceptance, stale evidence, failure handling,
+gates, main-session preparation and acceptance, whole-phase implementation, stale evidence, failure handling,
 persisted repair counters, recovery, user-required checks and legacy phase selection.
 Each case uses a native prompt/grader template plus a case.yaml scaffold context.
 
 The [shared fixture setup](execution-fixtures/common.sh) creates a disposable project with
 immutable acceptance scripts. The incomplete-work and stale-evidence cases request one
-controlled fixture mutation at a specified boundary. Their verifiers receive the original
-requirements without a prescribed conclusion.
+controlled fixture mutation at a specified boundary. The main session reviews the original
+requirements and actual artifacts, runs acceptance and sends repairs to the implementer.
+The decision and false-prerequisite cases require zero worker dispatches.
 
 Check fixture setup and its acceptance contracts with:
 

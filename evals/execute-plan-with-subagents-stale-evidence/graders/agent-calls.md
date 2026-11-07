@@ -1,5 +1,5 @@
 ---
 type: tool_used
 tool: Agent
-min: 3
+min: 1
 ---
