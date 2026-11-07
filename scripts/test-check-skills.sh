@@ -42,8 +42,11 @@ printf '\n# drift\n' >> skills/execute-plan-with-subagents/scripts/validate.awk
 expect_failure 'phase executor validator implementation drift'
 cp "$repo/skills/execute-plan-with-subagents/scripts/validate.awk" skills/execute-plan-with-subagents/scripts/validate.awk
 mv skills/execute-plan-with-subagents "$scratch/phase-executor.saved"
-expect_failure 'missing seventh packaged skill'
+expect_failure 'missing packaged phase executor'
 mv "$scratch/phase-executor.saved" skills/execute-plan-with-subagents
+mv skills/five-whys "$scratch/five-whys.saved"
+expect_failure 'missing packaged five-whys skill'
+mv "$scratch/five-whys.saved" skills/five-whys
 restore() { cp "$repo/skills/plan-work/SKILL.md" skills/plan-work/SKILL.md; }
 
 sed -i 's/^name: plan-work$/name: plan-works/' skills/plan-work/SKILL.md

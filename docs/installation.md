@@ -1,6 +1,6 @@
 # Installation
 
-Choose your harness below. All methods load the same seven skills and their bundled
+Choose your harness below. All methods load the same eight skills and their bundled
 references. Your harness supplies file access, shell commands and questions; research also
 needs web or documentation tools. Use execute-plan for inline execution.
 execute-plan-with-subagents additionally requires working subagent tools and returned results;
@@ -135,7 +135,7 @@ choose skills, agents and installation method interactively:
 
 ```bash
 npx skills add pinkroosterai/PinkRoosterSkills
-# All seven skills for a specific harness:
+# All eight skills for a specific harness:
 npx skills add pinkroosterai/PinkRoosterSkills -a cursor --skill '*'
 # Other harness identifiers:
 npx skills add pinkroosterai/PinkRoosterSkills -a gemini-cli --skill '*'
@@ -222,7 +222,7 @@ Start a new session in your project. Ask:
 > or run its workflow.
 
 Expect `explore-ideas`, `shape-spec`, `plan-work`, `execute-plan`,
-`execute-plan-with-subagents`, `research-topic` and `maintain-agents-md`,
+`execute-plan-with-subagents`, `research-topic`, `maintain-agents-md` and `five-whys`,
 and a summary showing that plan-work was read. If you installed only one skill, expect
 only that skill. Check that referenced files can be opened from the installed bundle.
 Discovery and loading do not establish that every workflow works in that harness.
@@ -238,6 +238,16 @@ execution after planning. Skills normally create local commits where project ins
 allow them; see [persistence rules](../README.md#persistence-and-delegation).
 Invocation syntax for the original four harnesses is in [Usage](../README.md#usage).
 For other harnesses, use their skill selector or ask for the skill by name.
+
+For a diagnostic session, ask:
+
+> Use five-whys to investigate why this build fails. Use the available evidence and propose
+> a fix without implementing changes.
+
+Five-whys returns its evidence, causal explanation, uncertainty and proposed fix in the
+conversation. It does not create a report file, commit or begin implementation. Existing
+tests/reproductions may run only when their effects are known and isolated to local
+diagnostic artifacts; code/configuration edits, installs and external mutations are excluded.
 
 ## Troubleshooting
 

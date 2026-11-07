@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.0 — 2026-11-07
+
+- Add `five-whys`: investigate software failures with tool-backed evidence, test competing
+  explanations, preserve contributing causes and propose a fix without implementing changes.
+- Use the causal depth evidence supports rather than requiring exactly five whys; report
+  provisional or unresolved conclusions when evidence is incomplete.
+- Allow inspected existing diagnostics with known, isolated local artifacts while excluding
+  code/configuration edits, installs, commits and shared/external mutations during diagnosis.
+- Bundle causal-review and report guidance, integrate the eighth skill across native package
+  metadata and update discovery and usage documentation.
+- Add six diagnostic scenarios and offline fixture checks for protected files, user work
+  and Git index state; document observed main-session smoke checks and their limits.
+
 ## 0.5.0 — 2026-11-07
 
 - Keep prerequisite checks, Settle first research, requirements review and Done when

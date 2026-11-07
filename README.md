@@ -4,7 +4,7 @@
 
 # PinkRoosterSkills
 
-**Seven portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, and keep AGENTS.md lean.**
+**Eight portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, keep AGENTS.md lean, and diagnose root causes.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent-Skills-ec4899)](https://agentskills.io/specification)
@@ -61,7 +61,7 @@ skills and multiple harnesses; it needs Node.js 22.20 or later. The skills have 
 or build step. Install using one method per harness to avoid duplicate skills.
 
 **Verify before starting:** ask your agent, “List the installed PinkRooster skills and read
-the plan-work skill. Do not create files or run its workflow.” Expect all seven skills and a
+the plan-work skill. Do not create files or run its workflow.” Expect all eight skills and a
 summary of plan-work. This checks discovery and loading, not a complete workflow.
 
 Follow the [installation guide](docs/installation.md) for scope, local checkouts, prerequisites,
@@ -94,6 +94,7 @@ ambiguous. A handoff names the next step without automatically running it.
 | [execute-plan-with-subagents](skills/execute-plan-with-subagents/SKILL.md) | Delegate phase implementation while the main session prepares, reviews and verifies | Code, plan status, findings, acceptance evidence and spec corrections |
 | [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
 | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
+| [five-whys](skills/five-whys/SKILL.md) | Investigate software failures with evidence-backed why questions and propose an unapplied fix | Diagnostic report in conversation |
 
 ### Explore ideas
 
@@ -169,6 +170,16 @@ independent angles within available slots. Reports live in a unique scratch dire
 the working tree (`~/.cache`, else the temporary directory; if neither is writable it asks). Changed claims are checked against source evidence before scratch cleanup.
 For a chat-only answer or read-only review, ask directly rather than invoking this workflow.
 
+### Diagnose an issue
+
+Ask: “Use five-whys to investigate why this test fails only in CI. Propose a fix.” The skill
+inspects evidence with available tools, tests competing explanations and follows causal
+links for as many levels as the evidence supports. It can report multiple contributors or
+an unresolved cause. It proposes a correction and validation approach, then stops without
+implementing changes. Existing tests may run only when their side effects are known and
+isolated; it does not edit code/configuration, install dependencies or mutate external
+systems. The report stays in conversation and no commit is made during diagnosis.
+
 ## Persistence and delegation
 
 Skills normally create local commits, subject to your instructions and project checks.
@@ -213,6 +224,7 @@ also requires the corresponding harness CLI; the skills themselves have no runti
 bash scripts/check-skills.sh
 bash scripts/test-check-skills.sh # includes standalone validator fixtures
 bash scripts/test-execution-fixtures.sh # execution fixture setup and check contracts
+bash scripts/test-five-whys-fixtures.sh # diagnostic fixture contracts, no model calls
 bash scripts/check-packages.sh # requires jq
 claude plugin validate .
 # Optional strict format validation (argument-hint is a known extension):

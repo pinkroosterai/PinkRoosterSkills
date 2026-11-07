@@ -247,3 +247,49 @@ the 61 validator fixtures, and fourteen execution fixture setup/check contracts.
 now require main-session preparation and acceptance, zero worker dispatches for unresolved
 preparation or failed prerequisites, and delegated implementation repairs. Native plugin
 validation passes with its existing root CLAUDE.md context warning.
+
+## 0.6.0: five-whys
+
+Checked 2026-11-07 on Linux in the main Codex session. The bundle now contains eight skills
+and the release metadata is synchronized at 0.6.0. Five-whys has no mandatory
+runtime, debugger or external connector. Its complete directory and two bundled references
+were checked independently of sibling skill resources.
+
+Six author-known diagnostic smoke cases were exercised using actual file inspections and
+the permitted existing commands below. The agent reported in conversation, proposed fixes
+or next evidence, and stopped without implementing changes. These are self-evaluated
+exercises by the authoring agent, not blind trials or independent model grades.
+
+| Case | Observed result | Diagnostic conclusion |
+|---|---|---|
+| Supported cause | Existing check: input=-12, expected=-12, actual=12, exit 1; direct inputs 12/-7/0 returned 12/7/0 | Sign-removal mechanism supported; proposed preserving sign and later signed/consumer validation |
+| Incomplete evidence | Check exited 2: upstream unavailable, no live reproduction; gateway log lacks upstream span | Upstream cause unresolved; correlated timing needed before a conditional correction |
+| Contradicted theory | Log said cache=bypass; inspected execution path never read cache; existing check still failed | Cache theory rejected for that path; conversion mechanism supported |
+| Joint contributors | Default read returned old (exit 1); primary-reader and all-invalidation variants returned fresh (exit 0) | Legacy routing and primary-only invalidation jointly select stale data |
+| Unavailable runtime | File inspection only; R7 input absent, no app/test execution | Cause unresolved; sign removal only provisional, not inferred from an uncorrelated input file |
+| Unsafe test setup | Mutating check wrapper declined; inspected direct app command returned 12 for -12 | Local conversion observed safely; full R7 request not independently reproduced |
+
+After every report the evaluator's unchanged state check returned
+`OK: protected files, inventory, user work and Git index unchanged`. It checks file
+checksums/inventory, staged content and working-tree status, including pre-existing staged,
+unstaged and untracked user work. Only the known .diagnostic-cache/ artifacts were allowed.
+The unsafe case was repeated after clarifying its grader to permit a separately inspected
+safe direct command; the mutating wrapper remained prohibited and unexecuted in diagnosis.
+
+`bash scripts/test-five-whys-fixtures.sh` passes six offline setup/contract cases, including
+rejection of source/index mutations and unexpected report files. Its deliberate evaluator
+mutations are distinct from diagnostic runs. Fixture-only success is not behavioral evidence.
+
+The runtime limitation is scenario-imposed, not a missing host shell. Shell-backed file
+reads were allowed to match this host's capabilities. Checks do not establish automatic
+skill selection, blind generalization, fresh-session loading, or behavior in Claude Code,
+Antigravity or Pi. No paid model evaluations or remote installation runs were performed for
+this change. Earlier dated release results above remain historical.
+
+Final mechanical checks passed: all eight skills and package metadata, checker regressions
+and 61 standalone validator fixtures, all fourteen existing execution fixture contracts,
+the six new diagnostic fixture contracts, Bash syntax and whitespace. The new fixture
+checker detects prohibited mutations but does not evaluate diagnostic report quality;
+the observations above supply the distinct, limited behavioral evidence.
+Release validation with `claude plugin validate .` also passed, with the existing warning
+that root CLAUDE.md is not loaded as plugin project context.

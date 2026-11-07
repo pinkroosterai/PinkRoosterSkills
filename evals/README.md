@@ -72,3 +72,40 @@ Review actual tool calls and artifacts as well as grader scores. The trace-focus
 judge can omit the middle of a long trace; retain the full JSONL trace for evidence review.
 Recovery and repair-history fixtures supply synthetic prior state and grade the current
 run's handling of it. Their supplied history is not evidence of prior live runs.
+
+## Five-whys diagnostic fixtures
+
+Six cases tagged `five-whys` cover supported causes, missing evidence, a contradicted initial
+theory, joint contributors, unavailable runtime tools and an unsafe test setup. Their
+[shared scaffold](five-whys-fixtures/common.sh) creates disposable Bash projects with
+staged, unstaged and untracked user work, immutable state baselines and an existing check.
+They have no service or runtime dependency beyond the contributor tools already used here.
+
+```bash
+bash scripts/test-five-whys-fixtures.sh
+```
+
+This checks setup, expected program outcomes, allowed diagnostic artifacts and rejection
+of source/index changes and unexpected report files. Its intentional mutations happen in
+disposable evaluator copies, outside diagnosis. It makes no model calls and does not prove
+that an agent used five-whys, reached a justified conclusion or obeyed its boundary.
+
+For observed verification without launching paid eval sessions, prepare each scaffold in
+an empty disposable project before starting diagnosis. Read the new skill and the case's
+prompt, then use the current main session to diagnose that project. Keep answer keys and
+`.fixture/` baselines out of the diagnostic evidence. Read project instructions first;
+the tool-limited case prohibits runtime diagnostics even if the host offers a shell; shell
+operations used solely to read files remain permitted for hosts without a separate reader.
+
+After each diagnostic report ends, the executor runs the unchanged `.fixture/verify.sh`
+and reviews actual tool actions and the report against that case's grader. Record the
+commands/results, causal claims, limits, proposed correction/validation and protected-state
+result outside the diagnostic run. Do not create a report file from five-whys itself.
+Offline fixture success or an authored expected answer cannot replace observed behavior;
+if the host cannot provide an observation, leave that acceptance incomplete. Main-session
+exercises are author-known smoke checks, not blind trials or evidence of cross-harness
+discovery/routing accuracy. No additional paid sessions or subagents are required.
+
+The prompt/case/trace-grader files also follow the existing native eval format, but running
+them through `claude plugin eval` incurs usage and is outside the no-paid verification
+route above. Do not run the paid suite merely because these cases have been added.
