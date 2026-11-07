@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.2.0 — unreleased
+## 0.2.0 — 2026-11-07
 
 - Milestones are wider: `shape-spec` splits only when the scope is clearly beyond one plan
   and its parts ship independently (default `Single milestone.`), and `plan-work` allows eight
