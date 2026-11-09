@@ -4,7 +4,7 @@
 
 # PinkRoosterSkills
 
-**Eight portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, keep AGENTS.md lean, and diagnose root causes.**
+**Nine portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, keep AGENTS.md lean, diagnose root causes, and deepen tasks.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent-Skills-ec4899)](https://agentskills.io/specification)
@@ -61,7 +61,7 @@ skills and multiple harnesses; it needs Node.js 22.20 or later. The skills have 
 or build step. Install using one method per harness to avoid duplicate skills.
 
 **Verify before starting:** ask your agent, “List the installed PinkRooster skills and read
-the plan-work skill. Do not create files or run its workflow.” Expect all eight skills and a
+the plan-work skill. Do not create files or run its workflow.” Expect all nine skills and a
 summary of plan-work. This checks discovery and loading, not a complete workflow.
 
 Follow the [installation guide](docs/installation.md) for scope, local checkouts, prerequisites,
@@ -95,6 +95,7 @@ ambiguous. A handoff names the next step without automatically running it.
 | [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
 | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
 | [five-whys](skills/five-whys/SKILL.md) | Investigate software failures with evidence-backed why questions and propose an unapplied fix | Diagnostic report in conversation |
+| [deepen-task](skills/deepen-task/SKILL.md) | Sharpen and deepen a task into a professional-grade specification without expanding scope | Deepened task specification in conversation (or task file) |
 
 ### Explore ideas
 
@@ -179,6 +180,16 @@ an unresolved cause. It proposes a correction and validation approach, then stop
 implementing changes. Existing tests may run only when their side effects are known and
 isolated; it does not edit code/configuration, install dependencies or mutate external
 systems. The report stays in conversation and no commit is made during diagnosis.
+
+### Deepen a task
+
+Ask: “Use deepen-task to sharpen this feature description without expanding scope.” The
+skill conducts a 5-point analysis (workspace/external research, consequential omissions,
+primary evidence, stack-aligned methods, and non-fabricated verification). It separates
+rewrite-time from execution-time research and returns key findings alongside a complete,
+self-contained specification ready for implementation. It operates under the core principle:
+“I want a deeper version of this task, not a bigger one.” If an input file path was given,
+it offers to update the file or save a new deepened specification.
 
 ## Persistence and delegation
 

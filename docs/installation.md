@@ -1,6 +1,6 @@
 # Installation
 
-Choose your harness below. All methods load the same eight skills and their bundled
+Choose your harness below. All methods load the same nine skills and their bundled
 references. Your harness supplies file access, shell commands and questions; research also
 needs web or documentation tools. Use execute-plan for inline execution.
 execute-plan-with-subagents additionally requires working subagent tools and returned results;
@@ -135,7 +135,7 @@ choose skills, agents and installation method interactively:
 
 ```bash
 npx skills add pinkroosterai/PinkRoosterSkills
-# All eight skills for a specific harness:
+# All nine skills for a specific harness:
 npx skills add pinkroosterai/PinkRoosterSkills -a cursor --skill '*'
 # Other harness identifiers:
 npx skills add pinkroosterai/PinkRoosterSkills -a gemini-cli --skill '*'
@@ -222,7 +222,7 @@ Start a new session in your project. Ask:
 > or run its workflow.
 
 Expect `explore-ideas`, `shape-spec`, `plan-work`, `execute-plan`,
-`execute-plan-with-subagents`, `research-topic`, `maintain-agents-md` and `five-whys`,
+`execute-plan-with-subagents`, `research-topic`, `maintain-agents-md`, `five-whys` and `deepen-task`,
 and a summary showing that plan-work was read. If you installed only one skill, expect
 only that skill. Check that referenced files can be opened from the installed bundle.
 Discovery and loading do not establish that every workflow works in that harness.
@@ -248,6 +248,16 @@ Five-whys returns its evidence, causal explanation, uncertainty and proposed fix
 conversation. It does not create a report file, commit or begin implementation. Existing
 tests/reproductions may run only when their effects are known and isolated to local
 diagnostic artifacts; code/configuration edits, installs and external mutations are excluded.
+
+For a task-deepening session, ask:
+
+> Use deepen-task to sharpen this task description into a rigorous specification without
+> expanding its scope.
+
+Deepen-task analyzes local workspace context, external standards, domain-specific omissions,
+primary evidence and non-fabricated verification mechanisms, then delivers key findings and
+a rewritten specification in conversation. It offers to save the deepened task if a file
+path was provided.
 
 ## Troubleshooting
 

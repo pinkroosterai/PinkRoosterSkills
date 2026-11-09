@@ -293,3 +293,21 @@ checker detects prohibited mutations but does not evaluate diagnostic report qua
 the observations above supply the distinct, limited behavioral evidence.
 Release validation with `claude plugin validate .` also passed, with the existing warning
 that root CLAUDE.md is not loaded as plugin project context.
+
+## 0.7.0: deepen-task
+
+Checked 2026-11-09 on Linux. The bundle now contains nine skills and the release
+metadata is synchronized at 0.7.0. Deepen-task has no mandatory runtime or external
+service dependencies; file reading, shell inspection and documentation search are used
+when available and permitted. Its complete directory and two bundled references
+(`references/output-contract.md` and `references/guidance.md`) were checked independently
+of sibling skill resources.
+
+The skill specifies tasks through a 5-point analysis, separates rewrite-time from
+execution-time research, strictly preserves scope ("deeper, not bigger"), and delivers
+key findings and a rewritten specification in conversation without mutating codebase files
+or making git commits during analysis.
+
+Mechanical checks passed: all nine skills and package metadata, checker regressions,
+the 61 standalone validator fixtures, fourteen execution fixture contracts, six
+diagnostic fixture contracts, Bash syntax and whitespace.

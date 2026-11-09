@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.7.0 — 2026-11-09
+
+- Add `deepen-task`: transform shallow, ambiguous, or incomplete task briefs into rigorous,
+  professional specifications without expanding scope ("deeper, not bigger").
+- Execute a 5-point deepening analysis (local workspace/external research, domain-specific
+  omissions, primary evidence rawness ladder, stack-aligned methods, and non-fabricated
+  independent verification).
+- Add pre-flight idempotency and critical ambiguity checks, separate rewrite-time from
+  execution-time research, and provide safe file handoff options.
+- Bundle output contract and analysis/rationalization guidance, integrate the ninth skill
+  across native package metadata and update discovery and usage documentation.
+
 ## 0.6.0 — 2026-11-07
 
 - Add `five-whys`: investigate software failures with tool-backed evidence, test competing
