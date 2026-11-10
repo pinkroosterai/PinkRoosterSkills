@@ -18,30 +18,36 @@
 
 ## The idea
 
-Keep the decisions and evidence that an agent needs for the next session in ordinary
-Markdown files. Each stage has a distinct job and a durable handoff; you can install and
-use any skill on its own. There is no application runtime or build step.
+Keep the decisions, constraints, and empirical evidence an agent needs across sessions in ordinary
+Markdown files. Each stage has a single, well-defined responsibility and produces a durable handoff
+that survives context resets. You can install and use any skill independently: there is no runtime
+daemon, database, or build step.
 
-```text
-problem space → explore-ideas → docs/ideas/<area>.md (ranked backlog)
-                                        │ one idea
-                                        ▼
-concept ──────────────────────→ shape-spec → spec.md (+ m1/ … mN/)
-                                                 │
-            ┌────────────────────────────────────┘
-            ▼
-       plan-work → m<N>/plan.md → execution mode → verified milestone ─┐
-            ▲                                                         │
-            └───────────────────── next milestone ───────────────────┘
-
-research-topic → docs/research/ corpus, read first by every stage
-```
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/workflow-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/workflow-light.svg">
+    <img alt="PinkRoosterSkills Workflow Architecture" src="assets/workflow.svg" width="100%">
+  </picture>
+</p>
 
 These are instructions an agent follows, not an execution engine or a permission boundary.
-Choose execute-plan for inline execution or execute-plan-with-subagents for phase workers.
 Your harness supplies file access, search, questions and shell commands; the delegated
-executor also requires working subagent tools.
-User instructions and project rules take precedence.
+executor also requires working subagent tools. User instructions and project rules take precedence.
+
+### When to Reach for Which Skill
+
+| If your immediate situation is... | Use this skill | What it produces |
+|---|---|---|
+| A broad problem space or market opportunity with no clear solution yet | [explore-ideas](skills/explore-ideas/SKILL.md) | Ranked, sourced backlog in `docs/ideas/<area>.md` |
+| A concrete product feature or system to specify from scratch | [shape-spec](skills/shape-spec/SKILL.md) | Confirmed specification and milestones in `docs/<slug>/spec.md` |
+| A brief, ambiguous task, issue ticket, or prompt that risks shallow coding | [deepen-task](skills/deepen-task/SKILL.md) | Expert-grade specification without expanding scope |
+| A confirmed specification or milestone ready to break into buildable steps | [plan-work](skills/plan-work/SKILL.md) | Bounded, checkable plan in `docs/<slug>/plan.md` |
+| An existing plan to implement sequentially in your current session | [execute-plan](skills/execute-plan/SKILL.md) | Working code, verified checks, and updated plan state |
+| An existing plan to implement using isolated subagents while supervising | [execute-plan-with-subagents](skills/execute-plan-with-subagents/SKILL.md) | Supervised phase implementation, verified acceptance, commits |
+| An open technical or architectural question needing persistent investigation | [research-topic](skills/research-topic/SKILL.md) | Sourced knowledge corpus in `docs/research/` |
+| A test failure, build breakage, or mysterious regression in CI or local code | [five-whys](skills/five-whys/SKILL.md) | Evidence-backed root cause diagnosis and proposed fix |
+| Setting up or cleaning agent instruction files under a strict 200-line budget | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | High-signal, unbloated `AGENTS.md` and `CLAUDE.md` shim |
 
 ## Install
 
@@ -88,108 +94,137 @@ ambiguous. A handoff names the next step without automatically running it.
 | Skill | Use it for | Artifacts |
 |---|---|---|
 | [explore-ideas](skills/explore-ideas/SKILL.md) | Turn a broad problem space into a ranked, sourced idea backlog | `docs/ideas/<area>.md`, `docs/ideas/README.md` |
-| [shape-spec](skills/shape-spec/SKILL.md) | Turn one concept into a specification, split into milestones when big, through bounded question rounds and decision readback | `docs/<slug>/spec.md`, `research.md` |
-| [plan-work](skills/plan-work/SKILL.md) | Turn defined work into phases, assumptions, tasks and acceptance checks, one milestone at a time, within a size limit | `docs/<slug>/plan.md` or `plan-m<N>.md`, `research.md` |
-| [execute-plan](skills/execute-plan/SKILL.md) | Implement and verify an existing plan entirely in the main session | Code, plan status, findings and spec corrections |
-| [execute-plan-with-subagents](skills/execute-plan-with-subagents/SKILL.md) | Delegate phase implementation while the main session prepares, reviews and verifies | Code, plan status, findings, acceptance evidence and spec corrections |
-| [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
-| [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
-| [five-whys](skills/five-whys/SKILL.md) | Investigate software failures with evidence-backed why questions and propose an unapplied fix | Diagnostic report in conversation |
+| [shape-spec](skills/shape-spec/SKILL.md) | Turn one concept into a specification, split into milestones when big, through bounded question rounds and decision readback | `docs/<slug>/spec.md`, `m<N>/milestone.md`, `research.md` |
 | [deepen-task](skills/deepen-task/SKILL.md) | Sharpen and deepen a task into a professional-grade specification without expanding scope | Deepened task specification in conversation (or task file) |
+| [plan-work](skills/plan-work/SKILL.md) | Turn defined work into phases, assumptions, tasks and acceptance checks, one milestone at a time, within a size limit | `docs/<slug>/plan.md` or `m<N>/plan.md`, `research.md` |
+| [execute-plan](skills/execute-plan/SKILL.md) | Implement and verify an existing plan entirely in the main session | Code, plan status, findings in `research.md` |
+| [execute-plan-with-subagents](skills/execute-plan-with-subagents/SKILL.md) | Delegate phase implementation while the main session prepares, reviews and verifies | Code, plan status, findings, acceptance evidence |
+| [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
+| [five-whys](skills/five-whys/SKILL.md) | Investigate software failures with evidence-backed causal analysis and propose an unapplied fix | Diagnostic report in conversation |
+| [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
+
+---
 
 ### Explore ideas
 
-Ask: “I want to build a SaaS for teams that track token costs per customer — help me work out
-what to build.” The skill frames the outcome, users and constraints with you, scans what
-already exists with sources, and generates at least two ideas per user need, including not
-building at all. Each idea is rated High/Medium/Low on value, confidence and effort and names
-its riskiest assumption. You set the order; only then is `docs/ideas/<area>.md` written. A
-later run revises the same backlog. Take an idea forward with
-`/shape-spec idea I3 from docs/ideas/<area>.md`.
+Turn a broad ambition into a ranked, sourced idea backlog in `docs/ideas/<area>.md`.
+
+- **Why use it:** Prevents premature implementation and "solution bias" when starting from an open-ended goal. Instead of jumping to code based on an unverified assumption, it grounds the problem in user needs, surveys the landscape for existing solutions or off-the-shelf alternatives, and explores options (including deciding not to build).
+- **Workflow:**
+  1. *Frame:* Clarifies outcome, target users, and non-negotiable constraints interactively.
+  2. *Landscape scan:* Searches for prior art, competitors, and open-source solutions with citations.
+  3. *Generate:* Produces at least two candidate ideas per user need. Each idea is rated High/Medium/Low on Value, Confidence, and Effort and names its single riskiest assumption.
+  4. *Rank & Persist:* Collaborates with you to prioritize the list. `docs/ideas/<area>.md` and its index are written only after you confirm the ordering.
+- **Artifacts & Handoffs:** Produces `docs/ideas/<area>.md` and updates `docs/ideas/README.md`. Advance any chosen idea to specification with `/shape-spec idea <id> from docs/ideas/<area>.md`.
+- **Invocation:** `/explore-ideas track token costs per customer for AI-heavy SaaS teams`
 
 ### Shape a concept
 
-Ask: “Use shape-spec for a CLI that synchronizes an Obsidian vault to S3.” The skill drafts
-before interviewing, distinguishes blocking gaps from thin sections and deferred questions,
-and confirms active decisions before calling the spec buildable. Superseded decisions stay
-as history and do not re-enter the confirmation queue. A question that needs a real survey —
-a contested field, alternatives to compare — is offered to research-topic mid-run; if you
-accept, shape-spec pauses, the research lands in the corpus, and shaping resumes from it.
-A big concept is split into milestones — M1 is the thinnest slice that works end to end —
-which you confirm like any other decision. Each milestone gets its own folder `m1/`, `m2/` …
-beside the spec with a small `milestone.md` that points into the spec, and the spec keeps a
-one-line index with each milestone's status. Name a milestone as `<slug>/m<N>` to re-cut it. A request that is really a problem space is
-offered to explore-ideas first. Resume by naming the existing slug.
+Turn a concept or backlog idea into a buildable specification in `docs/<slug>/spec.md`.
 
-### Plan defined work
-
-Ask: “Use plan-work to implement docs/obsidian-sync/spec.md.” The plan lands beside the spec.
-Each phase records assumptions, unsettled questions, tasks and an observable completion
-condition. A trivial edit does not need a plan. Planning stops at the handoff.
-A plan holds at most eight phases and forty tasks, each phase coherent with its own checkable done condition.
-A spec with milestones is planned one milestone at a time (`m1/plan.md`, then `m2/plan.md`
-once M1 is done): name one as `<slug>/m2`, or leave it off and the lowest milestone not yet
-done is taken. Plans written under the older `plan-m1.md` layout still run. Over the limit with no milestones, plan-work stops and offers to split the
-spec, plan a first slice, or let you override.
-
-### Execute a plan
-
-Ask: “Use execute-plan for obsidian-sync.” All research, implementation, checks and repairs
-run in the main session. Execution checks assumptions, settles open
-questions and verifies completion before advancing. Missing acceptance criteria are resolved
-before implementation. `--phase N` selects a phase; its prerequisites still must hold.
-Progress remains on disk for resumption after interruption. Started from a vague request
-rather than by name, it confirms the plan and phase before its first edit.
-
-### Execute with phase workers
-
-Ask: “Use execute-plan-with-subagents for obsidian-sync.” It consumes the same plan files,
-milestone sub-slugs and `--phase N` selection as execute-plan. Each phase starts a fresh
-implementation worker; phases run sequentially.
-
-The main session checks prerequisites, researches `Settle first` and records decisions
-before dispatching the implementer. It supplies the settled phase, relevant context and
-file boundaries. The worker implements the whole phase and any repairs, reporting task
-checkpoints and focused development checks as it goes.
-
-The main session reviews the actual changes against the requirements and runs `Done when`
-itself. It diagnoses failures, sends specific repair requests back to the implementer and
-rechecks the repaired state before closing the phase. Preparation and verification are
-never delegated. User questions, shared documents and commits also stay in the main session.
-
-This uses one implementation worker per phase, with the main session controlling its work.
-Model and reasoning settings inherit the harness defaults unless you choose
-otherwise. Subagent support is required: without it, the skill stops and names execute-plan
-as the inline alternative. It does not switch modes automatically. Stock Pi needs a
-subagent extension for this skill.
-
-### Research a topic
-
-Ask: “Use research-topic to compare device authorization flows and preserve the findings.”
-The skill scouts first, confirms scope and budget, then researches inline or delegates
-independent angles within available slots. Reports live in a unique scratch directory outside
-the working tree (`~/.cache`, else the temporary directory; if neither is writable it asks). Changed claims are checked against source evidence before scratch cleanup.
-For a chat-only answer or read-only review, ask directly rather than invoking this workflow.
-
-### Diagnose an issue
-
-Ask: “Use five-whys to investigate why this test fails only in CI. Propose a fix.” The skill
-inspects evidence with available tools, tests competing explanations and follows causal
-links for as many levels as the evidence supports. It can report multiple contributors or
-an unresolved cause. It proposes a correction and validation approach, then stops without
-implementing changes. Existing tests may run only when their side effects are known and
-isolated; it does not edit code/configuration, install dependencies or mutate external
-systems. The report stays in conversation and no commit is made during diagnosis.
+- **Why use it:** Eliminates meandering, open-ended requirement interviews. Instead of asking dozens of questions up front, it inspects your codebase and drafts a specification first, categorizes unknowns (blocking gaps vs thin sections vs deferred questions), and records confirmed decisions so requirements don't slip. For large features, it automatically cuts a minimal, end-to-end first slice (M1) so projects ship incrementally.
+- **Workflow:**
+  1. *Draft & Orient:* Inspects local code and drafts an initial specification covering goals, architecture, and interfaces.
+  2. *Bounded Interview:* Conducts focused question rounds targeting only blocking gaps. Offers deep surveys or library comparisons to `research-topic` mid-run.
+  3. *Milestone Slicing:* Automatically divides large scopes into discrete milestones (`m1/`, `m2/`...), where M1 is the thinnest slice working end-to-end. Each milestone gets a folder `docs/<slug>/m<N>/` with a small `milestone.md` pointing into the spec, and the spec keeps a one-line index with each milestone's status. Name `<slug>/m<N>` to re-cut a milestone.
+  4. *Decision Readback:* Confirms active decisions with you and marks the specification buildable.
+- **Artifacts & Handoffs:** Produces `docs/<slug>/spec.md`, `m<N>/milestone.md`, and `research.md`. Advance to planning with `/plan-work implement docs/<slug>/spec.md` or `/plan-work <slug>/m1`.
+- **Invocation:** `/shape-spec a CLI that syncs an Obsidian vault to S3`
 
 ### Deepen a task
 
-Ask: “Use deepen-task to sharpen this feature description without expanding scope.” The
-skill conducts a 5-point analysis (workspace/external research, consequential omissions,
-primary evidence, stack-aligned methods, and non-fabricated verification). It separates
-rewrite-time from execution-time research and returns key findings alongside a complete,
-self-contained specification ready for implementation. It operates under the core principle:
-“I want a deeper version of this task, not a bigger one.” If an input file path was given,
-it offers to update the file or save a new deepened specification.
+Transform an ambiguous, shallow task, issue ticket, or prompt into a professional specification without expanding scope.
+
+- **Why use it:** Prevents shallow code, hallucinated features, and unverified edge cases. When given a brief task ("add rate limiting", "refactor auth"), agents often invent arbitrary SLAs, omit security traps, or miss concurrency hazards. Operating under the core principle *"I want a deeper version of this task, not a bigger one"*, it sharpens rigor, identifies expert omissions, and establishes falsifiable verification while keeping boundaries firm.
+- **Workflow:**
+  1. *Triage:* Evaluates the prompt or task file for idempotency and catches critical ambiguities before proceeding.
+  2. *5-Point Analysis:* Analyzes workspace/external standards, uncovers consequential omissions and traps, identifies primary evidence to inspect, selects stack-aligned methods, and defines independent verification without fabricated metrics.
+  3. *Separate Research Phases:* Clearly separates research informing the specification from empirical baselines the implementer must measure during execution.
+  4. *Deliver Output Contract:* Delivers concise key findings followed by a self-contained, copyable Markdown specification.
+- **Artifacts & Handoffs:** Delivers a complete specification in conversation. If a task file was provided, offers to write `<filename>.deepened.md`. Implement directly with your coding agent or feed into `/plan-work` if complex.
+- **Invocation:** `/deepen-task add rate limiting to public endpoints` or `/deepen-task path/to/task.md`
+
+### Plan defined work
+
+Turn a confirmed specification or milestone into a phased execution plan in `docs/<slug>/plan.md`.
+
+- **Why use it:** Bridges high-level specifications and actual code execution. It prevents sprawling, runaway plans that overwhelm an agent's context window by enforcing hard limits (maximum 8 phases and 40 tasks per plan) and planning one milestone at a time. It ensures every phase has observable completion checks and surfaces prerequisite risks before any code is modified.
+- **Workflow:**
+  1. *Scope Check:* Evaluates the spec or milestone. A spec with milestones is planned one milestone at a time (`docs/<slug>/m1/plan.md`, then `m2/plan.md` once M1 is done): name one as `<slug>/m2`, or leave it off and the lowest unfinished milestone is taken automatically. Over the limit with no milestones, it stops and offers to split the spec, plan a first slice, or let you override with a dated rationale.
+  2. *Structure Phases:* Breaks implementation into logical phases (setup, core implementation, validation).
+  3. *Risk & Assumptions:* Explicitly identifies "Settle first" questions and architectural assumptions.
+  4. *Checkable Tasks:* Writes discrete tasks stating *what* and *where* (leaving *how* to execution), each backed by an observable "Done when" condition.
+- **Artifacts & Handoffs:** Produces `docs/<slug>/plan.md` or `docs/<slug>/m<N>/plan.md` (legacy `plan-m<N>.md` still supported). Never writes application code. Handoff to `/execute-plan` (inline) or `/execute-plan-with-subagents` (delegated).
+- **Invocation:** `/plan-work docs/obsidian-sync/spec.md` or `/plan-work obsidian-sync/m1`
+
+### Execute a plan
+
+Implement an existing plan sequentially entirely within the main session.
+
+- **Why use it:** Drives a plan to completion within your current agent session. Perfect for environments without subagent support, for tightly coupled codebases where maintaining continuous context is advantageous, or when you want to watch every edit and test run inline.
+- **Workflow:**
+  1. *Initialize:* Locates unfinished plans. Given a bare slug with several plans, it takes the unfinished one (or asks if several qualify); with no argument, it lists unfinished plans to resume. **Started without being named?** When selected from a vague request like "carry on" rather than by explicit name, it states the plan and phase and waits for confirmation before its first edit or commit.
+  2. *Execute Phase:* Slices through phase tasks, settles open questions, runs focused unit checks, and records findings in `research.md`.
+  3. *Verify "Done when":* Independently verifies the phase's observable acceptance criteria before closing it.
+  4. *Update State:* Updates plan checkboxes and phase statuses directly on disk for durable resumption; creates one commit per phase when permitted.
+- **Artifacts & Handoffs:** Implements code changes, updates plan status, records findings. Runs single phases with `--phase N`. If a milestone plan has remaining milestones, advances to `/plan-work` for the next milestone (`m2`).
+- **Invocation:** `/execute-plan obsidian-sync` or `/execute-plan obsidian-sync/m1 --phase 2`
+
+### Execute with phase workers
+
+Implement an existing plan using isolated subagents for each phase while retaining supervisor control.
+
+- **Why use it:** Scales plan execution across complex projects by using isolated subagents for implementation while retaining supervisor control in the main session. Keeps the main session context clean from compilation noise and test output. Crucially, verification is never delegated: the worker implements and repairs, but the supervisor independently validates "Done when" before accepting the phase.
+- **Workflow:**
+  1. *Supervise & Prepare:* Main session checks prerequisites, settles open questions, and defines strict file boundaries. **Selected without being named?** When chosen implicitly from a request like "carry on", it states the plan, phase, and delegated mode and waits for confirmation before any edit, dispatch, or commit.
+  2. *Dispatch Worker:* Spawns a fresh subagent with the settled phase scope and worker role.
+  3. *Worker Implementation:* Subagent executes tasks and focused checks, reporting progress checkpoints back to the supervisor.
+  4. *Independent Acceptance:* Main session reviews git diffs, runs phase verification commands itself, dispatches targeted repair instructions if checks fail, and commits upon acceptance.
+- **Artifacts & Handoffs:** Implements code changes, maintains execution logs, updates plan status. Subagent support is required: without it, the skill stops and names `execute-plan` as the inline alternative (it never switches execution modes automatically). Stock Pi needs a subagent extension.
+- **Invocation:** `/execute-plan-with-subagents obsidian-sync` or `/execute-plan-with-subagents obsidian-sync/m1`
+
+### Research a topic
+
+Build and preserve a sourced, cross-referenced research corpus under `docs/research/`.
+
+- **Why use it:** Prevents transient, disposable chat answers by building a permanent, cross-referenced research corpus under `docs/research/`. Avoids duplicate searches across sessions and ensures architectural decisions are grounded in verified, authoritative sources.
+- **Workflow:**
+  1. *Scout:* Performs a shallow initial pass (5–8 searches) to map the topic's shape and determine if it splits into independent angles.
+  2. *Scope Gate:* Agrees the research angles and budget with you (hard gate—nothing lands on disk without approval).
+  3. *Dispatch:* Researches inline or delegates up to 10 independent angles to parallel subagents operating in an isolated scratch directory outside git.
+  4. *Synthesize & Verify:* Synthesizes findings into `docs/research/<topic>.md`, verifies that every citation URL was opened and supports its claim, cleans up scratch reports, and updates the corpus index.
+- **Artifacts & Handoffs:** Produces `docs/research/<topic>.md` and updates `docs/research/README.md`. Referenced automatically by `shape-spec`, `plan-work`, and execution.
+- **Invocation:** `/research-topic compare device authorization flows and OAuth 2.1 recommendations`
+
+### Diagnose an issue
+
+Investigate software failures using structured causal analysis and propose an unapplied fix.
+
+- **Why use it:** Stops the common failure mode where coding agents frantically guess patches, thrash code, or apply superficial band-aids to failing tests. `five-whys` conducts an evidence-backed root cause investigation using causal chains. It is strictly non-destructive: it analyzes evidence and proposes an unapplied fix, but never edits code, creates repro scripts, installs dependencies, or mutates configuration during diagnosis.
+- **Workflow:**
+  1. *Frame:* Captures expected vs actual behavior, reproduction conditions, and isolates symptoms.
+  2. *Inspect Evidence:* Examines source code, git history, logs, traces, or isolated test outputs. Existing tests run only when side effects are known and isolated.
+  3. *Causal Investigation:* Builds a causal chain ("Why did X occur? Because Y"), testing competing hypotheses against evidence.
+  4. *Evaluate Causes:* Distinguishes the runtime failure mechanism from missing prevention controls; checks if breaking a link resolves the failure path.
+  5. *Conclude & Propose:* Classifies diagnosis as *Supported*, *Provisional*, or *Unresolved*; proposes a targeted correction and validation plan without applying edits.
+- **Artifacts & Handoffs:** Delivers a structured diagnostic report in conversation (no file written by default). Stops after the report; confirmation of a diagnosis is not permission to implement. Hand off to direct implementation or `/deepen-task` to specify the repair.
+- **Invocation:** `/five-whys test_token_refresh fails intermittently in CI`
+
+### Maintain AGENTS.md
+
+Keep project agent instructions sharp, accurate, and within a strict 200-line budget.
+
+- **Why use it:** Prevents "instruction rot" and context window waste. Project steering files often bloat to hundreds of lines with discoverable boilerplate (re-explaining READMEs, directory listings, or standard framework idioms) or go stale when commands change. `maintain-agents-md` enforces a hard 200-line budget, creates a one-line `@AGENTS.md` shim for `CLAUDE.md`, and records only durable, non-discoverable project conventions.
+- **Workflow:**
+  1. *Triage Mode:* Detects whether to `create` (no instruction file exists), `update` (a new durable fact surfaced), or `audit` (pruning existing files).
+  2. *Explore & Interview:* Inspects project files for non-obvious conventions (build flags, test setups, architectural rules) and interviews you for team policies.
+  3. *Strict Line Count:* Measures text using exact line counts (`wc -l`), verifying that content stays within the 200-line budget.
+  4. *Review & Write:* When triggered autonomously, shows a diff and waits for user approval before modifying files. Writes `AGENTS.md` and the single-line shim `@AGENTS.md` to `CLAUDE.md`.
+  5. *Autonomous Monitoring:* Automatically suggests an update mid-session when you correct a convention or a command changes.
+- **Artifacts & Handoffs:** Produces or updates `AGENTS.md` and `CLAUDE.md`. Governs all future agent interactions across the repository.
+- **Invocation:** `/maintain-agents-md create`, `/maintain-agents-md audit`, or `/maintain-agents-md update the test command is now pnpm test`
+
+---
 
 ## Persistence and delegation
 
