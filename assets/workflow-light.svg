@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 680" width="100%" height="100%" style="background-color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 690" width="100%" height="100%" style="background-color: #FFFFFF; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
   <defs>
     <!-- Arrowhead markers -->
     <marker id="arrow-light" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -15,179 +15,174 @@
       <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="rgba(0,0,0,0.04)" />
     </filter>
   </defs>
-  <rect width="1040" height="680" fill="#FFFFFF" />
+  <rect width="1060" height="690" fill="#FFFFFF" />
   <!-- Zone 1: Governance Container -->
-  <rect x="30" y="25" width="980" height="66" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5" />
+  <rect x="30" y="25" width="1000" height="64" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5" />
   <text x="50" y="45" font-size="11" font-weight="700" fill="#64748B" letter-spacing="0.08em">SYSTEM GOVERNANCE</text>
 
   <!-- Skill: maintain-agents-md -->
-  <g transform="translate(195, 38)">
+  <g transform="translate(195, 37)">
     <rect width="180" height="40" rx="8" fill="#FFFFFF" stroke="#F472B6" stroke-width="1.5" filter="url(#shadow-light)" />
     <circle cx="16" cy="20" r="5" fill="#811B53" />
     <text x="28" y="24" font-size="13" font-weight="600" fill="#0F172A">maintain-agents-md</text>
   </g>
 
   <!-- Arrow from maintain-agents-md to AGENTS.md -->
-  <path d="M 375 58 L 415 58" fill="none" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrow-light)" />
+  <path d="M 375 57 L 415 57" fill="none" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrow-light)" />
 
   <!-- Artifact: AGENTS.md / CLAUDE.md -->
-  <g transform="translate(425, 38)">
+  <g transform="translate(425, 37)">
     <rect width="210" height="40" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow-light)" />
     <text x="16" y="24" font-size="13" font-weight="600" fill="#0F172A">AGENTS.md / CLAUDE.md</text>
   </g>
 
-  <text x="655" y="63" font-size="12" fill="#64748B">Lean rules (&lt; 200 lines) steering all agent sessions</text>
+  <text x="655" y="62" font-size="12" fill="#64748B">Lean rules (&lt; 200 lines) steering all agent sessions</text>
   <!-- Zone 2: Discovery & Spec Container -->
-  <rect x="30" y="110" width="980" height="225" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5" />
-  <text x="50" y="132" font-size="11" font-weight="700" fill="#64748B" letter-spacing="0.08em">DISCOVERY, SPECIFICATION &amp; RESEARCH</text>
+  <rect x="30" y="105" width="1000" height="235" rx="10" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5" />
+  <text x="50" y="126" font-size="11" font-weight="700" fill="#64748B" letter-spacing="0.08em">DISCOVERY, SPECIFICATION &amp; RESEARCH</text>
 
-  <!-- Row 1: Problem Space -> explore-ideas -> Backlog -->
-  <!-- Input: Problem Space -->
-  <g transform="translate(50, 150)">
+  <!-- Row 1: Problem Space -> explore-ideas -> Backlog (y = 138..182) -->
+  <g transform="translate(50, 142)">
     <rect width="115" height="36" rx="18" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1" />
     <text x="14" y="22" font-size="12" font-weight="500" fill="#475569">Problem space</text>
   </g>
-  <path d="M 165 168 L 195 168" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+  <path d="M 165 160 L 195 160" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
-  <!-- Skill: explore-ideas -->
-  <g transform="translate(205, 144)">
-    <rect width="145" height="48" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#shadow-light)" />
-    <circle cx="16" cy="24" r="5" fill="#DE245F" />
-    <text x="28" y="28" font-size="13" font-weight="600" fill="#0F172A">explore-ideas</text>
+  <g transform="translate(205, 138)">
+    <rect width="145" height="44" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#shadow-light)" />
+    <circle cx="16" cy="22" r="5" fill="#DE245F" />
+    <text x="28" y="26" font-size="13" font-weight="600" fill="#0F172A">explore-ideas</text>
   </g>
-  <path d="M 350 168 L 380 168" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+  <path d="M 350 160 L 380 160" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
-  <!-- Artifact: docs/ideas/<area>.md -->
-  <g transform="translate(390, 144)">
-    <rect width="180" height="48" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow-light)" />
-    <text x="14" y="24" font-size="12" font-weight="600" fill="#0F172A">docs/ideas/&lt;area&gt;.md</text>
-    <text x="14" y="40" font-size="11" fill="#64748B">Ranked idea backlog</text>
+  <g transform="translate(390, 138)">
+    <rect width="180" height="44" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow-light)" />
+    <text x="14" y="21" font-size="12" font-weight="600" fill="#0F172A">docs/ideas/&lt;area&gt;.md</text>
+    <text x="14" y="36" font-size="10.5" fill="#64748B">Ranked idea backlog</text>
   </g>
 
-  <!-- Curve: pick one idea from backlog down to shape-spec -->
-  <path d="M 480 192 C 480 220 375 234 360 234" fill="none" stroke="#DE245F" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-pink-light)" />
-  <text x="440" y="215" font-size="10.5" font-weight="500" fill="#DE245F">pick one idea</text>
+  <!-- Curve: pick one idea from backlog to shape-spec (completely clear of both cards) -->
+  <path d="M 430 182 C 430 198, 310 194, 310 210" fill="none" stroke="#DE245F" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-pink-light)" />
+  <rect x="340" y="188" width="76" height="16" rx="8" fill="#FFF1F5" stroke="#FDA4AF" stroke-width="0.8" />
+  <text x="346" y="200" font-size="9.5" font-weight="600" fill="#BE123C">pick one idea</text>
 
-  <!-- Row 2: Concept -> shape-spec -> docs/<slug>/spec.md -->
-  <!-- Input: Concept -->
+  <!-- Row 2: Concept -> shape-spec -> docs/<slug>/spec.md (y = 212..256) -->
   <g transform="translate(50, 216)">
     <rect width="115" height="36" rx="18" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1" />
     <text x="14" y="22" font-size="12" font-weight="500" fill="#475569">Broad concept</text>
   </g>
   <path d="M 165 234 L 195 234" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
-  <!-- Skill: shape-spec -->
-  <g transform="translate(205, 210)">
-    <rect width="145" height="48" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#shadow-light)" />
-    <circle cx="16" cy="24" r="5" fill="#DE245F" />
-    <text x="28" y="28" font-size="13" font-weight="600" fill="#0F172A">shape-spec</text>
+  <g transform="translate(205, 212)">
+    <rect width="145" height="44" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#shadow-light)" />
+    <circle cx="16" cy="22" r="5" fill="#DE245F" />
+    <text x="28" y="26" font-size="13" font-weight="600" fill="#0F172A">shape-spec</text>
   </g>
   <path d="M 350 234 L 380 234" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
-  <!-- Artifact: spec.md + milestones -->
-  <g transform="translate(390, 210)">
-    <rect width="180" height="48" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow-light)" />
-    <text x="14" y="24" font-size="12" font-weight="600" fill="#0F172A">docs/&lt;slug&gt;/spec.md</text>
-    <text x="14" y="40" font-size="11" fill="#64748B">Confirmed spec + m1..mN/</text>
+  <g transform="translate(390, 212)">
+    <rect width="180" height="44" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow-light)" />
+    <text x="14" y="21" font-size="12" font-weight="600" fill="#0F172A">docs/&lt;slug&gt;/spec.md</text>
+    <text x="14" y="36" font-size="10.5" fill="#64748B">Confirmed spec + m1..mN/</text>
   </g>
 
-  <!-- Row 3: Scoped Task -> deepen-task -> Hardened Spec -->
-  <!-- Input: Task / Ticket -->
-  <g transform="translate(50, 280)">
+  <!-- Row 3: Scoped Task -> deepen-task -> Hardened Spec (y = 282..326) -->
+  <g transform="translate(50, 286)">
     <rect width="115" height="36" rx="18" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1" />
     <text x="14" y="22" font-size="12" font-weight="500" fill="#475569">Focused task</text>
   </g>
-  <path d="M 165 298 L 195 298" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+  <path d="M 165 304 L 195 304" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
-  <!-- Skill: deepen-task -->
-  <g transform="translate(205, 274)">
-    <rect width="145" height="48" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#shadow-light)" />
-    <circle cx="16" cy="24" r="5" fill="#DE245F" />
-    <text x="28" y="28" font-size="13" font-weight="600" fill="#0F172A">deepen-task</text>
+  <g transform="translate(205, 282)">
+    <rect width="145" height="44" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#shadow-light)" />
+    <circle cx="16" cy="22" r="5" fill="#DE245F" />
+    <text x="28" y="26" font-size="13" font-weight="600" fill="#0F172A">deepen-task</text>
   </g>
-  <path d="M 350 298 L 380 298" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+  <path d="M 350 304 L 380 304" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
-  <!-- Artifact: Hardened Task Specification -->
-  <g transform="translate(390, 274)">
-    <rect width="180" height="48" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow-light)" />
-    <text x="14" y="24" font-size="12" font-weight="600" fill="#0F172A">Hardened Spec</text>
-    <text x="14" y="40" font-size="11" fill="#64748B">Deeper, not bigger (no bloat)</text>
+  <g transform="translate(390, 282)">
+    <rect width="180" height="44" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#shadow-light)" />
+    <text x="14" y="21" font-size="12" font-weight="600" fill="#0F172A">Hardened Spec</text>
+    <text x="14" y="36" font-size="10.5" fill="#64748B">Deeper, not bigger (no bloat)</text>
   </g>
 
-  <!-- Cross-Cutting Research Component -->
-  <g transform="translate(680, 175)">
-    <rect width="300" height="110" rx="8" fill="#FFFFFF" stroke="#93C5FD" stroke-width="1.5" filter="url(#shadow-light)" />
-    <circle cx="20" cy="28" r="5" fill="#3B82F6" />
-    <text x="34" y="32" font-size="14" font-weight="600" fill="#0F172A">research-topic</text>
-    <path d="M 20 48 L 280 48" stroke="#CBD5E1" stroke-width="1" />
-    <text x="20" y="68" font-size="12" font-weight="600" fill="#1D4ED8">docs/research/ (Corpus)</text>
-    <text x="20" y="86" font-size="11" fill="#64748B">Sourced, verified findings</text>
-    <text x="20" y="100" font-size="10.5" font-style="italic" fill="#64748B">Consulted across all stages</text>
+  <!-- Research Component: Self-contained shared corpus -->
+  <g transform="translate(710, 160)">
+    <rect width="290" height="120" rx="8" fill="#FFFFFF" stroke="#93C5FD" stroke-width="1.5" filter="url(#shadow-light)" />
+    <circle cx="20" cy="26" r="5" fill="#3B82F6" />
+    <text x="34" y="30" font-size="14" font-weight="600" fill="#0F172A">research-topic</text>
+    <path d="M 20 44 L 270 44" stroke="#CBD5E1" stroke-width="1" />
+    <text x="20" y="66" font-size="12.5" font-weight="600" fill="#1D4ED8">docs/research/ (Corpus)</text>
+    <text x="20" y="86" font-size="11" fill="#64748B">Sourced, verified knowledge base</text>
+    <text x="20" y="103" font-size="11" font-style="italic" fill="#64748B">Consulted across all stages</text>
   </g>
-  <!-- Connector from spec.md down to plan-work -->
-  <path d="M 480 258 L 480 365" fill="none" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrow-light)" />
-  <!-- Connector from deepen-task spec into plan-work -->
-  <path d="M 570 298 C 610 298 610 395 595 395" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 3" />
+  <!-- Unobstructed connection paths into plan-work -->
+  <!-- 1. spec.md curves through clear channel into plan-work (landing cleanly at x = 485, away from badge) -->
+  <path d="M 570 234 C 615 234, 615 330, 485 348 L 485 373" fill="none" stroke="#94A3B8" stroke-width="1.8" marker-end="url(#arrow-light)" />
+
+  <!-- 2. Hardened Spec connects directly down into plan-work (landing cleanly at x = 430) -->
+  <path d="M 430 326 L 430 368" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-light)" />
 
   <!-- Planning Box: plan-work -->
-  <g transform="translate(370, 370)">
-    <rect width="225" height="60" rx="8" fill="#FFFFFF" stroke="#FCD34D" stroke-width="1.5" filter="url(#shadow-light)" />
-    <circle cx="20" cy="24" r="5" fill="#F59E0B" />
-    <text x="32" y="28" font-size="14" font-weight="600" fill="#0F172A">plan-work</text>
-    <text x="32" y="46" font-size="11.5" fill="#64748B">docs/&lt;slug&gt;/[m&lt;N&gt;/]plan.md</text>
-    <rect x="120" y="14" width="92" height="18" rx="9" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1" />
-    <text x="128" y="27" font-size="9.5" font-weight="600" fill="#B45309">≤ 8 phases / 40 tasks</text>
+  <g transform="translate(370, 375)">
+    <rect width="235" height="64" rx="8" fill="#FFFFFF" stroke="#FCD34D" stroke-width="1.5" filter="url(#shadow-light)" />
+    <circle cx="18" cy="22" r="5" fill="#F59E0B" />
+    <text x="30" y="26" font-size="14" font-weight="600" fill="#0F172A">plan-work</text>
+    <text x="30" y="47" font-size="11.5" fill="#64748B">docs/&lt;slug&gt;/[m&lt;N&gt;/]plan.md</text>
+    <rect x="135" y="14" width="90" height="18" rx="9" fill="#FFFBEB" stroke="#FCD34D" stroke-width="1" />
+    <text x="141" y="27" font-size="9" font-weight="600" fill="#B45309">≤ 8 phases / 40 tasks</text>
   </g>
 
   <!-- Execution Splitter lines -->
-  <path d="M 430 430 C 430 455 310 455 310 478" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
-  <path d="M 535 430 C 535 455 645 455 645 478" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+  <path d="M 425 439 C 425 460 300 460 300 482" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+  <path d="M 545 439 C 545 460 610 460 610 482" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
   <!-- Execution Mode 1: execute-plan (inline) -->
-  <g transform="translate(195, 485)">
-    <rect width="230" height="64" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#shadow-light)" />
-    <circle cx="20" cy="24" r="5" fill="#DE245F" />
-    <text x="32" y="28" font-size="13.5" font-weight="600" fill="#0F172A">execute-plan</text>
-    <text x="32" y="47" font-size="11" fill="#64748B">Inline in main session</text>
-    <rect x="145" y="14" width="72" height="18" rx="9" fill="#FFF1F5" stroke="#FDA4AF" stroke-width="1" />
+  <g transform="translate(185, 488)">
+    <rect width="230" height="66" rx="8" fill="#FFFFFF" stroke="#FDA4AF" stroke-width="1.5" filter="url(#shadow-light)" />
+    <circle cx="18" cy="22" r="5" fill="#DE245F" />
+    <text x="30" y="26" font-size="13.5" font-weight="600" fill="#0F172A">execute-plan</text>
+    <text x="30" y="48" font-size="11" fill="#64748B">Inline in main session</text>
+    <rect x="145" y="14" width="75" height="18" rx="9" fill="#FFF1F5" stroke="#FDA4AF" stroke-width="1" />
     <text x="153" y="27" font-size="9.5" font-weight="600" fill="#BE123C">Main session</text>
   </g>
 
-  <!-- Execution Mode 2: execute-plan-with-subagents -->
-  <g transform="translate(530, 485)">
-    <rect width="235" height="64" rx="8" fill="#FFFFFF" stroke="#F472B6" stroke-width="1.5" filter="url(#shadow-light)" />
-    <circle cx="20" cy="24" r="5" fill="#811B53" />
-    <text x="32" y="28" font-size="13" font-weight="600" fill="#0F172A">execute-plan-with-subagents</text>
-    <text x="32" y="47" font-size="11" fill="#64748B">Supervisor + phase workers</text>
-    <rect x="145" y="14" width="78" height="18" rx="9" fill="#FDF2F8" stroke="#F472B6" stroke-width="1" />
-    <text x="153" y="27" font-size="9.5" font-weight="600" fill="#811B53">Subagent tier</text>
+  <!-- Execution Mode 2: execute-plan-with-subagents (width 255, badge at x=172 with generous clearance) -->
+  <g transform="translate(480, 488)">
+    <rect width="255" height="66" rx="8" fill="#FFFFFF" stroke="#F472B6" stroke-width="1.5" filter="url(#shadow-light)" />
+    <circle cx="18" cy="22" r="5" fill="#811B53" />
+    <text x="30" y="26" font-size="13" font-weight="600" fill="#0F172A">execute-plan-with-subagents</text>
+    <text x="30" y="48" font-size="11" fill="#64748B">Supervisor + phase workers</text>
+    <rect x="172" y="38" width="75" height="18" rx="9" fill="#FDF2F8" stroke="#F472B6" stroke-width="1" />
+    <text x="180" y="51" font-size="9.5" font-weight="600" fill="#811B53">Subagents</text>
   </g>
 
   <!-- Join into Verified Milestone -->
-  <path d="M 310 549 C 310 575 440 575 440 595" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
-  <path d="M 645 549 C 645 575 520 575 520 595" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+  <path d="M 300 554 C 300 580 440 580 440 604" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+  <path d="M 610 554 C 610 580 520 580 520 604" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
   <!-- Output: Verified Milestone -->
-  <g transform="translate(385, 602)">
+  <g transform="translate(385, 610)">
     <rect width="190" height="48" rx="24" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1.5" filter="url(#shadow-light)" />
     <circle cx="22" cy="24" r="6" fill="#10B981" />
     <text x="36" y="29" font-size="13" font-weight="700" fill="#047857">Verified Milestone</text>
   </g>
 
-  <!-- Loop: Next milestone back to plan-work -->
-  <path d="M 575 626 C 800 626 800 400 605 400" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-emerald-light)" />
-  <text x="808" y="500" font-size="11" font-weight="600" fill="#047857">next milestone</text>
-  <!-- Diagnostics: five-whys -->
-  <g transform="translate(820, 560)">
+  <!-- Loop: Next milestone routed cleanly through wide corridor between 735 and 860 -->
+  <path d="M 575 634 L 795 634 L 795 407 L 610 407" fill="none" stroke="#10B981" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-emerald-light)" />
+  <rect x="752" y="510" width="86" height="20" rx="10" fill="#ECFDF5" stroke="#6EE7B7" stroke-width="1" />
+  <text x="758" y="524" font-size="10" font-weight="600" fill="#047857">next milestone</text>
+  <!-- Diagnostics: five-whys (x = 860) -->
+  <g transform="translate(860, 560)">
     <!-- Failure Input Badge -->
-    <rect x="0" y="-36" width="165" height="26" rx="13" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1" />
+    <rect x="0" y="-36" width="160" height="26" rx="13" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1" />
     <text x="14" y="-19" font-size="11" font-weight="600" fill="#475569">Failure / flake / bug</text>
 
     <!-- Arrow from input to five-whys -->
-    <path d="M 82 -10 L 82 8" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
+    <path d="M 80 -10 L 80 8" fill="none" stroke="#94A3B8" stroke-width="1.5" marker-end="url(#arrow-light)" />
 
     <!-- Card: five-whys -->
-    <rect width="165" height="68" rx="8" fill="#FFFFFF" stroke="#FCD34D" stroke-width="1.5" filter="url(#shadow-light)" />
+    <rect width="160" height="68" rx="8" fill="#FFFFFF" stroke="#FCD34D" stroke-width="1.5" filter="url(#shadow-light)" />
     <circle cx="20" cy="24" r="5" fill="#F59E0B" />
     <text x="32" y="28" font-size="13.5" font-weight="600" fill="#0F172A">five-whys</text>
     <text x="16" y="47" font-size="11" fill="#64748B">Root-cause diagnosis</text>

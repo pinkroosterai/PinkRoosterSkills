@@ -9,7 +9,6 @@ Generates:
 """
 
 import os
-import sys
 
 THEMES = {
     "light": {
@@ -89,8 +88,8 @@ THEMES = {
 
 def build_svg(theme_name: str) -> str:
     t = THEMES[theme_name]
-    width = 1040
-    height = 680
+    width = 1060
+    height = 690
 
     svg = []
     svg.append(f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" width="100%" height="100%" style="background-color: {t['bg_canvas']}; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
@@ -115,188 +114,191 @@ def build_svg(theme_name: str) -> str:
     # Background canvas
     svg.append(f'  <rect width="{width}" height="{height}" fill="{t["bg_canvas"]}" />\n')
 
-    # --- SECTION 1: SYSTEM GOVERNANCE (Top Container) ---
+    # =========================================================================
+    # ZONE 1: SYSTEM GOVERNANCE (Top Container)
+    # =========================================================================
     svg.append(f'''  <!-- Zone 1: Governance Container -->
-  <rect x="30" y="25" width="980" height="66" rx="10" fill="{t['bg_container']}" stroke="{t['border_container']}" stroke-width="1.5" />
+  <rect x="30" y="25" width="1000" height="64" rx="10" fill="{t['bg_container']}" stroke="{t['border_container']}" stroke-width="1.5" />
   <text x="50" y="45" font-size="11" font-weight="700" fill="{t['text_muted']}" letter-spacing="0.08em">SYSTEM GOVERNANCE</text>
 
   <!-- Skill: maintain-agents-md -->
-  <g transform="translate(195, 38)">
+  <g transform="translate(195, 37)">
     <rect width="180" height="40" rx="8" fill="{t['bg_card']}" stroke="{t['plum_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
     <circle cx="16" cy="20" r="5" fill="{t['plum_main']}" />
     <text x="28" y="24" font-size="13" font-weight="600" fill="{t['text_main']}">maintain-agents-md</text>
   </g>
 
   <!-- Arrow from maintain-agents-md to AGENTS.md -->
-  <path d="M 375 58 L 415 58" fill="none" stroke="{t['line_color']}" stroke-width="2" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 375 57 L 415 57" fill="none" stroke="{t['line_color']}" stroke-width="2" marker-end="url(#arrow-{theme_name})" />
 
   <!-- Artifact: AGENTS.md / CLAUDE.md -->
-  <g transform="translate(425, 38)">
+  <g transform="translate(425, 37)">
     <rect width="210" height="40" rx="8" fill="{t['bg_card']}" stroke="{t['border_card']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
     <text x="16" y="24" font-size="13" font-weight="600" fill="{t['text_main']}">AGENTS.md / CLAUDE.md</text>
   </g>
 
-  <text x="655" y="63" font-size="12" fill="{t['text_muted']}">Lean rules (&lt; 200 lines) steering all agent sessions</text>
+  <text x="655" y="62" font-size="12" fill="{t['text_muted']}">Lean rules (&lt; 200 lines) steering all agent sessions</text>
 ''')
 
-    # --- SECTION 2: DISCOVERY, SPECIFICATION & RESEARCH ---
+    # =========================================================================
+    # ZONE 2: DISCOVERY, SPECIFICATION & RESEARCH
+    # =========================================================================
     svg.append(f'''  <!-- Zone 2: Discovery & Spec Container -->
-  <rect x="30" y="110" width="980" height="225" rx="10" fill="{t['bg_container']}" stroke="{t['border_container']}" stroke-width="1.5" />
-  <text x="50" y="132" font-size="11" font-weight="700" fill="{t['text_muted']}" letter-spacing="0.08em">DISCOVERY, SPECIFICATION &amp; RESEARCH</text>
+  <rect x="30" y="105" width="1000" height="235" rx="10" fill="{t['bg_container']}" stroke="{t['border_container']}" stroke-width="1.5" />
+  <text x="50" y="126" font-size="11" font-weight="700" fill="{t['text_muted']}" letter-spacing="0.08em">DISCOVERY, SPECIFICATION &amp; RESEARCH</text>
 
-  <!-- Row 1: Problem Space -> explore-ideas -> Backlog -->
-  <!-- Input: Problem Space -->
-  <g transform="translate(50, 150)">
+  <!-- Row 1: Problem Space -> explore-ideas -> Backlog (y = 138..182) -->
+  <g transform="translate(50, 142)">
     <rect width="115" height="36" rx="18" fill="{t['badge_bg']}" stroke="{t['badge_border']}" stroke-width="1" />
     <text x="14" y="22" font-size="12" font-weight="500" fill="{t['badge_text']}">Problem space</text>
   </g>
-  <path d="M 165 168 L 195 168" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 165 160 L 195 160" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
-  <!-- Skill: explore-ideas -->
-  <g transform="translate(205, 144)">
-    <rect width="145" height="48" rx="8" fill="{t['bg_card']}" stroke="{t['pink_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <circle cx="16" cy="24" r="5" fill="{t['pink_main']}" />
-    <text x="28" y="28" font-size="13" font-weight="600" fill="{t['text_main']}">explore-ideas</text>
+  <g transform="translate(205, 138)">
+    <rect width="145" height="44" rx="8" fill="{t['bg_card']}" stroke="{t['pink_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <circle cx="16" cy="22" r="5" fill="{t['pink_main']}" />
+    <text x="28" y="26" font-size="13" font-weight="600" fill="{t['text_main']}">explore-ideas</text>
   </g>
-  <path d="M 350 168 L 380 168" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 350 160 L 380 160" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
-  <!-- Artifact: docs/ideas/<area>.md -->
-  <g transform="translate(390, 144)">
-    <rect width="180" height="48" rx="8" fill="{t['bg_card']}" stroke="{t['border_card']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <text x="14" y="24" font-size="12" font-weight="600" fill="{t['text_main']}">docs/ideas/&lt;area&gt;.md</text>
-    <text x="14" y="40" font-size="11" fill="{t['text_muted']}">Ranked idea backlog</text>
+  <g transform="translate(390, 138)">
+    <rect width="180" height="44" rx="8" fill="{t['bg_card']}" stroke="{t['border_card']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <text x="14" y="21" font-size="12" font-weight="600" fill="{t['text_main']}">docs/ideas/&lt;area&gt;.md</text>
+    <text x="14" y="36" font-size="10.5" fill="{t['text_muted']}">Ranked idea backlog</text>
   </g>
 
-  <!-- Curve: pick one idea from backlog down to shape-spec -->
-  <path d="M 480 192 C 480 220 375 234 360 234" fill="none" stroke="{t['line_accent']}" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-pink-{theme_name})" />
-  <text x="440" y="215" font-size="10.5" font-weight="500" fill="{t['pink_main']}">pick one idea</text>
+  <!-- Curve: pick one idea from backlog to shape-spec (completely clear of both cards) -->
+  <path d="M 430 182 C 430 198, 310 194, 310 210" fill="none" stroke="{t['pink_main']}" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-pink-{theme_name})" />
+  <rect x="340" y="188" width="76" height="16" rx="8" fill="{t['pink_bg']}" stroke="{t['pink_border']}" stroke-width="0.8" />
+  <text x="346" y="200" font-size="9.5" font-weight="600" fill="{t['pink_text']}">pick one idea</text>
 
-  <!-- Row 2: Concept -> shape-spec -> docs/<slug>/spec.md -->
-  <!-- Input: Concept -->
+  <!-- Row 2: Concept -> shape-spec -> docs/<slug>/spec.md (y = 212..256) -->
   <g transform="translate(50, 216)">
     <rect width="115" height="36" rx="18" fill="{t['badge_bg']}" stroke="{t['badge_border']}" stroke-width="1" />
     <text x="14" y="22" font-size="12" font-weight="500" fill="{t['badge_text']}">Broad concept</text>
   </g>
   <path d="M 165 234 L 195 234" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
-  <!-- Skill: shape-spec -->
-  <g transform="translate(205, 210)">
-    <rect width="145" height="48" rx="8" fill="{t['bg_card']}" stroke="{t['pink_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <circle cx="16" cy="24" r="5" fill="{t['pink_main']}" />
-    <text x="28" y="28" font-size="13" font-weight="600" fill="{t['text_main']}">shape-spec</text>
+  <g transform="translate(205, 212)">
+    <rect width="145" height="44" rx="8" fill="{t['bg_card']}" stroke="{t['pink_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <circle cx="16" cy="22" r="5" fill="{t['pink_main']}" />
+    <text x="28" y="26" font-size="13" font-weight="600" fill="{t['text_main']}">shape-spec</text>
   </g>
   <path d="M 350 234 L 380 234" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
-  <!-- Artifact: spec.md + milestones -->
-  <g transform="translate(390, 210)">
-    <rect width="180" height="48" rx="8" fill="{t['bg_card']}" stroke="{t['border_card']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <text x="14" y="24" font-size="12" font-weight="600" fill="{t['text_main']}">docs/&lt;slug&gt;/spec.md</text>
-    <text x="14" y="40" font-size="11" fill="{t['text_muted']}">Confirmed spec + m1..mN/</text>
+  <g transform="translate(390, 212)">
+    <rect width="180" height="44" rx="8" fill="{t['bg_card']}" stroke="{t['border_card']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <text x="14" y="21" font-size="12" font-weight="600" fill="{t['text_main']}">docs/&lt;slug&gt;/spec.md</text>
+    <text x="14" y="36" font-size="10.5" fill="{t['text_muted']}">Confirmed spec + m1..mN/</text>
   </g>
 
-  <!-- Row 3: Scoped Task -> deepen-task -> Hardened Spec -->
-  <!-- Input: Task / Ticket -->
-  <g transform="translate(50, 280)">
+  <!-- Row 3: Scoped Task -> deepen-task -> Hardened Spec (y = 282..326) -->
+  <g transform="translate(50, 286)">
     <rect width="115" height="36" rx="18" fill="{t['badge_bg']}" stroke="{t['badge_border']}" stroke-width="1" />
     <text x="14" y="22" font-size="12" font-weight="500" fill="{t['badge_text']}">Focused task</text>
   </g>
-  <path d="M 165 298 L 195 298" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 165 304 L 195 304" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
-  <!-- Skill: deepen-task -->
-  <g transform="translate(205, 274)">
-    <rect width="145" height="48" rx="8" fill="{t['bg_card']}" stroke="{t['pink_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <circle cx="16" cy="24" r="5" fill="{t['pink_main']}" />
-    <text x="28" y="28" font-size="13" font-weight="600" fill="{t['text_main']}">deepen-task</text>
+  <g transform="translate(205, 282)">
+    <rect width="145" height="44" rx="8" fill="{t['bg_card']}" stroke="{t['pink_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <circle cx="16" cy="22" r="5" fill="{t['pink_main']}" />
+    <text x="28" y="26" font-size="13" font-weight="600" fill="{t['text_main']}">deepen-task</text>
   </g>
-  <path d="M 350 298 L 380 298" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 350 304 L 380 304" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
-  <!-- Artifact: Hardened Task Specification -->
-  <g transform="translate(390, 274)">
-    <rect width="180" height="48" rx="8" fill="{t['bg_card']}" stroke="{t['border_card']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <text x="14" y="24" font-size="12" font-weight="600" fill="{t['text_main']}">Hardened Spec</text>
-    <text x="14" y="40" font-size="11" fill="{t['text_muted']}">Deeper, not bigger (no bloat)</text>
+  <g transform="translate(390, 282)">
+    <rect width="180" height="44" rx="8" fill="{t['bg_card']}" stroke="{t['border_card']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <text x="14" y="21" font-size="12" font-weight="600" fill="{t['text_main']}">Hardened Spec</text>
+    <text x="14" y="36" font-size="10.5" fill="{t['text_muted']}">Deeper, not bigger (no bloat)</text>
   </g>
 
-  <!-- Cross-Cutting Research Component -->
-  <g transform="translate(680, 175)">
-    <rect width="300" height="110" rx="8" fill="{t['bg_card']}" stroke="{t['blue_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <circle cx="20" cy="28" r="5" fill="{t['blue_main']}" />
-    <text x="34" y="32" font-size="14" font-weight="600" fill="{t['text_main']}">research-topic</text>
-    <path d="M 20 48 L 280 48" stroke="{t['border_card']}" stroke-width="1" />
-    <text x="20" y="68" font-size="12" font-weight="600" fill="{t['blue_text']}">docs/research/ (Corpus)</text>
-    <text x="20" y="86" font-size="11" fill="{t['text_muted']}">Sourced, verified findings</text>
-    <text x="20" y="100" font-size="10.5" font-style="italic" fill="{t['text_muted']}">Consulted across all stages</text>
+  <!-- Research Component: Self-contained shared corpus -->
+  <g transform="translate(710, 160)">
+    <rect width="290" height="120" rx="8" fill="{t['bg_card']}" stroke="{t['blue_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <circle cx="20" cy="26" r="5" fill="{t['blue_main']}" />
+    <text x="34" y="30" font-size="14" font-weight="600" fill="{t['text_main']}">research-topic</text>
+    <path d="M 20 44 L 270 44" stroke="{t['border_card']}" stroke-width="1" />
+    <text x="20" y="66" font-size="12.5" font-weight="600" fill="{t['blue_text']}">docs/research/ (Corpus)</text>
+    <text x="20" y="86" font-size="11" fill="{t['text_muted']}">Sourced, verified knowledge base</text>
+    <text x="20" y="103" font-size="11" font-style="italic" fill="{t['text_muted']}">Consulted across all stages</text>
   </g>
 ''')
 
-    # --- SECTION 3: PLANNING & EXECUTION ---
-    svg.append(f'''  <!-- Connector from spec.md down to plan-work -->
-  <path d="M 480 258 L 480 365" fill="none" stroke="{t['line_color']}" stroke-width="2" marker-end="url(#arrow-{theme_name})" />
-  <!-- Connector from deepen-task spec into plan-work -->
-  <path d="M 570 298 C 610 298 610 395 595 395" fill="none" stroke="{t['line_color']}" stroke-width="1.5" stroke-dasharray="3 3" />
+    # =========================================================================
+    # ZONE 3: PLANNING & EXECUTION
+    # =========================================================================
+    svg.append(f'''  <!-- Unobstructed connection paths into plan-work -->
+  <!-- 1. spec.md curves through clear channel into plan-work (landing cleanly at x = 485, away from badge) -->
+  <path d="M 570 234 C 615 234, 615 330, 485 348 L 485 373" fill="none" stroke="{t['line_color']}" stroke-width="1.8" marker-end="url(#arrow-{theme_name})" />
+
+  <!-- 2. Hardened Spec connects directly down into plan-work (landing cleanly at x = 430) -->
+  <path d="M 430 326 L 430 368" fill="none" stroke="{t['line_color']}" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrow-{theme_name})" />
 
   <!-- Planning Box: plan-work -->
-  <g transform="translate(370, 370)">
-    <rect width="225" height="60" rx="8" fill="{t['bg_card']}" stroke="{t['amber_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <circle cx="20" cy="24" r="5" fill="{t['amber_main']}" />
-    <text x="32" y="28" font-size="14" font-weight="600" fill="{t['text_main']}">plan-work</text>
-    <text x="32" y="46" font-size="11.5" fill="{t['text_muted']}">docs/&lt;slug&gt;/[m&lt;N&gt;/]plan.md</text>
-    <rect x="120" y="14" width="92" height="18" rx="9" fill="{t['amber_bg']}" stroke="{t['amber_border']}" stroke-width="1" />
-    <text x="128" y="27" font-size="9.5" font-weight="600" fill="{t['amber_text']}">≤ 8 phases / 40 tasks</text>
+  <g transform="translate(370, 375)">
+    <rect width="235" height="64" rx="8" fill="{t['bg_card']}" stroke="{t['amber_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <circle cx="18" cy="22" r="5" fill="{t['amber_main']}" />
+    <text x="30" y="26" font-size="14" font-weight="600" fill="{t['text_main']}">plan-work</text>
+    <text x="30" y="47" font-size="11.5" fill="{t['text_muted']}">docs/&lt;slug&gt;/[m&lt;N&gt;/]plan.md</text>
+    <rect x="135" y="14" width="90" height="18" rx="9" fill="{t['amber_bg']}" stroke="{t['amber_border']}" stroke-width="1" />
+    <text x="141" y="27" font-size="9" font-weight="600" fill="{t['amber_text']}">≤ 8 phases / 40 tasks</text>
   </g>
 
   <!-- Execution Splitter lines -->
-  <path d="M 430 430 C 430 455 310 455 310 478" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
-  <path d="M 535 430 C 535 455 645 455 645 478" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 425 439 C 425 460 300 460 300 482" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 545 439 C 545 460 610 460 610 482" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
   <!-- Execution Mode 1: execute-plan (inline) -->
-  <g transform="translate(195, 485)">
-    <rect width="230" height="64" rx="8" fill="{t['bg_card']}" stroke="{t['pink_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <circle cx="20" cy="24" r="5" fill="{t['pink_main']}" />
-    <text x="32" y="28" font-size="13.5" font-weight="600" fill="{t['text_main']}">execute-plan</text>
-    <text x="32" y="47" font-size="11" fill="{t['text_muted']}">Inline in main session</text>
-    <rect x="145" y="14" width="72" height="18" rx="9" fill="{t['pink_bg']}" stroke="{t['pink_border']}" stroke-width="1" />
+  <g transform="translate(185, 488)">
+    <rect width="230" height="66" rx="8" fill="{t['bg_card']}" stroke="{t['pink_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <circle cx="18" cy="22" r="5" fill="{t['pink_main']}" />
+    <text x="30" y="26" font-size="13.5" font-weight="600" fill="{t['text_main']}">execute-plan</text>
+    <text x="30" y="48" font-size="11" fill="{t['text_muted']}">Inline in main session</text>
+    <rect x="145" y="14" width="75" height="18" rx="9" fill="{t['pink_bg']}" stroke="{t['pink_border']}" stroke-width="1" />
     <text x="153" y="27" font-size="9.5" font-weight="600" fill="{t['pink_text']}">Main session</text>
   </g>
 
-  <!-- Execution Mode 2: execute-plan-with-subagents -->
-  <g transform="translate(530, 485)">
-    <rect width="235" height="64" rx="8" fill="{t['bg_card']}" stroke="{t['plum_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
-    <circle cx="20" cy="24" r="5" fill="{t['plum_main']}" />
-    <text x="32" y="28" font-size="13" font-weight="600" fill="{t['text_main']}">execute-plan-with-subagents</text>
-    <text x="32" y="47" font-size="11" fill="{t['text_muted']}">Supervisor + phase workers</text>
-    <rect x="145" y="14" width="78" height="18" rx="9" fill="{t['plum_bg']}" stroke="{t['plum_border']}" stroke-width="1" />
-    <text x="153" y="27" font-size="9.5" font-weight="600" fill="{t['plum_main']}">Subagent tier</text>
+  <!-- Execution Mode 2: execute-plan-with-subagents (width 255, badge at x=172 with generous clearance) -->
+  <g transform="translate(480, 488)">
+    <rect width="255" height="66" rx="8" fill="{t['bg_card']}" stroke="{t['plum_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <circle cx="18" cy="22" r="5" fill="{t['plum_main']}" />
+    <text x="30" y="26" font-size="13" font-weight="600" fill="{t['text_main']}">execute-plan-with-subagents</text>
+    <text x="30" y="48" font-size="11" fill="{t['text_muted']}">Supervisor + phase workers</text>
+    <rect x="172" y="38" width="75" height="18" rx="9" fill="{t['plum_bg']}" stroke="{t['plum_border']}" stroke-width="1" />
+    <text x="180" y="51" font-size="9.5" font-weight="600" fill="{t['plum_main']}">Subagents</text>
   </g>
 
   <!-- Join into Verified Milestone -->
-  <path d="M 310 549 C 310 575 440 575 440 595" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
-  <path d="M 645 549 C 645 575 520 575 520 595" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 300 554 C 300 580 440 580 440 604" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+  <path d="M 610 554 C 610 580 520 580 520 604" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
   <!-- Output: Verified Milestone -->
-  <g transform="translate(385, 602)">
+  <g transform="translate(385, 610)">
     <rect width="190" height="48" rx="24" fill="{t['emerald_bg']}" stroke="{t['emerald_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
     <circle cx="22" cy="24" r="6" fill="{t['emerald_main']}" />
     <text x="36" y="29" font-size="13" font-weight="700" fill="{t['emerald_text']}">Verified Milestone</text>
   </g>
 
-  <!-- Loop: Next milestone back to plan-work -->
-  <path d="M 575 626 C 800 626 800 400 605 400" fill="none" stroke="{t['emerald_main']}" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-emerald-{theme_name})" />
-  <text x="808" y="500" font-size="11" font-weight="600" fill="{t['emerald_text']}">next milestone</text>
+  <!-- Loop: Next milestone routed cleanly through wide corridor between 735 and 860 -->
+  <path d="M 575 634 L 795 634 L 795 407 L 610 407" fill="none" stroke="{t['emerald_main']}" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#arrow-emerald-{theme_name})" />
+  <rect x="752" y="510" width="86" height="20" rx="10" fill="{t['emerald_bg']}" stroke="{t['emerald_border']}" stroke-width="1" />
+  <text x="758" y="524" font-size="10" font-weight="600" fill="{t['emerald_text']}">next milestone</text>
 ''')
 
-    # --- SECTION 4: DIAGNOSTICS & ROOT CAUSE (five-whys) ---
-    svg.append(f'''  <!-- Diagnostics: five-whys -->
-  <g transform="translate(820, 560)">
+    # =========================================================================
+    # ZONE 4: DIAGNOSTICS & ROOT CAUSE (five-whys)
+    # =========================================================================
+    svg.append(f'''  <!-- Diagnostics: five-whys (x = 860) -->
+  <g transform="translate(860, 560)">
     <!-- Failure Input Badge -->
-    <rect x="0" y="-36" width="165" height="26" rx="13" fill="{t['badge_bg']}" stroke="{t['badge_border']}" stroke-width="1" />
+    <rect x="0" y="-36" width="160" height="26" rx="13" fill="{t['badge_bg']}" stroke="{t['badge_border']}" stroke-width="1" />
     <text x="14" y="-19" font-size="11" font-weight="600" fill="{t['badge_text']}">Failure / flake / bug</text>
 
     <!-- Arrow from input to five-whys -->
-    <path d="M 82 -10 L 82 8" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
+    <path d="M 80 -10 L 80 8" fill="none" stroke="{t['line_color']}" stroke-width="1.5" marker-end="url(#arrow-{theme_name})" />
 
     <!-- Card: five-whys -->
-    <rect width="165" height="68" rx="8" fill="{t['bg_card']}" stroke="{t['amber_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
+    <rect width="160" height="68" rx="8" fill="{t['bg_card']}" stroke="{t['amber_border']}" stroke-width="1.5" filter="url(#shadow-{theme_name})" />
     <circle cx="20" cy="24" r="5" fill="{t['amber_main']}" />
     <text x="32" y="28" font-size="13.5" font-weight="600" fill="{t['text_main']}">five-whys</text>
     <text x="16" y="47" font-size="11" fill="{t['text_muted']}">Root-cause diagnosis</text>
