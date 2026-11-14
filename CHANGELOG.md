@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.8.1 — 2026-11-14
+
+- Strong-tier workers now run on the main session's own model at high effort, so a worker
+  can never exceed the main session; standard runs a smaller model at medium effort, and
+  effort is always set explicitly.
+- Add Codex and Antigravity rows to the tier table. Codex workers start fresh with
+  `fork_turns: "none"` rather than forking the main session's history; a spawn that can only
+  fork is a blocker.
+- Name the cases where a model cannot be set (hidden Codex spawn fields, Claude Code's forced
+  subagent model) and log the model the worker actually got.
+- Make tier assignment an explicit Phase loop step and define escalation as one replacement
+  worker on strong after the first failed repair round, briefed from the persisted handoff.
+- Record the tier rules, their sources and what remains unverified in `docs/compatibility.md`.
+
 ## 0.8.0 — 2026-11-14
 
 - `execute-plan-with-subagents` now chooses each phase worker's model tier by phase

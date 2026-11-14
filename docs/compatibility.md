@@ -311,3 +311,32 @@ or making git commits during analysis.
 Mechanical checks passed: all nine skills and package metadata, checker regressions,
 the 61 standalone validator fixtures, fourteen execution fixture contracts, six
 diagnostic fixture contracts, Bash syntax and whitespace.
+
+## 0.8.x: worker model tiers
+
+Checked 2026-11-14 on Linux. `execute-plan-with-subagents` assigns each phase worker a
+standard or strong tier (0.8.0); 0.8.1 makes strong the main session's own model at high
+effort, sets effort explicitly on both tiers, adds Codex and Antigravity rows and requires a
+fresh, non-forked worker context.
+
+What the rules rest on:
+
+- **Claude Code** ([sub-agents docs](https://code.claude.com/docs/en/sub-agents), read
+  2026-11-14): the Agent tool's `model` takes an alias only; per-invocation `effort` needs
+  v2.1.292 or later; a subagent on another model does not inherit the session's effort;
+  `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` stops the skill from passing a model.
+- **Codex** ([subagents docs](https://learn.chatgpt.com/docs/agent-configuration/subagents),
+  read 2026-11-14): subagents inherit the parent's model and effort unless a spawn value or
+  `[agents]` default sets them; built-in types include `worker`. Not in the official docs and
+  **unverified here**: under Multi-Agent V2, `spawn_agent` may hide `model`,
+  `reasoning_effort` and `agent_type` (`hide_spawn_agent_metadata`), and omitting
+  `fork_turns` forks the full parent history and rejects overrides
+  ([forum thread](https://community.openai.com/t/codex-cli-can-no-longer-spawn-subagents-with-specific-models-or-reasoning/1386290),
+  [openai/codex#20077](https://github.com/openai/codex/issues/20077)). Enabling the hidden
+  fields is a user-side configuration choice; the skill does not change host settings.
+- **Antigravity**: the row reuses the `invoke_subagent` mapping already used for the scout
+  in 0.2.0; tier selection there is unverified.
+
+Mechanical checks passed: all skills and package metadata, checker regressions, the
+validator fixtures and execution fixture contracts. No harness run exercised tier choice,
+and no Codex or Antigravity session was run for this release.

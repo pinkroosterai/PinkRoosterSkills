@@ -90,7 +90,8 @@ Discover the actual available subagent, result and continuation capabilities. Us
 harness's general-purpose subagent (Claude Code: its Agent tool with general-purpose type);
 other harnesses use their corresponding dispatch tool. Choose each phase worker's model tier
 by the phase's complexity as `references/orchestration.md` describes; an explicit user or
-project model choice always wins. Do not load the older task-delegation guide or apply its
+project model choice always wins. Every worker starts with a fresh context, never a fork of
+the main session's history. Do not load the older task-delegation guide or apply its
 scout/worker tiers, minimum task size or inline fallback.
 
 When no usable subagent tool exists, stop before implementation, explain the missing
@@ -129,7 +130,8 @@ tasks, ordering or later assumptions in the plan before implementation. An outco
 choice goes to the user first; log the exact approval and resulting contract. An unresolved
 or unsupported answer is not settled. When there is nothing to settle, record that without
 invented research. Set phase Status to in progress and plan-wide Status to phase N in progress;
-keep milestone status in step with the plan. Only then start a fresh phase worker with the
+keep milestone status in step with the plan. Assign and log the worker's model tier
+(`references/orchestration.md`, Worker model tier). Only then start a fresh phase worker with the
 whole phase, settled contract, relevant context and explicit implementation boundaries.
 
 **3. Work the whole phase.** The worker implements tasks in order and runs development

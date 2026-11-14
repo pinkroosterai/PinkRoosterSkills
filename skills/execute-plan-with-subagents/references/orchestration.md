@@ -51,31 +51,45 @@ A spawn/result/access failure is a blocker to report, not permission to implemen
 ## Worker model tier
 
 Before each dispatch, the main session assigns the phase a tier from the phase's own text and
-the files it touches. An explicit user or project model choice always wins over this rule.
+the files it touches, then records it. An explicit user or project model choice always wins.
 
 - **Strong** when the phase has any of: irreversible or hard-to-reverse effects (data,
   schema, migration, security, auth); concurrency, ordering or cross-module contracts;
   changes across many files or unfamiliar code; a Settle first outcome that left design
-  latitude; a Done when checkable only by a long or subtle run; or a failed repair round.
+  latitude; or a Done when checkable only by a long or subtle run.
 - **Standard** otherwise: mechanical renames, documentation or configuration edits, and
   well-specified changes in one area.
 
-When in doubt, choose strong; under-tiering costs more than over-tiering. Never start a worker
-on a model above the main session's own.
+When in doubt, choose strong; under-tiering costs more than over-tiering. Strong is the main
+session's own model at high reasoning effort, so no worker ever runs above the main session.
+Standard is a smaller model at medium effort; when the main session already runs the
+harness's mid-size model or a smaller one, standard keeps that model and differs only in
+effort. Always set the effort explicitly: a worker on another model may not inherit it.
 
 | Harness | Standard | Strong |
 |---|---|---|
-| Claude Code | `Agent` with `subagent_type: "general-purpose"` and `model: "sonnet"` | the same with `model: "opus"`, plus `effort: "high"` |
-| Other harnesses | the general-purpose subagent's mid-size model | its most capable model the session allows |
+| Claude Code | `Agent`, `subagent_type: "general-purpose"`, `model: "sonnet"` (omit it when the main session runs Sonnet or Haiku), `effort: "medium"` | the same without `model`, with `effort: "high"` |
+| Codex | `spawn_agent` with `fork_turns: "none"` and `agent_type: "worker"` where offered; a smaller model the session lists and `reasoning_effort: "medium"` | the same without `model`, with `reasoning_effort: "high"` |
+| Antigravity | `invoke_subagent`, type `self`, its mid-size model | the same on the session's model |
+| Other harnesses | the general-purpose subagent's mid-size model, medium effort | the session's model, high effort |
 
-Where the harness cannot set a model per subagent, the worker runs on what it gets; note that
-in the Log and continue.
+A phase worker always starts with a fresh context. In Codex, omitting `fork_turns` can fork
+the main session's whole history into the child and reject model overrides; pass `"none"`
+when the tool offers it. A spawn that can only fork the full history is a spawn failure,
+reported as a blocker.
 
-Record the tier, the deciding signal and the actual model (when the harness shows it) in the
-dispatch Log entry. A replacement worker keeps the recorded tier. A phase whose standard-tier
-worker failed a repair round is re-dispatched once on the strong tier; counters carry over and
-the stop rule below is not reset. Preparation, review, acceptance, plan writes and destructive
-steps stay in the main session at every tier.
+A model or effort may be impossible to set: the dispatch tool lists no such field (Codex
+hides `model` and `reasoning_effort` in some versions), the harness refuses it (Claude Code
+with `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` on), or a user or project default applies. Then the
+worker runs on what it gets, the Log says so and work continues; tiers reduce to whatever
+can still be set.
+
+Record the tier, the deciding signal and the actual model and effort (when the harness shows
+them) in the dispatch Log entry. A replacement worker keeps the recorded tier. A phase gets at
+most one escalation: after its first failed repair round on standard, the main session starts
+a replacement worker on strong, briefed from the persisted handoff as [Recovery](#recovery)
+describes. Counters carry over and the stop rule below is not reset. Preparation, review,
+acceptance, plan writes and destructive steps stay in the main session at every tier.
 
 ## The phase brief
 
