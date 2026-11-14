@@ -88,9 +88,10 @@ the full role from `references/roles/phase-worker.md` into each implementation b
 
 Discover the actual available subagent, result and continuation capabilities. Use the
 harness's general-purpose subagent (Claude Code: its Agent tool with general-purpose type);
-other harnesses use their corresponding dispatch tool. Inherit the model and reasoning
-defaults unless the user or project selects otherwise. Do not load the older task-delegation
-guide or apply its model tiers, minimum task size or inline fallback.
+other harnesses use their corresponding dispatch tool. Choose each phase worker's model tier
+by the phase's complexity as `references/orchestration.md` describes; an explicit user or
+project model choice always wins. Do not load the older task-delegation guide or apply its
+scout/worker tiers, minimum task size or inline fallback.
 
 When no usable subagent tool exists, stop before implementation, explain the missing
 capability and name execute-plan as the inline alternative. This applies to any harness,

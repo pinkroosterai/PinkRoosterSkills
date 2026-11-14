@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.0 — 2026-11-14
+
+- `execute-plan-with-subagents` now chooses each phase worker's model tier by phase
+  complexity instead of inheriting the default model: strong for irreversible, concurrent,
+  cross-module, wide or design-latitude phases, standard otherwise.
+- An explicit user or project model choice still wins; a worker is never started above the
+  main session's model; a phase that fails a repair round on the standard tier escalates once
+  to strong without resetting the stop rule.
+- Record the tier, deciding signal and actual model in the dispatch Log.
+
 ## 0.7.0 — 2026-11-09
 
 - Add `deepen-task`: transform shallow, ambiguous, or incomplete task briefs into rigorous,

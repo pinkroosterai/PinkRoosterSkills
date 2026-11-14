@@ -7,6 +7,7 @@ task-delegation guide used by the planning and shaping skills.
 
 - [Ownership](#ownership)
 - [Capability and context](#capability-and-context)
+- [Worker model tier](#worker-model-tier)
 - [The phase brief](#the-phase-brief)
 - [Main-session preparation](#main-session-preparation)
 - [Progress checkpoints](#progress-checkpoints)
@@ -33,8 +34,8 @@ apply to all other files. Nobody may exceed project rules through a more permiss
 
 Use available general-purpose subagent tools and collect actual returned results.
 For Claude Code, use its Agent tool with general-purpose type; other harnesses use their
-own dispatch mechanism. Model and reasoning settings inherit their defaults unless the
-user or project specifies otherwise. Do not add agent definitions or change host settings.
+own dispatch mechanism. Choose the worker's model tier as [Worker model tier](#worker-model-tier)
+says. Do not add agent definitions or change host settings.
 
 Start a fresh implementation context for each phase. Reuse it within the phase when the
 harness supports continuation; otherwise replace it from the persisted handoff. Preparation,
@@ -46,6 +47,35 @@ No nested delegation. No concurrent phase implementations. Only one implementati
 slot is needed. No live progress tool means task-boundary
 returns; no continuation means an explicitly briefed replacement, never inline implementation.
 A spawn/result/access failure is a blocker to report, not permission to implement inline.
+
+## Worker model tier
+
+Before each dispatch, the main session assigns the phase a tier from the phase's own text and
+the files it touches. An explicit user or project model choice always wins over this rule.
+
+- **Strong** when the phase has any of: irreversible or hard-to-reverse effects (data,
+  schema, migration, security, auth); concurrency, ordering or cross-module contracts;
+  changes across many files or unfamiliar code; a Settle first outcome that left design
+  latitude; a Done when checkable only by a long or subtle run; or a failed repair round.
+- **Standard** otherwise: mechanical renames, documentation or configuration edits, and
+  well-specified changes in one area.
+
+When in doubt, choose strong; under-tiering costs more than over-tiering. Never start a worker
+on a model above the main session's own.
+
+| Harness | Standard | Strong |
+|---|---|---|
+| Claude Code | `Agent` with `subagent_type: "general-purpose"` and `model: "sonnet"` | the same with `model: "opus"`, plus `effort: "high"` |
+| Other harnesses | the general-purpose subagent's mid-size model | its most capable model the session allows |
+
+Where the harness cannot set a model per subagent, the worker runs on what it gets; note that
+in the Log and continue.
+
+Record the tier, the deciding signal and the actual model (when the harness shows it) in the
+dispatch Log entry. A replacement worker keeps the recorded tier. A phase whose standard-tier
+worker failed a repair round is re-dispatched once on the strong tier; counters carry over and
+the stop rule below is not reset. Preparation, review, acceptance, plan writes and destructive
+steps stay in the main session at every tier.
 
 ## The phase brief
 
