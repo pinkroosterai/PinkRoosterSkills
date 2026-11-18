@@ -4,7 +4,7 @@
 
 # PinkRoosterSkills
 
-**Nine portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, keep AGENTS.md lean, diagnose root causes, and deepen tasks.**
+**Ten portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, keep AGENTS.md lean, diagnose root causes, deepen tasks, and advise next steps.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent-Skills-ec4899)](https://agentskills.io/specification)
@@ -48,6 +48,7 @@ executor also requires working subagent tools. User instructions and project rul
 | An open technical or architectural question needing persistent investigation | [research-topic](skills/research-topic/SKILL.md) | Sourced knowledge corpus in `docs/research/` |
 | A test failure, build breakage, or mysterious regression in CI or local code | [five-whys](skills/five-whys/SKILL.md) | Evidence-backed root cause diagnosis and proposed fix |
 | Setting up or cleaning agent instruction files under a strict 200-line budget | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | High-signal, unbloated `AGENTS.md` and `CLAUDE.md` shim |
+| Wondering what to work on next, returning to a codebase, or needing triage | [advise-next](skills/advise-next/SKILL.md) | Prioritized 1–5 next steps and skill recommendations |
 
 ## Install
 
@@ -67,7 +68,7 @@ skills and multiple harnesses; it needs Node.js 22.20 or later. The skills have 
 or build step. Install using one method per harness to avoid duplicate skills.
 
 **Verify before starting:** ask your agent, “List the installed PinkRooster skills and read
-the plan-work skill. Do not create files or run its workflow.” Expect all nine skills and a
+the plan-work skill. Do not create files or run its workflow.” Expect all ten skills and a
 summary of plan-work. This checks discovery and loading, not a complete workflow.
 
 Follow the [installation guide](docs/installation.md) for scope, local checkouts, prerequisites,
@@ -102,6 +103,7 @@ ambiguous. A handoff names the next step without automatically running it.
 | [research-topic](skills/research-topic/SKILL.md) | Agree a research scope and preserve sourced findings by topic | `docs/research/README.md` and linked topic files |
 | [five-whys](skills/five-whys/SKILL.md) | Investigate software failures with evidence-backed causal analysis and propose an unapplied fix | Diagnostic report in conversation |
 | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
+| [advise-next](skills/advise-next/SKILL.md) | Diagnose project state and lifecycle stage, advising 1 to 5 prioritized next steps | Advisory report in conversation |
 
 ---
 
@@ -223,6 +225,18 @@ Keep project agent instructions sharp, accurate, and within a strict 200-line bu
   5. *Autonomous Monitoring:* Automatically suggests an update mid-session when you correct a convention or a command changes.
 - **Artifacts & Handoffs:** Produces or updates `AGENTS.md` and `CLAUDE.md`. Governs all future agent interactions across the repository.
 - **Invocation:** `/maintain-agents-md create`, `/maintain-agents-md audit`, or `/maintain-agents-md update the test command is now pnpm test`
+
+### Advise next steps
+
+Diagnose the current state and lifecycle stage of a project and advise 1 to 5 prioritized next steps.
+
+- **Why use it:** Prevents wandering, decision fatigue, or premature coding in unfamiliar or returning repositories. `advise-next` scans git status, documentation artifacts (`docs/`), agent instructions (`AGENTS.md`), and build manifests without mutating files. It maps current realities to a strict priority hierarchy (Tiers 0–4: Stabilize, In-Flight, Advance, Maintain, Explore) and produces a clean, noise-free list of 1 to 5 actionable next steps with concrete commands.
+- **Workflow:**
+  1. *Discover State:* Inspects git status/log, lifecycle artifacts (idea backlogs, specs, execution plans), instruction files, and manifests read-only.
+  2. *Synthesize Priority:* Maps signals to the priority hierarchy, ensuring in-flight plans or blockers are addressed before opening new feature tracks.
+  3. *Format & Report:* Presents a concise report with 1 to 5 ranked recommendations, observable rationale, and exact commands, then stops cleanly.
+- **Artifacts & Handoffs:** Delivers a structured advisory report in conversation (strictly read-only; no files created or modified). Hand off directly to the recommended command (e.g. `/execute-plan`, `/plan-work`, `/shape-spec`, `/maintain-agents-md`).
+- **Invocation:** `/advise-next` or `/advise-next <optional-path>`
 
 ---
 

@@ -340,3 +340,19 @@ What the rules rest on:
 Mechanical checks passed: all skills and package metadata, checker regressions, the
 validator fixtures and execution fixture contracts. No harness run exercised tier choice,
 and no Codex or Antigravity session was run for this release.
+
+## advise-next advisory skill
+
+Checked 2026-11-18 on Linux. Adds the `advise-next` triage skill and its bundled references
+(`references/triage-rules.md` and `references/output-format.md`). The package now distributes
+ten portable skills; package count and catalogs are updated. Advise-next has no runtime
+dependencies and does not modify codebase files, create report files, or launch commands.
+
+The skill inspects git status, documentation artifacts (`docs/`), agent instructions (`AGENTS.md`),
+and manifests read-only, maps signals to a strict 5-tier priority hierarchy (Tiers 0–4:
+Stabilize, In-Flight, Advance, Maintain, Explore), and delivers 1 to 5 prioritized next steps
+with concrete command invocations.
+
+Mechanical checks passed: all ten skills and package metadata, checker regressions (including
+rejection of missing advise-next), the 61 standalone validator fixtures, 14 execution fixture
+contracts, 6 diagnostic fixture contracts, and 5 advise-next fixture contracts.

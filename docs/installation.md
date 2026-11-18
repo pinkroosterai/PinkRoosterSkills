@@ -1,6 +1,6 @@
 # Installation
 
-Choose your harness below. All methods load the same nine skills and their bundled
+Choose your harness below. All methods load the same ten skills and their bundled
 references. Your harness supplies file access, shell commands and questions; research also
 needs web or documentation tools. Use execute-plan for inline execution.
 execute-plan-with-subagents additionally requires working subagent tools and returned results;
@@ -135,7 +135,7 @@ choose skills, agents and installation method interactively:
 
 ```bash
 npx skills add pinkroosterai/PinkRoosterSkills
-# All nine skills for a specific harness:
+# All ten skills for a specific harness:
 npx skills add pinkroosterai/PinkRoosterSkills -a cursor --skill '*'
 # Other harness identifiers:
 npx skills add pinkroosterai/PinkRoosterSkills -a gemini-cli --skill '*'
@@ -222,7 +222,7 @@ Start a new session in your project. Ask:
 > or run its workflow.
 
 Expect `explore-ideas`, `shape-spec`, `plan-work`, `execute-plan`,
-`execute-plan-with-subagents`, `research-topic`, `maintain-agents-md`, `five-whys` and `deepen-task`,
+`execute-plan-with-subagents`, `research-topic`, `maintain-agents-md`, `five-whys`, `deepen-task` and `advise-next`,
 and a summary showing that plan-work was read. If you installed only one skill, expect
 only that skill. Check that referenced files can be opened from the installed bundle.
 Discovery and loading do not establish that every workflow works in that harness.
@@ -258,6 +258,14 @@ Deepen-task analyzes local workspace context, external standards, domain-specifi
 primary evidence and non-fabricated verification mechanisms, then delivers key findings and
 a rewritten specification in conversation. It offers to save the deepened task if a file
 path was provided.
+
+For an advisory triage session, ask:
+
+> Use advise-next to analyze the current state of this project and suggest next steps.
+
+Advise-next inspects git working tree status, lifecycle artifacts (`docs/`), instructions,
+and manifests read-only, then delivers 1 to 5 prioritized next steps in conversation without
+mutating code or launching commands.
 
 ## Troubleshooting
 

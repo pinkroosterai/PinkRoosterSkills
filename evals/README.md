@@ -109,3 +109,19 @@ discovery/routing accuracy. No additional paid sessions or subagents are require
 The prompt/case/trace-grader files also follow the existing native eval format, but running
 them through `claude plugin eval` incurs usage and is outside the no-paid verification
 route above. Do not run the paid suite merely because these cases have been added.
+
+## Advise-next triage fixtures
+
+Five cases tagged `advise-next` cover canonical project lifecycle states: greenfield/empty
+directories, in-flight execution plans, buildable specifications ready for planning,
+uncommitted working tree changes, and clean completed projects. Their
+[shared scaffold](advise-next-fixtures/common.sh) creates disposable projects with
+immutable state verification.
+
+```bash
+bash scripts/test-advise-next-fixtures.sh
+```
+
+This verifies fixture setup, expected state preservation, and rejection of unwanted file
+creation, tracked source mutations, and git index staging. Advise-next runs are strictly
+read-only and must never produce report files or stage changes in the target project.

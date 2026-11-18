@@ -50,6 +50,9 @@ mv "$scratch/five-whys.saved" skills/five-whys
 mv skills/deepen-task "$scratch/deepen-task.saved"
 expect_failure 'missing packaged deepen-task skill'
 mv "$scratch/deepen-task.saved" skills/deepen-task
+mv skills/advise-next "$scratch/advise-next.saved"
+expect_failure 'missing packaged advise-next skill'
+mv "$scratch/advise-next.saved" skills/advise-next
 restore() { cp "$repo/skills/plan-work/SKILL.md" skills/plan-work/SKILL.md; }
 
 sed -i 's/^name: plan-work$/name: plan-works/' skills/plan-work/SKILL.md

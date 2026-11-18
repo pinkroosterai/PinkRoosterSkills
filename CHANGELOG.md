@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.0 — 2026-11-18
+
+- Add `advise-next`: inspect project state, evaluate lifecycle health, and advise 1 to 5
+  prioritized next steps referencing relevant skills and direct commands.
+- Implement a 5-tier priority hierarchy (Tiers 0–4: Stabilize, In-Flight, Advance, Maintain,
+  Explore) to sequence immediate blockers and active plans ahead of new initiatives.
+- Enforce strictly read-only execution: static inspection of git status, lifecycle artifacts
+  (`docs/`), agent instructions (`AGENTS.md`) and manifests without mutating files, running
+  tests, or launching interactive prompts.
+- Bundle triage rules and output formatting contracts, integrate the tenth skill across native
+  package catalogs, update installation guidance, and add offline evaluation fixture checks.
+
 ## 0.8.1 — 2026-11-14
 
 - Strong-tier workers now run on the main session's own model at high effort, so a worker
