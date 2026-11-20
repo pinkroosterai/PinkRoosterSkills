@@ -33,8 +33,9 @@ Question batches must fit the actual tool limits. For asynchronous tools, wait f
 user's answer before dependent work; tool completion and elapsed time are not answers.
 
 Paths: `docs/` in this skill means the project's documentation root — `docs/` unless the
-project's instructions or layout name another. The research corpus is `<docs root>/research/`
-and the idea backlog `<docs root>/ideas/`, so neither `research` nor `ideas` is ever a slug.
+project's instructions or layout name another. The research corpus is `<docs root>/research/`,
+the idea backlog `<docs root>/ideas/` and the review documents `<docs root>/reviews/`, so
+none of `research`, `ideas` or `reviews` is ever a slug.
 A `docs/<slug>/` folder belongs to this skill set only when it holds `spec.md`, `plan.md`,
 `plan-m<N>.md`, `research.md` or milestone folders `m<N>/`; otherwise choose a distinguishing slug.
 

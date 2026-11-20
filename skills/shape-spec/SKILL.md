@@ -59,8 +59,9 @@ Question batches must fit the actual tool limits. For asynchronous tools, wait f
 user's answer before dependent work; tool completion and elapsed time are not answers.
 
 Paths: `docs/` in this skill means the project's documentation root — `docs/` unless the
-project's instructions or layout name another. The research corpus is `<docs root>/research/`
-and the idea backlog `<docs root>/ideas/`, so neither `research` nor `ideas` is ever a slug.
+project's instructions or layout name another. The research corpus is `<docs root>/research/`,
+the idea backlog `<docs root>/ideas/` and the review documents `<docs root>/reviews/`, so
+none of `research`, `ideas` or `reviews` is ever a slug.
 A `docs/<slug>/` folder belongs to this skill set only when it holds `spec.md`, `plan.md`,
 `plan-m<N>.md`, `research.md` or milestone folders `m<N>/`; otherwise choose a distinguishing slug.
 
@@ -161,7 +162,7 @@ idea and put the `From` line in the spec header. An idea whose status is not `ca
 testing and running rules (what the agent may not run, install or touch). They decide which
 success criteria are `[agent]` and which `[user]`.
 
-*A new concept* — derive a kebab-case slug (never `research` or `ideas`, which the set reserves),
+*A new concept* — derive a kebab-case slug (never `research`, `ideas` or `reviews`, which the set reserves),
 restate the concept in one sentence in the user's own words, and say what you took it to mean.
 That restatement is not manners: the ambiguity interviews are worst at catching is the one
 where both sides believe they agree.

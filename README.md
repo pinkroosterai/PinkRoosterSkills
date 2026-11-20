@@ -4,7 +4,7 @@
 
 # PinkRoosterSkills
 
-**Ten portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, keep AGENTS.md lean, diagnose root causes, deepen tasks, and advise next steps.**
+**Eleven portable agent skills: explore ideas, shape a spec, plan the work, execute inline or with phase workers, build a research corpus, keep AGENTS.md lean, diagnose root causes, deepen tasks, advise next steps, and review a codebase.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Agent Skills](https://img.shields.io/badge/Agent-Skills-ec4899)](https://agentskills.io/specification)
@@ -49,6 +49,7 @@ executor also requires working subagent tools. User instructions and project rul
 | A test failure, build breakage, or mysterious regression in CI or local code | [five-whys](skills/five-whys/SKILL.md) | Evidence-backed root cause diagnosis and proposed fix |
 | Setting up or cleaning agent instruction files under a strict 200-line budget | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | High-signal, unbloated `AGENTS.md` and `CLAUDE.md` shim |
 | Wondering what to work on next, returning to a codebase, or needing triage | [advise-next](skills/advise-next/SKILL.md) | Prioritized 1–5 next steps and skill recommendations |
+| A codebase or module whose design and code quality you want reviewed, not a diff | [review-code](skills/review-code/SKILL.md) | Validated review document in `docs/reviews/` |
 
 ## Install
 
@@ -68,7 +69,7 @@ skills and multiple harnesses; it needs Node.js 22.20 or later. The skills have 
 or build step. Install using one method per harness to avoid duplicate skills.
 
 **Verify before starting:** ask your agent, “List the installed PinkRooster skills and read
-the plan-work skill. Do not create files or run its workflow.” Expect all ten skills and a
+the plan-work skill. Do not create files or run its workflow.” Expect all eleven skills and a
 summary of plan-work. This checks discovery and loading, not a complete workflow.
 
 Follow the [installation guide](docs/installation.md) for scope, local checkouts, prerequisites,
@@ -104,6 +105,7 @@ ambiguous. A handoff names the next step without automatically running it.
 | [five-whys](skills/five-whys/SKILL.md) | Investigate software failures with evidence-backed causal analysis and propose an unapplied fix | Diagnostic report in conversation |
 | [maintain-agents-md](skills/maintain-agents-md/SKILL.md) | Create or update AGENTS.md (plus a CLAUDE.md shim) by exploring and interviewing, kept within 200 lines and pruned of stale lines | `AGENTS.md`, `CLAUDE.md` |
 | [advise-next](skills/advise-next/SKILL.md) | Diagnose project state and lifecycle stage, advising 1 to 5 prioritized next steps | Advisory report in conversation |
+| [review-code](skills/review-code/SKILL.md) | Review a codebase or path from several angles against bundled references, validating every finding before it is reported | `docs/reviews/<date>-<scope>.md` |
 
 ---
 
@@ -238,6 +240,20 @@ Diagnose the current state and lifecycle stage of a project and advise 1 to 5 pr
 - **Artifacts & Handoffs:** Delivers a structured advisory report in conversation (strictly read-only; no files created or modified). Hand off directly to the recommended command (e.g. `/execute-plan`, `/plan-work`, `/shape-spec`, `/maintain-agents-md`).
 - **Invocation:** `/advise-next` or `/advise-next <optional-path>`
 
+### Review a codebase
+
+Review a whole codebase, or a path within it, from several angles and keep only the findings that survive validation.
+
+- **Why use it:** Unfiltered AI review output buries real problems among false alarms, and standards fetched online vary from run to run. `review-code` runs one reviewer per angle against bundled references and the project's own rules, then has every candidate re-checked against the code by a validator that did not raise it. Rejected and uncertain candidates stay visible, so the filtering can be audited. It is read-only: fixes are proposed, never applied.
+- **Workflow:**
+  1. *Frame:* Sets the target and angles: SOLID, DRY, architecture and layering, and code quality always; security, testing or performance on request. Project instructions override the bundled references.
+  2. *Inventory & Partition:* Lists files in scope without model calls, skips generated, vendored and binary files, detects languages and groups files by module into reviewer manifests. A scope too large for the reviewer cap is narrowed with you first.
+  3. *Measure:* Runs existing analyzers and linters only when their side effects are known and local; nothing is estimated.
+  4. *Fan Out & Validate:* Reviewers return candidate findings with evidence; validators re-read the cited code and judge each one valid, rejected or uncertain, then duplicates are merged.
+  5. *Write & Report:* Writes one review document and reports the headline findings, then stops.
+- **Artifacts & Handoffs:** Produces `docs/reviews/<date>-<scope>.md` (never overwriting an earlier review), committed alone when the path is tracked. Hand off to `/plan-work` to plan the fixes, or apply a few directly.
+- **Invocation:** `/review-code`, `/review-code src/billing`, or `/review-code src/api security`
+
 ---
 
 ## Persistence and delegation
@@ -294,7 +310,8 @@ claude plugin eval . --trust-plugin --max-cost-usd 5
 ```
 
 Artifacts land in `docs/` unless your project's instructions or layout name another
-documentation root; `research` is reserved for the corpus and never used as a slug.
+documentation root; `research`, `ideas` and `reviews` are reserved for the corpus, the idea
+backlog and the review documents, and never used as slugs.
 
 Skills live in `skills/<name>/SKILL.md`, supporting material in `references/`, and behavioral
 cases in `evals/`. See [AGENTS.md](AGENTS.md) for maintenance rules and

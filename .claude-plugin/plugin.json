@@ -1,7 +1,7 @@
 {
   "name": "pinkrooster-skills",
-  "description": "Portable skills to explore, shape, plan, execute, research, diagnose, deepen and advise: explore-ideas, shape-spec, plan-work, execute-plan (inline), execute-plan-with-subagents, research-topic, maintain-agents-md, five-whys, deepen-task and advise-next.",
-  "version": "0.9.0",
+  "description": "Portable skills to explore, shape, plan, execute, research, diagnose, deepen, advise and review: explore-ideas, shape-spec, plan-work, execute-plan (inline), execute-plan-with-subagents, research-topic, maintain-agents-md, five-whys, deepen-task, advise-next and review-code.",
+  "version": "0.10.0",
   "author": {
     "name": "pinkroosterai"
   },

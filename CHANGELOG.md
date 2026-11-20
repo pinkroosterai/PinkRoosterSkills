@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.10.0 — 2026-11-20
+
+- Add `review-code`: a read-only, multi-angle code review that writes one review document
+  under `docs/reviews/`. Core angles always run and optional angles are chosen with the
+  developer; every candidate finding is checked by an independent validator that re-reads the
+  cited code before it reaches the document.
+- Bundle language references for C#, Python and TypeScript/JavaScript and a general
+  checklist; files in other languages are reviewed against the checklist alone and marked as
+  reduced-standards coverage.
+- Review changes nothing in the project except the review document; findings are reported,
+  never fixed.
+- Reserve `reviews` in the shared session and persistence rules of every skill, and add the
+  skill to the Claude, Codex, Antigravity and Pi packages and catalogs.
+- The manifest limit (about 8,000 tokens of source per reviewer and validator) and the
+  reviewer rule are provisional: they come from a published chunk size, not from a run
+  measured against the models in use. Behavioural fixtures and observed runs are not part of
+  this release.
+
 ## 0.9.0 — 2026-11-18
 
 - Add `advise-next`: inspect project state, evaluate lifecycle health, and advise 1 to 5

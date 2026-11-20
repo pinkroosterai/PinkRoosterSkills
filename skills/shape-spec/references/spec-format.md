@@ -23,7 +23,8 @@ is shared ground rather than private.
 A concept whose slug matches an existing folder holding `spec.md` resumes that spec. When it
 is genuinely a different thing under a similar name — or the folder holds the project's own
 documents and no `spec.md`, `plan.md` or `research.md` — say so and pick a distinguishing slug
-rather than writing into it. `research` is never a slug: `docs/research/` is the corpus.
+rather than writing into it. `research`, `ideas` and `reviews` are never slugs: `docs/research/`
+is the corpus, `docs/ideas/` the idea backlog and `docs/reviews/` the review documents.
 
 ## The template
 
