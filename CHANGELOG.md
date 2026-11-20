@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.11.0 — 2026-11-20
+
+- `review-code` takes an optional depth as its first argument: `low`, `medium` (the default)
+  or `high`. At `low` (about 64,000 tokens per manifest) and `medium` (about 32,000) one
+  reviewer covers every selected angle over its manifest; `high` keeps one reviewer per angle
+  over 8,000-token manifests. A mid-sized codebase that needed dozens of reviewers now needs a
+  handful at the default depth.
+- Every depth keeps full coverage, independent validation of every candidate and the model
+  tiers. The one cost question now shows expected validators too and offers a lower depth
+  beside a narrower path.
+- Reviewers may cover several angles: the role and brief name each candidate's angles, and the
+  review document records the depth the run used. All limits remain provisional.
+
 ## 0.10.0 — 2026-11-20
 
 - Add `review-code`: a read-only, multi-angle code review that writes one review document

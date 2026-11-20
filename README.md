@@ -244,15 +244,15 @@ Diagnose the current state and lifecycle stage of a project and advise 1 to 5 pr
 
 Review a whole codebase, or a path within it, from several angles and keep only the findings that survive validation.
 
-- **Why use it:** Unfiltered AI review output buries real problems among false alarms, and standards fetched online vary from run to run. `review-code` runs one reviewer per angle against bundled references and the project's own rules, then has every candidate re-checked against the code by a validator that did not raise it. Rejected and uncertain candidates stay visible, so the filtering can be audited. It is read-only: fixes are proposed, never applied.
+- **Why use it:** Unfiltered AI review output buries real problems among false alarms, and standards fetched online vary from run to run. `review-code` runs reviewers across those angles at a depth you choose (`low`, `medium` by default, or `high` for one reviewer per angle) against bundled references and the project's own rules, then has every candidate re-checked against the code by a validator that did not raise it. Rejected and uncertain candidates stay visible, so the filtering can be audited. It is read-only: fixes are proposed, never applied.
 - **Workflow:**
   1. *Frame:* Sets the target and angles: SOLID, DRY, architecture and layering, and code quality always; security, testing or performance on request. Project instructions override the bundled references.
-  2. *Inventory & Partition:* Lists files in scope without model calls, skips generated, vendored and binary files, detects languages and groups files by module into reviewer manifests. A scope too large for the reviewer cap is narrowed with you first.
+  2. *Inventory & Partition:* Lists files in scope without model calls, skips generated, vendored and binary files, detects languages and groups files by module into reviewer manifests sized by the depth. A scope that needs more than one manifest is confirmed with you first, with the reviewer count, a lower depth or a narrower path on offer.
   3. *Measure:* Runs existing analyzers and linters only when their side effects are known and local; nothing is estimated.
   4. *Fan Out & Validate:* Reviewers return candidate findings with evidence; validators re-read the cited code and judge each one valid, rejected or uncertain, then duplicates are merged.
   5. *Write & Report:* Writes one review document and reports the headline findings, then stops.
 - **Artifacts & Handoffs:** Produces `docs/reviews/<date>-<scope>.md` (never overwriting an earlier review), committed alone when the path is tracked. Hand off to `/plan-work` to plan the fixes, or apply a few directly.
-- **Invocation:** `/review-code`, `/review-code src/billing`, or `/review-code src/api security`
+- **Invocation:** `/review-code`, `/review-code src/billing`, `/review-code high src/api security`, or `/review-code low`
 
 ---
 

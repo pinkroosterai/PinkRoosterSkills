@@ -9,7 +9,7 @@ overlap, and their candidates into validated findings.
 - [Skip rules](#skip-rules)
 - [Language detection](#language-detection)
 - [Module groups and manifests](#module-groups-and-manifests)
-- [Manifest limit and reviewer cap](#manifest-limit-and-reviewer-cap)
+- [Review depth and manifest limit](#review-depth-and-manifest-limit)
 - [Model tier and starting a subagent](#model-tier-and-starting-a-subagent)
 - [The reviewer brief](#the-reviewer-brief)
 - [Launching and waiting](#launching-and-waiting)
@@ -121,34 +121,52 @@ line per file with its path relative to the root, its language, its line count, 
 `general checklist only` mark where no language reference applies. A reviewer reads only
 its manifest, plus whatever it needs to follow a call or a type out of it.
 
-An angle whose in-scope files fit one manifest gets one reviewer. An angle whose files exceed
-it gets one reviewer per module group (or per set of small groups that together fit), each
-with its own manifest. All angles use the same grouping, so a module's reviewers across
-angles see the same files.
+A scope whose in-scope files fit one manifest at the chosen depth has one manifest. A larger
+scope gets one manifest per module group (or per set of small groups that together fit). Each
+reviewer works one manifest: across every selected angle at `low` and `medium`, for one
+angle at `high`. All angles use the same manifests, so a module's reviewers across angles
+see the same files.
 
-## Manifest limit and reviewer cap
+## Review depth and manifest limit
 
-> **Provisional.** The figures below replace a planned measurement against the models in use,
-> which this release skipped. The limit comes from a published chunk size, not from a
-> measured run; a later measured run should replace them.
+> **Provisional.** The limits below are estimates, not measurements against the models in use.
+> The `high` limit is the chunk size reported by Basira, "Chunking strategies for AI code
+> review on large repos" (DEV), see `research.md`; the `low` and `medium` limits are scaled
+> from it for current model contexts. A later measured run should replace them.
 
-- **Manifest limit:** about 8,000 tokens of source per reviewer and per validator. This is
-  the chunk size reported by Basira, "Chunking strategies for AI code review on large repos"
-  (DEV), see `research.md`. It is conservative for current model contexts.
+The depth is the optional first word of the invocation — `low`, `medium` or `high` —
+and `medium` when none is given. It sets the manifest limit and how many angles one reviewer
+covers, and nothing else:
+
+| Depth | Manifest limit, per reviewer and per validator | Angles per reviewer |
+|---|---|---|
+| `low` | about 64,000 tokens of source | every selected angle |
+| `medium` (default) | about 32,000 tokens of source | every selected angle |
+| `high` | about 8,000 tokens of source | one |
+
+At `low` and `medium`, one reviewer works one manifest across every selected angle, so the
+reviewer count is the manifest count. At `high`, every selected angle gets its own reviewer
+per manifest, so the count is manifests times angles: the most focused review and the most
+subagents. No depth changes what a review guarantees: every in-scope file is assigned to a
+reviewer or listed as not covered, every candidate is judged by a validator that did not raise
+it, the model tiers are the same, and the question below is asked under the same rule.
+
 - **Size estimate:** the inventory records each file's byte size beside its line count.
   Estimate tokens as bytes divided by 4, a rough rule of thumb, not a measurement. A manifest
   is full when its files' estimates sum to the limit. A single file larger than the limit gets
   a manifest of its own; never split a file.
-- **Reviewer cap:** none fixed. A run that fits one reviewer per selected angle starts
-  without asking. Validators are never counted: their number follows from the candidates,
-  which do not exist before the fan-out.
+- **Reviewer cap:** none fixed. A scope that fits one manifest at the chosen depth starts
+  without asking.
 
-Count the reviewers the partition needs: for each selected angle, the number of manifests
-its files fill. When any selected angle needs more than one reviewer, stop before starting
-any reviewer. Ask one question round showing files in scope, estimated tokens, reviewers
-needed per angle and in total, and offer two options: run the full count, or a narrower
-target drawn from the module groups, the largest first. Never sample, drop a module or
-shrink the angle set on your own; the developer chooses.
+Count what the partition needs: the manifests at the chosen depth, the reviewers they call
+for, and the validators to expect — at most about one per manifest, since validators are
+sized by the files the candidates cite under the same limit; the real number follows from the
+candidates. When the scope fills more than one manifest, stop before starting any reviewer.
+Ask one question round showing the depth, files in scope, estimated tokens, manifests,
+reviewers and expected validators, and offer: run the full count; run at a lower depth, with
+its counts, when one would need fewer reviewers; or a narrower target drawn from the module
+groups, the largest first. Never sample, drop a module, lower the depth or shrink the angle
+set on your own; the developer chooses.
 
 The count decides whether to ask, not how thoroughly an angle runs. Within an approved run,
 every selected angle runs to completion over its whole manifest, no angle is cut short to
@@ -186,22 +204,24 @@ shows them.
 Everything the reviewer may use is in the brief or named in it; it sees nothing else.
 
 ```
-**Angle:** <angle name, verbatim from references/angles.md>
-**Group:** <module group name, or "whole scope"> (<k> of <n> for this angle)
+**Angles:** <at high depth, one angle; at low and medium, every selected angle — names
+verbatim from references/angles.md>
+**Group:** <module group name, or "whole scope"> (<k> of <n> manifests)
 
 **Project root:** <absolute path>
 **Versions:** <languages and framework versions the manifests declare>
 
-**Boundary:** Review <angle> only. <the other selected angles> belong to other reviewers
-working in parallel; note anything for them under "Out of angle" in one line and move on.
+**Boundary:** Review <your angles> only. <any other angle, selected or not> belongs to
+other reviewers or was not requested; note anything for it under "Out of angle" in one line
+and move on.
 
-**Angle checklist:** <the angle's section of references/angles.md, pasted>
-**General checklist:** <the "Every angle" section and this angle's section of
+**Angle checklists:** <each of your angles' sections of references/angles.md, pasted>
+**General checklist:** <the "Every angle" section and each of your angles' sections of
 references/general-checklist.md, pasted>
 **Language references:** <absolute path of each reference for languages in the manifest,
-and the section names for this angle — read them before reviewing>
+and the section names for your angles — read them before reviewing>
 
-**Project rules:** <conventions from the instruction files that bear on this angle, quoted,
+**Project rules:** <conventions from the instruction files that bear on your angles, quoted,
 each with its source file — these override the references>
 **Tool output:** <diagnostics and metrics from step 3 for files in this manifest, with the
 tool name; or "none ran">
@@ -217,8 +237,8 @@ side and confirm no two cover the same angle over the same files.
 ## Launching and waiting
 
 Launch the briefs through the session's concurrency mechanism within its available slots,
-queueing the rest. Tell the developer in the same message how many reviewers start, across
-which angles and groups. Wait for every reviewer before validating; never start validation on
+queueing the rest. Tell the developer in the same message the depth and how many reviewers
+start, across which angles and groups. Wait for every reviewer before validating; never start validation on
 the first replies to arrive.
 
 Replies stay compact to protect the main session's context: the candidate findings in the
@@ -293,5 +313,5 @@ Before writing the document, confirm every valid finding's cited file and line e
 Work every reviewer brief yourself, one at a time, with the same manifests, producing the
 same candidate shape. Only after every angle is finished, run the validation pass described
 under Delegation in `SKILL.md`. The partition, the manifest limit and the reviewer rule still
-apply: a sequential run is not a reason to read past the limit or skip the narrowing
-question.
+apply at the chosen depth: a sequential run is not a reason to read past the limit or skip
+the narrowing question.

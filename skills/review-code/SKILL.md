@@ -1,7 +1,7 @@
 ---
 name: review-code
-description: Reviews a whole codebase or a named path from several angles (SOLID, DRY and duplication, architecture and layering, code quality, plus security, testing or performance on request) against bundled per-language references, validates every candidate finding against the code, and writes one review document under docs/reviews/ with the valid findings, proposed fixes, severity, confidence and run metrics. Use when the user wants a design or code-quality review of a codebase, a module or a folder. Not for reviewing a diff or pull request (the harness's own diff review), diagnosing a specific failure (five-whys), or applying fixes.
-argument-hint: "[path to review, optional angles such as security, testing or performance]"
+description: Reviews a whole codebase or a named path, at low, medium (default) or high depth, from several angles (SOLID, DRY and duplication, architecture and layering, code quality, plus security, testing or performance on request) against bundled per-language references, validates every candidate finding against the code, and writes one review document under docs/reviews/ with the valid findings, proposed fixes, severity, confidence and run metrics. Use when the user wants a design or code-quality review of a codebase, a module or a folder. Not for reviewing a diff or pull request (the harness's own diff review), diagnosing a specific failure (five-whys), or applying fixes.
+argument-hint: "[low|medium|high] [path to review] [optional angles such as security, testing or performance]"
 license: MIT
 compatibility: Needs read access to the codebase and the host's inspection tools, and a writable docs root; git for committing the review document. A subagent tool is optional (without one the angles run in turn). Existing project analyzers and linters run only when their side effects are known and local. No web access needed.
 ---
@@ -15,9 +15,14 @@ their evidence, proposed fixes and metrics, plus what was rejected and what was 
 A finding nobody checked against the code is a rumour; the validation step is the point of
 this skill, not a polish pass.
 
-Invocation: `/review-code`, `/review-code src/billing`, `/review-code src/api security`, or
-ask for a code review of the codebase in plain language. Everything after the name is the
-target path and any optional angles; with nothing, the target is the whole codebase.
+Invocation: `/review-code`, `/review-code src/billing`, `/review-code high src/api security`,
+`/review-code low`, or ask for a code review of the codebase in plain language. Everything
+after the name is an optional depth first — `low`, `medium` or `high`, `medium` when none
+is given — then the target path and any optional angles; with no path, the target is the
+whole codebase. A first word that is both a depth and an existing path in the project is
+asked about, not guessed. Depth sets how many reviewers the run starts: `low` and `medium`
+give one reviewer per module manifest covering every angle, `high` one reviewer per angle per
+smaller manifest; validation runs at every depth.
 
 ## Place in the set
 
@@ -87,13 +92,13 @@ definitions. The user invoking this skill is the user asking for those agents.
 
 | Step | Role | Returns |
 |---|---|---|
-| 4 · Fan out — one per angle, or per module group of a split angle | Reviewer, `references/roles/reviewer.md` | Candidate findings in the fixed shape |
+| 4 · Fan out — one per manifest across every angle at `low` and `medium`; one per angle per manifest at `high` | Reviewer, `references/roles/reviewer.md` | Candidate findings in the fixed shape |
 | 5 · Validate — one per module group of cited code | Validator, `references/roles/validator.md` | A verdict and reason per candidate |
 
 Everything else is the main session's: framing, the inventory, tool runs, briefs, merging,
 the review document and the commit. How to start each subagent in each harness, the brief,
-the provisional manifest limit and reviewer rule, and what to do when one fails are in
-`references/dispatch.md`; read it before the first dispatch.
+the review depths with their provisional manifest limits, the reviewer rule, and what to do
+when one fails are in `references/dispatch.md`; read it before the first dispatch.
 
 **Without a subagent tool** (a harness that has none, or a session that withholds it), the
 main session works each reviewer brief itself, one at a time, with the same briefs and
@@ -110,16 +115,16 @@ call to the harness's question tool (Claude Code: `AskUserQuestion`), recommenda
 where the harness has none, or the session withholds it, put the same questions in the
 message, options laid out, and wait.
 
-1. **Frame** — target, angles, project instructions, working-tree state
+1. **Frame** — depth, target, angles, project instructions, working-tree state
 2. **Inventory and partition** — files in scope, languages, module groups, manifests
 3. **Measure what tools can measure** — existing tooling under the boundary
-4. **Fan out** — one reviewer per angle or module group
+4. **Fan out** — reviewers per manifest, as the depth sets
 5. **Validate** — every candidate re-read against the code, duplicates merged
 6. **Write the review document** — and commit it alone when allowed
 7. **Report and stop**
 
-**1. Frame.** Establish the target: the whole codebase, or the path the developer named
-(check it exists). The four core angles — SOLID, DRY/duplication, architecture and layering,
+**1. Frame.** Take the depth the developer gave, or `medium`. Establish the target: the
+whole codebase, or the path the developer named (check it exists). The four core angles — SOLID, DRY/duplication, architecture and layering,
 code quality/readability — run every time. The optional angles — security, testing,
 performance — run only when the developer asks for them; never add one on your own, though
 the report may suggest one. The angles and their checklists are in `references/angles.md`.
@@ -142,13 +147,13 @@ applies to every file; a file whose language has no bundled reference is reviewe
 the general checklist alone and marked as reduced-standards coverage.
 
 Group the files along module boundaries — a project, package or directory, with tests kept
-beside their source — never arbitrary chunks. Build an explicit file manifest for each
-reviewer. An angle whose files exceed one reviewer's manifest limit is split across several
-reviewers by module group. When any selected angle needs more than one reviewer, stop before
-starting any reviewer and ask once: run the full count, or narrow the path to a module group;
-never sample silently. Every in-scope file is assigned to a reviewer or listed as not
-covered, with the reason. The partition rules, the provisional manifest limit and the
-reviewer rule are in `references/dispatch.md`.
+beside their source — never arbitrary chunks. Build explicit file manifests under the depth's
+manifest limit, one per module group or set of small groups that fit together. When the scope
+fills more than one manifest, stop before starting any reviewer and ask once, showing the
+reviewers and expected validators: run the full count, run at a lower depth, or narrow the
+path to a module group; never sample silently or lower the depth on your own. Every in-scope file is assigned to a reviewer or listed as not
+covered, with the reason. The partition rules, the depths with their provisional manifest
+limits and the reviewer rule are in `references/dispatch.md`.
 
 **3. Measure what tools can measure.** Look for project tooling that reports diagnostics or
 metrics — configured analyzers, linters, type checkers, complexity or duplication tools —
@@ -156,18 +161,19 @@ and run each one only under the review boundary. Record which tools ran, their o
 the threshold source each metric is judged against, and which tools did not run and why.
 Never estimate a metric no tool measured; it reads "not measured". Install nothing.
 
-**4. Fan out.** Brief one reviewer per angle, or per module group of a split angle: the
-reviewer role pasted in full, the angle's checklist, the general checklist, the language
-references for the languages in its manifest, the project rules that bear on the angle, the
+**4. Fan out.** Brief the reviewers the depth calls for — at `low` and `medium` one per
+manifest covering every selected angle, at `high` one per angle per manifest: the reviewer
+role pasted in full, the checklist of each of its angles, the general checklist, the language
+references for the languages in its manifest, the project rules that bear on its angles, the
 relevant tool output and its manifest. Lay the briefs side by side before launching and
-confirm no two cover the same angle over the same files. Reviewers stay inside their angle,
+confirm no two cover the same angle over the same files. Reviewers stay inside their angles,
 note out-of-angle observations briefly, and return candidate findings in the fixed shape:
 location, the principle or reference rule it violates, evidence, impact, proposed fix and
 suggested severity. A reviewer that returns nothing usable, fails or runs out of budget
 leaves its angle or group reported as incomplete; never invent findings to fill it.
 
 **5. Validate.** Brief validators per module group of the cited code, under the same
-manifest limit; a validator never validates findings it raised. For every candidate it
+depth's manifest limit; a validator never validates findings it raised. For every candidate it
 re-reads the cited code — never taking a reviewer's quote on trust — checks that the
 violation exists at the cited location, that its impact is real and not already mitigated
 elsewhere, and that it does not contradict a documented project convention. Where an
@@ -199,7 +205,7 @@ path is ignored (for example `git check-ignore -q <path>`). When the path is ign
 project is not a Git repository, or commits are prohibited by the user or the project, the
 document stays on disk uncommitted, it is never force-added, and the report says so and why.
 
-**7. Report and stop.** Give the document's location and whether it was committed, the
+**7. Report and stop.** Give the depth the run used, the document's location and whether it was committed, the
 headline counts (valid findings by severity, uncertain, rejected, files not covered), the top
 findings, any angle left incomplete, whether the run was sequential, and any optional angle
 worth running next. Do not start implementing fixes.
@@ -219,7 +225,8 @@ This skill's files live in the folder holding this `SKILL.md` (Claude Code also 
 as `${CLAUDE_SKILL_DIR}`); paths below are relative to it.
 
 - `references/dispatch.md` — steps 2, 4 and 5. Inventory and skip rules, module-group
-  partitioning, manifests, the provisional manifest limit and reviewer rule, starting subagents in each
+  partitioning, manifests, the review depths with their provisional manifest limits and the
+  reviewer rule, starting subagents in each
   harness, the briefs, failures, the validation split and merging duplicates.
 - `references/roles/reviewer.md` and `references/roles/validator.md` — the role files pasted
   at the top of each brief.

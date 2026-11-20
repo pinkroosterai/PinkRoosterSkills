@@ -69,7 +69,8 @@ break and how to notice.
 
 ## Metrics
 
-**Run metrics** are counts the run itself produced: files in scope by outcome, reviewers
+**Run metrics** are the depth the run used and the counts it produced: files in scope by
+outcome, reviewers
 started and completed, candidates raised, verdicts, duplicates merged, findings per angle and
 severity, and the models and effort reviewers and validators actually ran on. When the
 harness does not show a subagent's model or effort, say "not shown by the harness".
@@ -93,8 +94,8 @@ a tool that did not run is listed with its reason.
 readability; optional: <requested angles | none requested>
 **Languages** — <language: n files, reference <file>, checked <date>, targets <versions> |
 general checklist only>
-**Run** — <parallel: n reviewers, m validators | sequential: no subagent tool, validation
-done in the same session, not by an independent validator>
+**Run** — <low | medium | high> depth; <parallel: n reviewers, m validators | sequential: no
+subagent tool, validation done in the same session, not by an independent validator>
 **Persistence** — <committed | left uncommitted: path ignored / not a Git repository /
 commits prohibited>
 **Fixes** — proposed only; this review changed no code, tests or configuration.
