@@ -145,7 +145,7 @@ Transform an ambiguous, shallow task, issue ticket, or prompt into a professiona
   2. *5-Point Analysis:* Analyzes workspace/external standards, uncovers consequential omissions and traps, identifies primary evidence to inspect, selects stack-aligned methods, and defines independent verification without fabricated metrics.
   3. *Separate Research Phases:* Clearly separates research informing the specification from empirical baselines the implementer must measure during execution.
   4. *Deliver Output Contract:* Delivers concise key findings followed by a self-contained, copyable Markdown specification.
-- **Artifacts & Handoffs:** Delivers a complete specification in conversation. If a task file was provided, offers to write `<filename>.deepened.md`. Implement directly with your coding agent or feed into `/plan-work` if complex.
+- **Artifacts & Handoffs:** Delivers a complete specification in conversation. If a task file was provided, offers to write `<filename>.deepened.md`. Stops after delivery and never performs the task; approving the spec is not permission to implement. When you instruct it, implement directly with your coding agent or feed into `/plan-work` if complex.
 - **Invocation:** `/deepen-task add rate limiting to public endpoints` or `/deepen-task path/to/task.md`
 
 ### Plan defined work

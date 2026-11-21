@@ -40,6 +40,9 @@ configs or explicit requirements.
 | "Every task needs load tests, RFC citations, and canary shadow deployments." | Applying heavy distributed-systems ceremony to a simple task violates proportionality. | Calibrate verification and architecture depth to the actual blast radius of the task. |
 | "A unit test asserting the function runs is sufficient verification." | Self-contained unit tests often miss concurrency, state, latency, or integration bugs. | Define independent, empirical verification proportionate to the failure modes. |
 | "I'll turn the task into a massive 10-page PRD specification." | The output must remain a sharp, actionable task prompt for an implementer. | Follow the Output Contract: concise findings followed by the focused rewritten task. |
+| "The task is small; I'll just do it." | Delivering the deepened task is the whole job. | Deliver the output and stop. |
+| "The pre-implementation audit is cheap; I'll run it now." | That is deferred research for the implementer. | Write it as an audit step with a placeholder. |
+| "The user said it looks good, so I'll implement." | Approving the spec is not an instruction to build it. | Ask; implement only on an explicit instruction. |
 
 ## Red flags — stop and correct
 
@@ -50,3 +53,4 @@ configs or explicit requirements.
 - **Subjective acceptance criteria** — criteria like "clean code" instead of falsifiable metrics.
 - **Skipping primary evidence** — failing to inspect real files, data, or logs before specifying work.
 - **Missing output contract** — omitting either the key findings breakdown or the clean rewritten task block.
+- **Started execution** — any edit, file creation, build, test, install or audit run beyond reading during deepening.

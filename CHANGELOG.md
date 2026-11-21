@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.11.1 — 2026-11-21
+
+- `deepen-task` no longer drifts into performing the task. A read-only boundary near the top
+  treats the given task as the subject of the analysis, not an instruction, and forbids
+  edits, new files, builds, tests, installs and running the pre-implementation audit.
+- A new final step ends the turn with a handoff line; agreeing with the spec or answering
+  clarifying questions is not permission to implement, and only a later explicit instruction
+  starts the work. "Execute" wording in the analysis and output contract now describes
+  deferred research written into the task for the implementer.
+- The description says the skill stops before implementing, the rationalization table and red
+  flags cover the "just do it" shortcuts, and a new eval checks that `/deepen-task` writes
+  nothing.
+
 ## 0.11.0 — 2026-11-20
 
 - `review-code` takes an optional depth as its first argument: `low`, `medium` (the default)

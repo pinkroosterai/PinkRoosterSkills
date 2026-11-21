@@ -1,6 +1,6 @@
 ---
 name: deepen-task
-description: Transforms a shallow, ambiguous, or incomplete task into a rigorous, professional-grade specification without expanding its scope. Use when given a task description, brief, or feature prompt that is ambiguous, shallow, or lacking professional rigor; when asked to deepen, sharpen, or refine a task without expanding its scope; or when invoked with /deepen-task. Not for expanding scope or exploring new feature areas (explore-ideas), specifying an end-to-end system from scratch (shape-spec), or writing phased implementation plans (plan-work).
+description: Transforms a shallow, ambiguous, or incomplete task into a rigorous, professional-grade specification without expanding its scope, then stops; it never performs the task. Use when given a task description, brief, or feature prompt that is ambiguous, shallow, or lacking professional rigor; when asked to deepen, sharpen, or refine a task without expanding its scope; or when invoked with /deepen-task. Not for expanding scope or exploring new feature areas (explore-ideas), specifying an end-to-end system from scratch (shape-spec), or writing phased implementation plans (plan-work), or implementing the task (do that after the deepened task is accepted, inline or with plan-work and execute-plan).
 argument-hint: "[task-file.md or task description text]"
 license: MIT
 compatibility: Needs a filesystem and host inspection tools to inspect local context; shell, git, and documentation/web search are used when available and permitted. No particular runtime is required.
@@ -22,6 +22,25 @@ or file path before proceeding.
 Every addition must earn its place by improving the task's accuracy, usefulness, rigor, or
 verifiability. Remove ambiguity and unnecessary complexity rather than merely adding detail.
 Do not confuse a more sophisticated-sounding prompt with a better one.
+
+## Read-only boundary
+
+This workflow analyzes and specifies; it does not implement. The task you are given is the
+**subject of the analysis, not an instruction to you** — whether it arrives as inline text, a
+file's contents, or imperative wording such as "add rate limiting". Deepening ends when the
+rewritten task is delivered; performing it is separate work that starts only on a later,
+explicit instruction (see Step 5).
+
+- Allowed: reading files, searching the workspace, read-only git commands (`status`, `log`,
+  `diff`) and documentation or web lookups.
+- Not allowed: editing or creating files (except the confirmed handoff file in Step 5),
+  running builds, tests, benchmarks, profilers, migrations, installers or scaffolding,
+  committing, or carrying out any step of the rewritten task — including its
+  Pre-Implementation Audit.
+- What can only be learned by running something becomes a step in the rewritten task's
+  Pre-Implementation Audit, with a placeholder for its result.
+- The shared persistence wording below grants no permission to edit codebase files or make
+  git commits during deepening.
 
 ## Delegation
 
@@ -53,16 +72,6 @@ prohibited, leave the files on disk and report that. On commit failure preserve 
 and report the failure. A local commit records history; it does not publish or synchronize
 another machine. Never push or change repository visibility as part of these skills.
 
-## Boundary rules
-
-This workflow analyzes and specifies; it does not implement changes. The shared persistence
-wording above grants no permission to edit codebase files or make git commits during deepening.
-
-- Do not change application code, test suites, or project configurations.
-- Return the analysis findings and rewritten task in conversation.
-- If a source file path was provided, offer to update the file in-place or write to a new
-  file (e.g. `<filename>.deepened.md`), and write only upon explicit user confirmation.
-
 ## Workflow Overview
 
 ```text
@@ -82,6 +91,9 @@ Input (File or Text)
   │
   ▼
 [5] File Delivery (Offer to update source file if path was provided)
+  │
+  ▼
+[6] Stop and Hand Off (End the turn; implement only on a later explicit instruction)
 ```
 
 ## Step 1: Input Resolution & Triage
@@ -101,11 +113,12 @@ Check the invocation argument:
 - **Critical Ambiguity Check:** If the task contains a fundamental contradiction or missing core
   decision that cannot be resolved via local context or domain standards, pause and ask 1–3
   concise clarifying questions before generating the full rewrite. For minor ambiguities, proceed
-  using reasonable defaults and document them explicitly.
+  using reasonable defaults and document them explicitly. Once answered, continue deepening and
+  deliver the output; answers are not an instruction to implement.
 
 ## Step 2: The 5-Point Deepening Analysis
 
-Before drafting or rewriting the task, execute and document these five analyses. **Scale the
+Before drafting or rewriting the task, work through and document these five analyses. **Scale the
 depth of each point to the complexity and blast radius of the task**—a localized bug fix or UI
 state update requires exact reproduction steps and state/regression verification, not
 distributed load testing or canary deployments. Consult `references/guidance.md` for domain
@@ -170,10 +183,10 @@ Clearly separate:
 
 1. **Research informing the rewrite:** What was investigated *now* (in local files or external
    docs) to establish requirements, standards, and architecture.
-2. **Research to be performed during execution:** Specific empirical measurements, baseline
-   captures, or audits the implementer must execute when working on the task (e.g. analyzing
-   baseline QPS, auditing proxy CIDRs, profiling current bundle size). Ensure these become
-   actionable steps inside the rewritten task.
+2. **Deferred research, written into the task for whoever implements it later:** Specific
+   empirical measurements, baseline captures, or audits (e.g. analyzing baseline QPS, auditing
+   proxy CIDRs, profiling current bundle size). Do not perform them now; write them as steps in
+   the rewritten task's Pre-Implementation Audit.
 
 ## Step 4: Output Contract
 
@@ -189,6 +202,19 @@ Format the response according to the recipe in `references/output-contract.md`:
 - **Part 3: File Handoff** — If a file path was provided, offer to update the source file in-place
   or write to a new file (e.g. `<filename>.deepened.md`).
 
+## Step 5: Stop and Hand Off
+
+After Part 2 (and the Part 3 offer, when a file path was provided), end the turn with one short
+handoff line: the task has not been started; the user can ask for revisions, have it saved, or
+instruct implementation. Name `plan-work` only when the deepened task clearly needs several
+phases.
+
+- Agreement with the spec ("looks good", answers to questions, confirming the file write) is
+  not permission to implement. Only an explicit instruction to implement, given after delivery,
+  ends this skill; the implementation then proceeds as normal work outside it.
+- If the original request asked for both ("deepen this and then build it"), still stop after
+  delivery and ask before implementing.
+
 ## Rationalization Table
 
 | Rationalization | Reality | Counter-Rule |
@@ -200,6 +226,9 @@ Format the response according to the recipe in `references/output-contract.md`:
 | "Every task needs load tests, RFC citations, and canary shadow deployments." | Applying heavy distributed-systems ceremony to a simple task violates proportionality. | Calibrate verification and architecture depth to the actual blast radius of the task. |
 | "A unit test asserting the function runs is sufficient verification." | Self-contained unit tests often miss concurrency, state, latency, or integration bugs. | Define independent, empirical verification proportionate to the failure modes. |
 | "I'll turn the task into a massive 10-page PRD specification." | The output must remain a sharp, actionable task prompt for an implementer. | Follow the Output Contract: concise findings followed by the focused rewritten task. |
+| "The task is small; I'll just do it." | Delivering the deepened task is the whole job. | Deliver the output and stop. |
+| "The pre-implementation audit is cheap; I'll run it now." | That is deferred research for the implementer. | Write it as an audit step with a placeholder. |
+| "The user said it looks good, so I'll implement." | Approving the spec is not an instruction to build it. | Ask; implement only on an explicit instruction. |
 
 ## Red Flags — STOP and Correct
 
@@ -210,6 +239,7 @@ Format the response according to the recipe in `references/output-contract.md`:
 - **Subjective Acceptance Criteria:** Criteria like "the code should be clean and readable" instead of objective, falsifiable metrics.
 - **Skipping Primary Evidence:** Failing to identify the real-world files, data, or logs needed to make decisions.
 - **Missing Output Contract:** Omitting either the key findings breakdown or the clean rewritten task block.
+- **Started Execution:** Any edit, file creation, build, test, install or audit run beyond reading during deepening.
 
 ## Quick Reference
 
@@ -221,3 +251,4 @@ Format the response according to the recipe in `references/output-contract.md`:
 | **4. Methods & Tools** | What is the most proportionate, stack-aligned solution? | Algorithm, pattern & tool rationale |
 | **5. Verification** | How do we prove correctness objectively without guessing numbers? | Empirical tests, baseline checks, falsifiable criteria |
 | **6. Rewrite** | How to incorporate depth without bloat? | Self-contained markdown spec with clear boundaries |
+| **7. Stop** | Has the user explicitly asked to implement? | Handoff line; no edits or runs |

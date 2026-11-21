@@ -29,7 +29,8 @@ Structure the rewritten specification with these sections:
 2. **Scope, boundaries and assumptions** — explicit in-scope items, out-of-scope boundaries
    (no scope creep), and parameterized placeholders (`[X]`) for unconfirmed thresholds.
 3. **Pre-implementation audit** — empirical measurements, baseline captures, or primary
-   evidence checks that the implementer must execute before modifying files.
+   evidence checks that the implementer performs later, before modifying files. Deepening
+   writes these steps; it never runs them.
 4. **Functional and technical requirements** — specific, unambiguous requirements
    incorporating domain insights, edge cases, and failure modes.
 5. **Operational and architectural considerations** — resiliency, resource limits, error
@@ -44,3 +45,9 @@ When a file path was provided as an input argument:
 - Ask the user whether to update the source file in-place or write the deepened task to a
   new file (e.g. `<filename>.deepened.md`).
 - Do not overwrite without confirmation.
+
+## Ending the turn
+
+Close with one short handoff line: the task has not been started; the user can ask for
+revisions, have it saved, or instruct implementation. Then stop. Agreement with the spec is
+not an instruction to implement.
